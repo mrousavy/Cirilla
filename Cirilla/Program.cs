@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace Cirilla {
     public class Program {
+        internal static DateTime StartTime;
         internal static Cirilla Cirilla;
 
         public static void Main(string[] args) {
@@ -24,12 +25,12 @@ namespace Cirilla {
             ConsoleHelper.Set();
             Console.Title = "Cirilla Discord Bot";
 
-            XpManager.Init();
-
             if (!skipIntro)
                 ConsoleHelper.Intro();
 
             Cirilla = new Cirilla(Discord.LogSeverity.Debug);
+            StartTime = DateTime.Now;
+            XpManager.Init();
 
             Thread.Sleep(-1);
         }

@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cirilla {
@@ -49,6 +48,11 @@ namespace Cirilla {
                     LogSeverity.Info,
                     message.Author.ToString(),
                     message.Content));
+
+
+                IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel).Guild, message);
+                if (emote != null)
+                    await message.AddReactionAsync(emote);
 
                 // Command Begin
                 int argPos = 0;

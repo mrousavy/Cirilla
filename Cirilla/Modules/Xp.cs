@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,12 +15,12 @@ namespace Cirilla.Modules {
                 XpManager.UserXp userxp = XpManager.Get(Context.User);
                 if (userxp.Xp >= xp) {
                     XpManager.Update(user, xp);
-                    await ReplyAsync($"{Context.User.Mention} donated {user.Mention} {xp} XP!");
+                    await ReplyAsync($"{Context.User.Username} donated {user.Username} {xp} XP!");
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {user.Username}, you only have {userxp.Xp} XP!");
                 }
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! {ex.Message}");
+            } catch {
+                await ReplyAsync("Whoops, I couldn't give XP to that user!");
             }
         }
 
@@ -28,9 +28,9 @@ namespace Cirilla.Modules {
         public async Task Info() {
             try {
                 XpManager.UserXp xp = XpManager.Get(Context.User);
-                await ReplyAsync($"{Context.User.Mention}'s XP: {xp.Xp}");
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! {ex.Message}");
+                await ReplyAsync($"{Context.User.Username}'s XP: {xp.Xp}");
+            } catch {
+                await ReplyAsync("I couldn't look up any Info about you, sorry..");
             }
         }
 
@@ -38,9 +38,9 @@ namespace Cirilla.Modules {
         public async Task Info(IUser user) {
             try {
                 XpManager.UserXp xp = XpManager.Get(user);
-                await ReplyAsync($"{user.Mention}'s XP: {xp.Xp}");
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! {ex.Message}");
+                await ReplyAsync($"{user.Username}'s XP: {xp.Xp}");
+            } catch {
+                await ReplyAsync($"I couldn't look up any Info about {user.Username}, sorry..");
             }
         }
 
@@ -51,8 +51,11 @@ namespace Cirilla.Modules {
             foreach (IGuild guild in Cirilla.Client.Guilds) {
                 IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
 
-                foreach (IUser user in users) {
-                    XpManager.Update(user, 10);
+                foreach (IUser user in users.Where(u =>
+                        (!u.IsBot) &&
+                        (u.Status != UserStatus.Offline))) {
+                    //Update all [interval] seconds +1 XP
+                    XpManager.Update(user, 1);
                 }
             }
 

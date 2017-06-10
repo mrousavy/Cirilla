@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,8 +20,8 @@ namespace Cirilla.Modules {
                 } else {
                     await ReplyAsync($"No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
                 }
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! ({ex.Message})");
+            } catch {
+                await ReplyAsync("Whoops, can't show you my links right now.. :confused:");
             }
         }
 
@@ -31,8 +30,8 @@ namespace Cirilla.Modules {
             try {
 
                 await ReplyAsync($"Link saved!");
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! ({ex.Message})");
+            } catch {
+                await ReplyAsync("Whoops, couldn't save that link.. :confused:");
             }
         }
     }

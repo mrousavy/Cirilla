@@ -8,7 +8,15 @@ namespace Cirilla.Modules {
         [Command("info"), Summary("Shows host information")]
         public async Task Info() {
             try {
-                string uname = Information.Username;
+                TimeSpan tspan = (DateTime.Now - Program.StartTime);
+                string uptime = "";
+                if (tspan.TotalHours >= 1) {
+                    uptime = tspan.ToString("h'h:'m'm:'s's'");
+                } else if (tspan.TotalMinutes >= 1) {
+                    uptime = tspan.ToString("m'm:'s's'");
+                } else {
+                    uptime = tspan.ToString("s's'");
+                }
                 string mname = Environment.MachineName;
                 string nl = Environment.NewLine;
                 char pre = Information.Prefix;
@@ -21,7 +29,7 @@ namespace Cirilla.Modules {
                     },
                     Color = new Color(50, 125, 0)
                 };
-                builder.AddInlineField("Username", uname);
+                builder.AddInlineField("Uptime", uptime);
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", cores + " cores");
                 builder.AddInlineField("Prefix", pre);

@@ -1,11 +1,8 @@
 ﻿using System;
 
-namespace Cirilla
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
+namespace Cirilla {
+    public class Program {
+        public static void Main(string[] args) {
             Console.WriteLine("Hello World!");
         }
     }

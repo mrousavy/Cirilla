@@ -40,7 +40,7 @@ namespace Cirilla {
         }
 
         public static void WriteOut(string text) {
-            string path = Path.Combine(AppContext.BaseDirectory, "log.txt");
+            string path = Path.Combine(Information.Directory, "log.txt");
             if (!File.Exists(path)) {
                 using (File.Create(path)) { }
             }

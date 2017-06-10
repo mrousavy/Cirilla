@@ -33,7 +33,7 @@ namespace Cirilla.Modules {
                 //builder.AddField("Prefix", pre);
                 //builder.AddField("Source Code", $"[GitHub]({Information.RepoUrl})");
 
-                await ReplyAsync("", false, builder.Build());
+                await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {
                 await ReplyAsync($"Error! ({ex.Message})");
             }

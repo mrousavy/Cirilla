@@ -1,4 +1,8 @@
-﻿namespace Cirilla {
+﻿
+
+using System;
+
+namespace Cirilla {
     internal class Information {
         internal const string ClientId = "323123443136593920";
         internal const string ClientSecret = "UnGeUiK-deSuCIwAPSFbzgRLdL43gKhQ";
@@ -10,5 +14,7 @@
         internal const string RepoUrl = "http://github.com/mrousavy/Cirilla";
         internal const string Senpai = "<@266162606161526784>";
         internal const string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
+
+        internal static string Directory = AppContext.BaseDirectory;
     }
 }

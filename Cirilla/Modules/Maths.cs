@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using org.mariuszgromada.math.mxparser;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -24,9 +25,13 @@ namespace Cirilla.Modules {
         }
 
         [Command("calc"), Summary("Calculates Expressions.")]
-        public async Task Calc([Summary("The expression to evaluate.")] string expression) {
+        public async Task Calc([Summary("The expression to evaluate.")] params string[] expressions) {
             try {
-                Expression expr = new Expression(expression);
+                string expression = string.Join("", expressions);
+                string trimmed = Regex.Replace(expression, @"\s+", "");
+                trimmed = trimmed.Replace("\"", "");
+
+                Expression expr = new Expression(trimmed);
                 double result = expr.calculate();
                 await ReplyAsync($"{expression} = {result}");
             } catch (Exception ex) {

@@ -6,10 +6,21 @@ namespace Cirilla {
         internal static Cirilla Cirilla;
 
         public static void Main(string[] args) {
-            Thread.Sleep(3000);
+            bool skipIntro = false;
+
+            foreach (string arg in args) {
+                string larg = arg.ToLower();
+                switch (larg) {
+                    case "skip":
+                        skipIntro = true;
+                        break;
+                }
+            }
 
             ConsoleHelper.Set();
-            Intro();
+
+            if (!skipIntro)
+                Intro();
 
             Cirilla = new Cirilla();
 
@@ -22,17 +33,19 @@ namespace Cirilla {
 
             string introText = "~Cirilla~";
             int left = (Console.WindowWidth / 2) - (introText.Length / 2);
-            int top = (Console.WindowHeight / 2);
+            int top = (Console.WindowHeight / 2) - 1;
+            ConsoleColor introColor = ConsoleColor.Cyan;
+
             Console.SetCursorPosition(left, top);
-            ConsoleColor color = Console.ForegroundColor = ConsoleColor.Cyan;
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = introColor;
 
             foreach (char ch in introText.ToCharArray()) {
                 Console.Write(ch);
                 Thread.Sleep(90);
             }
 
-
-            Console.ForegroundColor = color;
+            Console.ForegroundColor = originalColor;
 
             Thread.Sleep(2500);
 

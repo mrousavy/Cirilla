@@ -29,7 +29,7 @@ namespace Cirilla {
         }
 
         public async Task Login() {
-            await _client.LoginAsync(TokenType.Bot, "bot token");
+            await _client.LoginAsync(TokenType.Bot, Information.Token);
             await _client.StartAsync();
         }
 

@@ -7,5 +7,8 @@
 
         internal const string TextChannel = "general";
         internal const char Prefix = '$';
+        internal const string RepoUrl = "http://github.com/mrousavy/Cirilla";
+        internal const string Senpai = "<@266162606161526784>";
+        internal const string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
     }
 }

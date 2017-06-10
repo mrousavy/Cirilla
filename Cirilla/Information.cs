@@ -16,5 +16,7 @@ namespace Cirilla {
         internal const string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
 
         internal static string Directory = AppContext.BaseDirectory;
+
+        internal const int XpGiveInterval = 60000;
     }
 }

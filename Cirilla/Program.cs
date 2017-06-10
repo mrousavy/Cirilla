@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cirilla.Modules;
+using System;
 using System.Threading;
 
 namespace Cirilla {
@@ -22,6 +23,8 @@ namespace Cirilla {
 
             ConsoleHelper.Set();
             Console.Title = "Cirilla Discord Bot";
+
+            XpManager.Init();
 
             if (!skipIntro)
                 ConsoleHelper.Intro();

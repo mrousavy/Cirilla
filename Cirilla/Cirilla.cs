@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cirilla {
@@ -35,6 +36,8 @@ namespace Cirilla {
             _service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
             Login().GetAwaiter().GetResult();
+
+            Timer timer = new Timer(Modules.Xp.TimerCallback, _client, Information.XpGiveInterval, Information.XpGiveInterval);
         }
 
         private async Task MessageReceived(SocketMessage messageArg) {

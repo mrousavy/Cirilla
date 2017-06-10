@@ -27,7 +27,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("addlink"), Summary("Saves a new link")]
-        public async Task AddLink(string link) {
+        public async Task AddLink([Summary("The link to store")] string link) {
             try {
 
                 await ReplyAsync($"Link saved!");

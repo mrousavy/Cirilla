@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace Cirilla {
-    public class Cirilla : IDisposable {
+    public class Cirilla {
         #region Privates
         private DiscordSocketClient _client;
         #endregion
@@ -19,13 +19,20 @@ namespace Cirilla {
             };
             _client = new DiscordSocketClient(config);
             _client.Log += Log;
+            _client.MessageReceived += MessageReceived;
 
             Login().GetAwaiter().GetResult();
         }
 
-        public void Dispose() {
-            _client.LogoutAsync().GetAwaiter().GetResult();
-            _client.Dispose();
+        private Task MessageReceived(SocketMessage arg) {
+            //TODO:
+
+            return Task.CompletedTask;
+        }
+
+        public async Task Stop() {
+            await _client.SetStatusAsync(UserStatus.Offline);
+            await _client.StopAsync();
         }
 
         public async Task Login() {

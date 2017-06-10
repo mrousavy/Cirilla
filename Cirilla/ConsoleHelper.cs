@@ -1,8 +1,60 @@
-﻿using System;
+﻿using Discord;
+using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cirilla {
     public class ConsoleHelper {
+        public static Task Log(LogMessage message) {
+            switch (message.Severity) {
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogSeverity.Debug:
+                case LogSeverity.Verbose:
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogSeverity.Info:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                default:
+                    break;
+            }
+            Console.WriteLine($"[{message.Severity}] [{message.Source}] [{message.Message}]");
+
+            Console.ResetColor();
+            return Task.CompletedTask;
+        }
+        public static Task Log(string message, LogSeverity logSeverity) {
+            switch (logSeverity) {
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogSeverity.Debug:
+                case LogSeverity.Verbose:
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogSeverity.Info:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                default:
+                    break;
+            }
+            Console.WriteLine($"[{logSeverity}] [Print] [{message}]");
+
+            Console.ResetColor();
+            return Task.CompletedTask;
+        }
+
 
         public static void Set() {
             //Disable Cursor Visibility
@@ -25,7 +77,9 @@ namespace Cirilla {
 
         private static bool DisposeBot(CtrlType sig) {
             if (Program.Cirilla != null && !Program.Cirilla.IsDisposed)
-                Program.Cirilla.Dispose();
+                Program.Cirilla.Stop().GetAwaiter().GetResult();
+
+            Outro();
 
             return false;
         }
@@ -49,6 +103,53 @@ namespace Cirilla {
             if (!SetConsoleMode(consoleHandle, consoleMode)) {
                 // error
             }
+        }
+
+        public static void Intro() {
+            Console.Clear();
+            Console.Title = "Cirilla Discord Bot";
+
+            string introText = "~Cirilla~";
+            int left = (Console.WindowWidth / 2) - (introText.Length / 2);
+            int top = (Console.WindowHeight / 2) - 1;
+            ConsoleColor introColor = ConsoleColor.Magenta;
+
+            Console.SetCursorPosition(left, top);
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = introColor;
+
+            foreach (char ch in introText.ToCharArray()) {
+                Console.Write(ch);
+                Thread.Sleep(90);
+            }
+
+            Console.ForegroundColor = originalColor;
+
+            Thread.Sleep(2500);
+
+            Console.Clear();
+        }
+
+        public static void Outro() {
+            Console.Clear();
+
+            string introText = "Shutting down..";
+            int left = (Console.WindowWidth / 2) - (introText.Length / 2);
+            int top = (Console.WindowHeight / 2) - 1;
+            ConsoleColor outroColor = ConsoleColor.Red;
+
+            Console.SetCursorPosition(left, top);
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = outroColor;
+
+            foreach (char ch in introText.ToCharArray()) {
+                Console.Write(ch);
+                Thread.Sleep(50);
+            }
+
+            Console.ForegroundColor = originalColor;
+
+            Thread.Sleep(300);
         }
 
         private enum CtrlType {

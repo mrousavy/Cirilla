@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -34,12 +34,21 @@ namespace Cirilla.Modules {
             }
         }
 
-        public static async void TimerCallback(object state) {
-            DiscordSocketClient client = state as DiscordSocketClient;
-            if (client == null)
-                return;
+        [Command("xp"), Summary("Show XP of given User")]
+        public async Task Info(IUser user) {
+            try {
+                XpManager.UserXp xp = XpManager.Get(user);
+                await ReplyAsync($"{user.Mention}'s XP: {xp.Xp}");
+            } catch (Exception ex) {
+                await ReplyAsync($"Error! {ex.Message}");
+            }
+        }
 
-            foreach (IGuild guild in client.Guilds) {
+        public static async void TimerCallback() {
+            await ConsoleHelper.Log($"Giving away XP to everyone...",
+                            LogSeverity.Info);
+
+            foreach (IGuild guild in Cirilla.Client.Guilds) {
                 IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
 
                 foreach (IUser user in users) {
@@ -47,6 +56,15 @@ namespace Cirilla.Modules {
                 }
             }
 
+            await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to everyone",
+                LogSeverity.Info);
+        }
+
+        public static void TimerLoop() {
+            while (true) {
+                Thread.Sleep(Information.XpGiveInterval);
+                TimerCallback();
+            }
         }
     }
 
@@ -65,11 +83,13 @@ namespace Cirilla.Modules {
                     Users = new List<UserXp>()
                 };
             }
+
+            new Thread(Modules.Xp.TimerLoop).Start();
         }
 
         //add new user
         public static UserXp Add(IUser user, int xp) {
-            UserXp userXp = new UserXp(user, xp);
+            UserXp userXp = new UserXp(user.Id, xp);
             Xp.Users.Add(userXp);
             WriteOut();
             return userXp;
@@ -77,9 +97,8 @@ namespace Cirilla.Modules {
 
         public static void Update(IUser user, int plusXp) {
             for (int i = 0; i < Xp.Users.Count; i++) {
-                UserXp uxp = Xp.Users[i];
-                if (uxp.UserId == user.Id) {
-                    uxp.Xp += plusXp;
+                if (Xp.Users[i].UserId == user.Id) {
+                    Xp.Users[i].Xp += plusXp;
                     WriteOut();
                     return;
                 }
@@ -107,9 +126,9 @@ namespace Cirilla.Modules {
 
 
 
-        public struct UserXp {
-            public UserXp(IUser user, int xp) {
-                UserId = user.Id;
+        public class UserXp {
+            public UserXp(ulong userId, int xp) {
+                UserId = userId;
                 Xp = xp;
             }
 

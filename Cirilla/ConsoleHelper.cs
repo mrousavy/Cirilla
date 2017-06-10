@@ -116,7 +116,7 @@ namespace Cirilla {
 
             Console.ForegroundColor = originalColor;
 
-            Thread.Sleep(2500);
+            Thread.Sleep(2300);
 
             Console.Clear();
         }

@@ -1,5 +1,7 @@
 ﻿using Discord;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,34 +27,24 @@ namespace Cirilla {
                 default:
                     break;
             }
-            Console.WriteLine($"[{message.Severity}] [{message.Source}] [{message.Message}]");
+            string text = $"[{message.Severity}] [{message.Source}] [{message.Message}]";
+            Console.WriteLine(text);
+            WriteOut(text);
 
             Console.ResetColor();
             return Task.CompletedTask;
         }
         public static Task Log(string message, LogSeverity logSeverity) {
-            switch (logSeverity) {
-                case LogSeverity.Critical:
-                case LogSeverity.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogSeverity.Debug:
-                case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    break;
-                case LogSeverity.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogSeverity.Info:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    break;
-                default:
-                    break;
-            }
-            Console.WriteLine($"[{logSeverity}] [Print] [{message}]");
-
-            Console.ResetColor();
+            Log(new LogMessage(logSeverity, "Print", message));
             return Task.CompletedTask;
+        }
+
+        public static void WriteOut(string text) {
+            string path = Path.Combine(AppContext.BaseDirectory, "log.txt");
+            if (!File.Exists(path)) {
+                using (File.Create(path)) { }
+            }
+            File.AppendAllLines(path, new List<string>() { text });
         }
 
 

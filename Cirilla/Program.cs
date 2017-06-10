@@ -15,13 +15,16 @@ namespace Cirilla {
                         break;
                 }
             }
+#if DEBUG
+            skipIntro = true;
+#endif
 
             ConsoleHelper.Set();
 
             if (!skipIntro)
                 ConsoleHelper.Intro();
 
-            Cirilla = new Cirilla();
+            Cirilla = new Cirilla(Discord.LogSeverity.Debug);
 
             Thread.Sleep(-1);
         }

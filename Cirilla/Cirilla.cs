@@ -1,12 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Cirilla {
     public class Cirilla {
         #region Privates
         private DiscordSocketClient _client;
+        private CommandService _service;
         #endregion
 
         #region Publics
@@ -28,19 +30,35 @@ namespace Cirilla {
                 SeparatorChar = '$',
                 LogLevel = logSeverity
             };
-            CommandService service = new CommandService(serviceConfig);
-            service.Log += Log;
+            _service = new CommandService(serviceConfig);
+            _service.Log += Log;
+            _service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
             Login().GetAwaiter().GetResult();
         }
 
-        private async Task MessageReceived(SocketMessage message) {
-            //TODO:
-            if (message.Author.ToString() != _client.CurrentUser.ToString())
+        private async Task MessageReceived(SocketMessage messageArg) {
+            // Don't process the command if it was a System Message
+            SocketUserMessage message = messageArg as SocketUserMessage;
+            if (message == null)
+                return;
+
+            if (message.Author.ToString() != _client.CurrentUser.ToString()) {
                 await ConsoleHelper.Log(new LogMessage(
                     LogSeverity.Info,
                     message.Author.ToString(),
                     message.Content));
+
+                // Command Begin
+                int argPos = 0;
+                // Determine if the message is a command
+                if (!(message.HasCharPrefix(Information.Prefix, ref argPos) || message.HasMentionPrefix(_client.CurrentUser, ref argPos)))
+                    return;
+                CommandContext context = new CommandContext(_client, message);
+                IResult result = await _service.ExecuteAsync(context, argPos);
+                if (!result.IsSuccess)
+                    await context.Channel.SendMessageAsync(result.ErrorReason);
+            }
         }
 
         public async Task Stop() {

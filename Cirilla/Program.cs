@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace Cirilla {
     public class Program {
@@ -20,6 +21,7 @@ namespace Cirilla {
 #endif
 
             ConsoleHelper.Set();
+            Console.Title = "Cirilla Discord Bot";
 
             if (!skipIntro)
                 ConsoleHelper.Intro();

@@ -27,7 +27,7 @@ namespace Cirilla {
                 default:
                     break;
             }
-            string text = $"[{message.Severity}] [{message.Source}] [{message.Message}]";
+            string text = $"[{message.Severity}] [{message.Source}] {message.Message}";
             Console.WriteLine(text);
             WriteOut(text);
 
@@ -99,7 +99,6 @@ namespace Cirilla {
 
         public static void Intro() {
             Console.Clear();
-            Console.Title = "Cirilla Discord Bot";
 
             string introText = "~Cirilla~";
             int left = (Console.WindowWidth / 2) - (introText.Length / 2);

@@ -14,7 +14,7 @@ namespace Cirilla {
         }
 
         public static async Task UserLeft(SocketGuildUser arg) {
-            await ConsoleHelper.Log($"{Helper.GetName(arg)} left the \"{arg.Guild.Name}\" server!", Discord.LogSeverity.Info);
+            await ConsoleHelper.Log($"{arg.Username} left the \"{arg.Guild.Name}\" server!", Discord.LogSeverity.Info);
             SocketTextChannel channel = (new List<SocketTextChannel>(arg.Guild.TextChannels)).FirstOrDefault(c => c.Name == Information.TextChannel);
             if (channel != null)
                 await channel.SendMessageAsync($"{Helper.GetName(arg)} left the server!", true);

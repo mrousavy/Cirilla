@@ -89,9 +89,15 @@ namespace Cirilla.Modules {
 
                     IDMChannel dm = await user.CreateDMChannelAsync();
                     IInviteMetadata invite = await ((IGuildChannel)message.Channel).CreateInviteAsync(maxUses: 1);
+                    try {
+                        await dm.SendMessageAsync($"You've been kicked from the _{guild.Name}_ guild by votekick!" + nl +
+                            $"As I'm very generous today, here's an invite link to the _{guild.Name}_ guild:" + nl + invite.Url);
+                    } catch {
+                        await message.Channel.SendMessageAsync($"{Helper.GetName(user)} is not allowing private messages, " +
+                            "someone gotta send him an invite link again.." + nl + invite.Url);
+                    }
                     await user.KickAsync();
-                    await dm.SendMessageAsync($"You've been kicked from the _{guild.Name}_ guild by _{Helper.GetName(user)}_!" + nl +
-                        $"As I'm very generous today, here's an invite link to the _{guild.Name}_ guild:" + nl + invite.Url);
+                    await dm.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(user)}..");
                 }
             } catch {
                 await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");

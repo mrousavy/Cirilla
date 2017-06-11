@@ -27,6 +27,7 @@ namespace Cirilla.Modules {
                 } else {
                     game = "/";
                 }
+                string xp = XpManager.Get(user).Xp.ToString();
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
@@ -40,6 +41,7 @@ namespace Cirilla.Modules {
                 builder.AddField("Joined At", joinedAt);
                 builder.AddField("Status", status);
                 builder.AddField("Game", game);
+                builder.AddField("XP", xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {

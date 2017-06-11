@@ -28,5 +28,10 @@ namespace Cirilla {
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         internal const int RandomReactionChance = 150;
+
+        //Time in ms until a votekick expires
+        internal const int VotekickExpire = 30000;
+        internal const string VotekickYes = "👍";
+        internal const string VotekickNo = "👎";
     }
 }

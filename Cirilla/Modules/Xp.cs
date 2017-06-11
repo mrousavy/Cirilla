@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -123,8 +124,12 @@ namespace Cirilla.Modules {
         }
 
         public static void WriteOut() {
-            //save to file
-            File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(Xp));
+            try {
+                //save to file
+                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(Xp));
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not save XP info to XP File! ({ex.Message})", LogSeverity.Error);
+            }
         }
 
 

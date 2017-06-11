@@ -7,7 +7,7 @@ namespace Cirilla.Modules {
         [Command("flip"), Summary("Flip a Coin!")]
         public async Task Flip() {
             int result = new Random().Next(0, 2);
-            await ReplyAsync(result == 0 ? "Head!" : "Tails!");
+            await ReplyAsync("Coin flip: " + (result == 0 ? "Heads!" : "Tails!"));
         }
 
 

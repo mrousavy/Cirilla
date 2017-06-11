@@ -31,12 +31,12 @@ namespace Cirilla.Modules {
                 XpManager.UserXp userxp = XpManager.Get(Context.User);
 
                 if (userxp.XpReserve >= xp) {
-                    XpManager.Update(user, xp, 0);
-
                     int lvlBefore = XpManager.Get(user).Level;
+                    XpManager.Update(user, xp, 0);
+                    int lvlAfter = XpManager.Get(user).Level;
+
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
                     XpManager.Update(Context.User, ownXp, -xp);
-                    int lvlAfter = XpManager.Get(user).Level;
 
                     await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP! :money_with_wings:");
 
@@ -75,7 +75,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("xp"), Summary("Show XP of given User")]
-        public async Task Info([Summary("The user you want to display XP")]IUser user) {
+        public async Task Info([Summary("The user you want to display XP")]IGuildUser user) {
             try {
                 XpManager.UserXp xp = XpManager.Get(user);
 

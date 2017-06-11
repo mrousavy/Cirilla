@@ -114,6 +114,9 @@ namespace Cirilla.Modules {
                     } catch {
                         //event removed
                     }
+                } else {
+                    await message.Channel.SendMessageAsync($"Time's up. Less than half of the online users ({yes}) " +
+                        $"voted to kick {Helper.GetName(user)}. Votekick dismissed.");
                 }
             } catch {
                 await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");

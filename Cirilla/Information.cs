@@ -93,7 +93,7 @@ namespace Cirilla {
         //Interval in ms to give XP (300000 = 5m)
         public int XpGiveInterval = 120000;
         //1 in [OwnXp] go to the XP Giver
-        public int OwnXp = 100;
+        public int OwnXp = 7;
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
         public double XpFactor = 1.20;
         //1 in [GiveRandomXpChance] to give a user 100 XP on XpGiveInterval interval
@@ -106,6 +106,6 @@ namespace Cirilla {
         public int VotekickExpire = 30000;
         public string VotekickYes = "👍";
         public string VotekickNo = "👎";
-        public bool AllowVotekick = true;
+        public bool AllowVotekick = false;
     }
 }

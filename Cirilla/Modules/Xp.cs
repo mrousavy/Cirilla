@@ -115,7 +115,9 @@ namespace Cirilla.Modules {
                     if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
                         XpManager.Update(user, 200, 100);
                         if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel)
-                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you 100 free XP!");
+							await ConsoleHelper.Log($"{user} randomly got 200 free XP (1 in {Information.GiveRandomXpChance} chance)",
+								LogSeverity.Info);
+                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you 200 free XP! :moneybag:");
                     }
                 }
             }

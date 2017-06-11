@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -34,7 +35,11 @@ namespace Cirilla {
             _service.Log += Log;
             _service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
-            Login().GetAwaiter().GetResult();
+            try {
+                Login().GetAwaiter().GetResult();
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not login as Discord Bot! {ex.Message}", LogSeverity.Critical);
+            }
         }
 
         private async Task MessageReceived(SocketMessage messageArg) {

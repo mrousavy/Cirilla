@@ -45,23 +45,29 @@ namespace Cirilla {
         public static void LoadInfo() {
             string config = Path.Combine(Directory, "config.json");
 
-            ConsoleHelper.Log($"Loading config from \"{config}\"", Discord.LogSeverity.Info);
+            ConsoleHelper.Log($"Loading config from \"{config}\"", LogSeverity.Info);
 
             if (!File.Exists(config)) {
                 File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
-                ConsoleHelper.Log($"No configuration set, please edit {config}!", Discord.LogSeverity.Critical);
+                ConsoleHelper.Log($"No configuration set, please edit {config}!", LogSeverity.Critical);
                 Console.ReadKey();
                 Process.GetCurrentProcess().Kill();
             } else {
                 try {
                     Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(config));
                 } catch (Exception ex) {
-                    ConsoleHelper.Log(ex.Message, Discord.LogSeverity.Critical);
-                    ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", Discord.LogSeverity.Critical);
+                    ConsoleHelper.Log(ex.Message, LogSeverity.Critical);
+                    ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", LogSeverity.Critical);
                     Console.ReadKey();
                     Process.GetCurrentProcess().Kill();
                 }
             }
+        }
+
+
+        public static void SaveInfo() {
+            string config = Path.Combine(Directory, "config.json");
+            File.WriteAllText(config, JsonConvert.SerializeObject(Config));
         }
     }
 
@@ -87,7 +93,7 @@ namespace Cirilla {
         //Bot Creator (me)
         public string Senpai = "<@266162606161526784>";
         //URL for Bot Profile Pic
-        public string IconUrl = "http://github.com/mrousavy/Cirilla/raw/master/Resources/Ciri_round.png";
+        public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
 
 
         //Interval in ms to give XP (300000 = 5m)

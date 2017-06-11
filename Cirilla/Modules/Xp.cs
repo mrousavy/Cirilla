@@ -107,7 +107,11 @@ namespace Cirilla.Modules {
 
                 foreach (IUser user in users.Where(u =>
                         (!u.IsBot) &&
-                        (u.Status != UserStatus.Offline))) {
+                        (u.Status == UserStatus.Online) &&
+                        (u.Status == UserStatus.DoNotDisturb) &&
+                        (u.Status == UserStatus.Invisible) &&
+                        //TODO: tinker?
+                        (u.VoiceChannel != null))) {
                     //Update all [interval] seconds +3 XP
                     XpManager.Update(user, 0, 3);
 

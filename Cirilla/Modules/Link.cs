@@ -8,14 +8,13 @@ namespace Cirilla.Modules {
         [Command("links"), Summary("Displays all saved links")]
         public async Task Command() {
             try {
-                EmbedBuilder builder = new EmbedBuilder {
-                    Color = new Color(66, 134, 244)
-                };
-
                 string file = Path.Combine(Information.Directory, "links.txt");
                 if (File.Exists(file)) {
                     string links = File.ReadAllText(file);
-                    builder.AddField("Links:", links);
+                    EmbedBuilder builder = new EmbedBuilder {
+                        Color = new Color(66, 134, 244)
+                    };
+                    builder.AddField(":link: Links:", links);
                     await ReplyAsync("", embed: builder.Build());
                 } else {
                     await ReplyAsync($"No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
@@ -36,11 +35,10 @@ namespace Cirilla.Modules {
                 string file = Path.Combine(Information.Directory, "links.txt");
                 if (File.Exists(file)) {
                     File.AppendAllLines(file, new string[] { link });
-                    await ReplyAsync("Link added!");
                 } else {
                     File.WriteAllLines(file, new string[] { link });
                 }
-                await ReplyAsync("Link added!");
+                await ReplyAsync("Link added! :link:");
             } catch {
                 await ReplyAsync("Whoops, couldn't save that link.. :confused:");
             }

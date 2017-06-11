@@ -16,17 +16,22 @@ namespace Cirilla {
         internal static string Token => Config.Token;
         internal static string TextChannel => Config.TextChannel;
         internal static char Prefix => Config.Prefix;
+        internal static char SecondaryPrefix => Config.SecondaryPrefix;
         internal static string RepoUrl => Config.RepoUrl;
         internal static string Senpai => Config.Senpai;
         internal static string IconUrl => Config.IconUrl;
 
         internal static int XpGiveInterval => Config.XpGiveInterval;
+        internal static int OwnXp => Config.OwnXp;
+
         internal static int RandomReactionChance => Config.RandomReactionChance;
 
         internal static int VotekickExpire => Config.VotekickExpire;
         internal static string VotekickYes => Config.VotekickYes;
         internal static string VotekickNo => Config.VotekickNo;
         internal static bool AllowVotekick => Config.AllowVotekick;
+
+        internal static int[] Levels = new int[] { 0, 200, 500, 900, 1500, 3000, 50000 };
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
@@ -65,6 +70,8 @@ namespace Cirilla {
         public string TextChannel = "general";
         //Bot prefix ($help)
         public char Prefix = '$';
+        //Bot prefix ($help)
+        public char SecondaryPrefix = '!';
         //Bot Source Code Repository URL
         public string RepoUrl = "http://github.com/mrousavy/Cirilla";
         //Bot Creator (me)
@@ -75,6 +82,8 @@ namespace Cirilla {
 
         //Interval in ms to give XP (300000 = 5m)
         public int XpGiveInterval = 300000;
+        //1 in [OwnXp] go to the XP Giver
+        public int OwnXp = 100;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         public int RandomReactionChance = 150;

@@ -26,12 +26,14 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Nice try, you can't drain XP from Users!");
                     return;
                 }
+                int ownXp = xp / Information.OwnXp;
 
                 XpManager.UserXp userxp = XpManager.Get(Context.User);
 
                 if (userxp.XpReserve >= xp) {
                     XpManager.Update(user, xp, 0);
-                    XpManager.Update(Context.User, 0, -xp);
+                    //Drain XP from Sender, minus own XP (you get 1/100 from donations)
+                    XpManager.Update(Context.User, ownXp, -xp);
                     await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP!");
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
@@ -45,7 +47,20 @@ namespace Cirilla.Modules {
         public async Task Info() {
             try {
                 XpManager.UserXp xp = XpManager.Get(Context.User);
-                await ReplyAsync($"{Helper.GetName(Context.User)}'s XP: {xp.Xp} | XP Reserve: {xp.XpReserve}");
+
+                EmbedBuilder builder = new EmbedBuilder {
+                    Author = new EmbedAuthorBuilder {
+                        Name = Context.User.IsBot ? $"{Context.User}'s XP (Bot)" : $"{Context.User}'s XP",
+                        IconUrl = Context.User.GetAvatarUrl()
+                    },
+                    Color = new Color(50, 125, 0)
+                };
+                builder.AddField("XP", xp.Xp);
+                builder.AddField("Reserve XP", xp.XpReserve);
+                builder.AddField("Level", xp.Level);
+                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1));
+
+                await ReplyAsync("", embed: builder.Build());
             } catch {
                 await ReplyAsync("I couldn't look up any Info about you, sorry..");
             }
@@ -55,7 +70,20 @@ namespace Cirilla.Modules {
         public async Task Info([Summary("The user you want to display XP")]IUser user) {
             try {
                 XpManager.UserXp xp = XpManager.Get(user);
-                await ReplyAsync($"{Helper.GetName(user)}'s XP: {xp.Xp} | XP Reserve: {xp.XpReserve}");
+
+                EmbedBuilder builder = new EmbedBuilder {
+                    Author = new EmbedAuthorBuilder {
+                        Name = user.IsBot ? $"{user}'s XP (Bot)" : $"{user}'s XP",
+                        IconUrl = user.GetAvatarUrl()
+                    },
+                    Color = new Color(50, 125, 0)
+                };
+                builder.AddField("XP", xp.Xp);
+                builder.AddField("Reserve XP", xp.XpReserve);
+                builder.AddField("Level", xp.Level);
+                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1));
+
+                await ReplyAsync("", embed: builder.Build());
             } catch {
                 await ReplyAsync($"I couldn't look up any Info about {Helper.GetName(user)}, sorry..");
             }
@@ -98,10 +126,10 @@ namespace Cirilla.Modules {
             if (File.Exists(XpFilePath)) {
                 Xp = JsonConvert.DeserializeObject<XpFile>(File.ReadAllText(XpFilePath));
             } else {
-                File.WriteAllText(XpFilePath, "{}");
                 Xp = new XpFile {
                     Users = new List<UserXp>()
                 };
+                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(Xp));
             }
 
             new Thread(Modules.Xp.TimerLoop).Start();
@@ -149,6 +177,19 @@ namespace Cirilla.Modules {
             }
         }
 
+        //Get required XP for given Level
+        public static int GetXp(int level, int xpRequired = 100) {
+            //todo: reverse GetLevel();
+            return -1;
+        }
+
+        //Get Level for user XP
+        public static int GetLevel(int userxp, int previousLevelXp = 100, int level = 1) {
+            if (previousLevelXp >= userxp) {
+                return level;
+            }
+            return GetLevel(userxp, (int)(previousLevelXp * 2.15), ++level);
+        }
 
 
         public class UserXp {
@@ -163,13 +204,9 @@ namespace Cirilla.Modules {
             public int XpReserve { get; set; }
 
             [JsonIgnore]
-            public int Level {
-                get {
-                    //TODO: XP decides Level
-                    return 0;
-                }
-            }
+            public int Level => GetLevel(Xp);
         }
+
         public class XpFile {
             public List<UserXp> Users { get; set; } = new List<UserXp>();
         }

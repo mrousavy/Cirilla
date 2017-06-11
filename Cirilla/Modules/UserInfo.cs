@@ -31,11 +31,12 @@ namespace Cirilla.Modules {
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
-                        //IconUrl = user.AvatarId
+                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
+                        IconUrl = user.GetAvatarUrl()
                     },
                     Color = new Color(50, 125, 0)
                 };
+
                 builder.AddField("Nickname", nick);
                 builder.AddField("Created At", createdAt);
                 builder.AddField("Joined At", joinedAt);
@@ -74,11 +75,12 @@ namespace Cirilla.Modules {
                 } else {
                     game = "/";
                 }
+                string xp = XpManager.Get(user).Xp.ToString();
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
-                        //IconUrl = user.AvatarId
+                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
+                        IconUrl = user.GetAvatarUrl()
                     },
                     Color = new Color(50, 125, 0)
                 };
@@ -87,6 +89,7 @@ namespace Cirilla.Modules {
                 builder.AddField("Joined At", joinedAt);
                 builder.AddField("Status", status);
                 builder.AddField("Game", game);
+                builder.AddField("XP", xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {

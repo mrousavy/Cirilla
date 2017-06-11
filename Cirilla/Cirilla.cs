@@ -57,7 +57,9 @@ namespace Cirilla {
                 // Command Begin
                 int argPos = 0;
                 // Determine if the message is a command
-                if (!(message.HasCharPrefix(Information.Prefix, ref argPos) || message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+                if (!(message.HasCharPrefix(Information.Prefix, ref argPos) ||
+                    message.HasCharPrefix(Information.SecondaryPrefix, ref argPos) ||
+                    message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                     return;
                 CommandContext context = new CommandContext(Client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos);

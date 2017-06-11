@@ -161,6 +161,14 @@ namespace Cirilla.Modules {
             public ulong UserId { get; set; }
             public int Xp { get; set; }
             public int XpReserve { get; set; }
+
+            [JsonIgnore]
+            public int Level {
+                get {
+                    //TODO: XP decides Level
+                    return 0;
+                }
+            }
         }
         public class XpFile {
             public List<UserXp> Users { get; set; } = new List<UserXp>();

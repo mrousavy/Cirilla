@@ -46,5 +46,25 @@ namespace Cirilla.Modules {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
         }
+
+
+        [Command("run"), Summary("Shows how to run bot")]
+        public async Task Run() {
+            try {
+                EmbedBuilder builder = new EmbedBuilder {
+                    Title = "How to run Cirilla Bot:",
+                    Color = new Color(50, 125, 0)
+                };
+                builder.AddField("1. Clone", $"Clone project from GitHub (git bash: `git clone {Information.RepoUrl}`");
+                builder.AddField("2. Open Bash/CLI", "Run bash or any other command line tool and navigate into the Project folder: " +
+                    "`cd C:\\Some\\Directory\\Cirilla\\Cirilla`");
+                builder.AddField("4. DNX Restore", "Run `dotnet restore` in the Cirilla Project Folder");
+                builder.AddField("5. DNX Run", "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime)");
+
+                await ReplyAsync("", embed: builder.Build());
+            } catch (Exception ex) {
+                await ReplyAsync($"Error! ({ex.Message})");
+            }
+        }
     }
 }

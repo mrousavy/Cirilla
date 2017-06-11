@@ -79,6 +79,8 @@ namespace Cirilla {
 
             Outro();
 
+            Console.Clear();
+
             return false;
         }
 

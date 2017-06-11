@@ -1,37 +1,84 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace Cirilla {
     internal static class Information {
+        //Directory to store configs in
+        internal static string Directory { get; set; } = AppContext.BaseDirectory;
+
+        internal static Config Config { get; set; }
+
+        internal static string ClientId => Config.ClientId;
+        internal static string ClientSecret => Config.ClientSecret;
+        internal static string Username => Config.Username;
+        internal static string Token => Config.Token;
+        internal static string TextChannel => Config.TextChannel;
+        internal static char Prefix => Config.Prefix;
+        internal static string RepoUrl => Config.RepoUrl;
+        internal static string Senpai => Config.Senpai;
+        internal static string IconUrl => Config.IconUrl;
+
+        internal static int XpGiveInterval => Config.XpGiveInterval;
+        internal static int RandomReactionChance => Config.RandomReactionChance;
+
+        internal static int VotekickExpire => Config.VotekickExpire;
+        internal static string VotekickYes => Config.VotekickYes;
+        internal static string VotekickNo => Config.VotekickNo;
+
+
+
+        public static void LoadInfo() {
+            string config = Path.Combine(Directory, "config.json");
+            if (!File.Exists(config)) {
+                File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
+                ConsoleHelper.Log($"No configuration set, please edit {config}!", Discord.LogSeverity.Critical);
+                Console.ReadKey();
+                Process.GetCurrentProcess().Kill();
+            } else {
+                try {
+                    Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(config));
+                } catch (Exception ex) {
+                    ConsoleHelper.Log(ex.Message, Discord.LogSeverity.Critical);
+                    ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", Discord.LogSeverity.Critical);
+                    Console.ReadKey();
+                    Process.GetCurrentProcess().Kill();
+                }
+            }
+        }
+    }
+
+
+    public class Config {
         //Discord API Infos
-        internal const string ClientId = "323123443136593920";
-        internal const string ClientSecret = "UnGeUiK-deSuCIwAPSFbzgRLdL43gKhQ";
-        internal const string Username = "Cirilla#2111";
-        internal const string Token = "MzIzMTIzNDQzMTM2NTkzOTIw.DB2jvA.oMbfXRviQqjQp4N3Km2wisv0VJI";
+        public string ClientId = "323123443136593920";
+        public string ClientSecret = "<YourDiscordApiClientSecret>";
+        public string Username = "Cirilla#2111";
+        public string Token = "<YourDiscordApiToken>";
 
 
         //Default Text Channel
-        internal const string TextChannel = "general";
+        public string TextChannel = "general";
         //Bot prefix ($help)
-        internal const char Prefix = '$';
+        public char Prefix = '$';
         //Bot Source Code Repository URL
-        internal const string RepoUrl = "http://github.com/mrousavy/Cirilla";
-        //Bot Creator
-        internal const string Senpai = "<@266162606161526784>";
+        public string RepoUrl = "http://github.com/mrousavy/Cirilla";
+        //Bot Creator (me)
+        public string Senpai = "<@266162606161526784>";
         //URL for Bot Profile Pic
-        internal const string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
+        public string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
 
-        //Directory to store configs in
-        internal static string Directory = AppContext.BaseDirectory;
 
         //Interval in ms to give XP (300000 = 5m)
-        internal const int XpGiveInterval = 300000;
+        public int XpGiveInterval = 300000;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
-        internal const int RandomReactionChance = 150;
+        public int RandomReactionChance = 150;
 
         //Time in ms until a votekick expires
-        internal const int VotekickExpire = 30000;
-        internal const string VotekickYes = "👍";
-        internal const string VotekickNo = "👎";
+        public int VotekickExpire = 30000;
+        public string VotekickYes = "👍";
+        public string VotekickNo = "👎";
     }
 }

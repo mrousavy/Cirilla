@@ -40,6 +40,8 @@ namespace Cirilla.Modules {
                 }
 
                 IDisposable disposable = Context.Channel.EnterTypingState();
+                //++ because own delete own message aswell
+                count++;
                 IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(count).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
                 disposable.Dispose();

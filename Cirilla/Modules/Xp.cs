@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Xp : ModuleBase {
         [Command("xp"), Summary("Give a user XP")]
-        public async Task Give(IUser user, int xp) {
+        public async Task Give([Summary("The user to give XP")]IGuildUser user, [Summary("The amount of XP you want to give the user")]int xp) {
             try {
                 XpManager.UserXp userxp = XpManager.Get(Context.User);
                 if (userxp.Xp >= xp) {
                     XpManager.Update(user, xp);
-                    await ReplyAsync($"{Context.User.Username} donated {user.Username} {xp} XP!");
+                    await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP!");
                 } else {
-                    await ReplyAsync($"You can't give {xp} XP to {user.Username}, you only have {userxp.Xp} XP!");
+                    await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.Xp} XP!");
                 }
             } catch {
                 await ReplyAsync("Whoops, I couldn't give XP to that user!");
@@ -29,19 +29,19 @@ namespace Cirilla.Modules {
         public async Task Info() {
             try {
                 XpManager.UserXp xp = XpManager.Get(Context.User);
-                await ReplyAsync($"{Context.User.Username}'s XP: {xp.Xp}");
+                await ReplyAsync($"{Helper.GetName(Context.User)}'s XP: {xp.Xp}");
             } catch {
                 await ReplyAsync("I couldn't look up any Info about you, sorry..");
             }
         }
 
         [Command("xp"), Summary("Show XP of given User")]
-        public async Task Info(IUser user) {
+        public async Task Info([Summary("The user you want to display XP")]IUser user) {
             try {
                 XpManager.UserXp xp = XpManager.Get(user);
-                await ReplyAsync($"{user.Username}'s XP: {xp.Xp}");
+                await ReplyAsync($"{Helper.GetName(user)}'s XP: {xp.Xp}");
             } catch {
-                await ReplyAsync($"I couldn't look up any Info about {user.Username}, sorry..");
+                await ReplyAsync($"I couldn't look up any Info about {Helper.GetName(user)}, sorry..");
             }
         }
 

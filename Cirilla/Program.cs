@@ -8,6 +8,8 @@ namespace Cirilla {
         internal static Cirilla Cirilla;
 
         public static void Main(string[] args) {
+            Information.LoadInfo();
+
             bool skipIntro = false;
 
             foreach (string arg in args) {

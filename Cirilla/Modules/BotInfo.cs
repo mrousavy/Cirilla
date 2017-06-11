@@ -11,9 +11,9 @@ namespace Cirilla.Modules {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
                 string uptime = "";
                 if (tspan.TotalHours >= 1) {
-                    uptime = tspan.ToString("h'h:'m'm:'s's'");
+                    uptime = tspan.ToString("h'h 'm'm 's's'");
                 } else if (tspan.TotalMinutes >= 1) {
-                    uptime = tspan.ToString("m'm:'s's'");
+                    uptime = tspan.ToString("m'm 's's'");
                 } else {
                     uptime = tspan.ToString("s's'");
                 }

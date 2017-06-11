@@ -16,6 +16,11 @@ namespace Cirilla.Modules {
                     return;
                 }
 
+                if (user.Id == Cirilla.Client.CurrentUser.Id) {
+                    await ReplyAsync("Why do you guys wanna kick me? :cry:");
+                    return;
+                }
+
                 IUserMessage message = await ReplyAsync(
                     $"{Helper.GetName(Context.User)} started a votekick on {user.Mention} - " +
                     "This vote expires in 30 seconds!");
@@ -78,7 +83,7 @@ namespace Cirilla.Modules {
                 int online = new List<IGuildUser>(((await guild.GetUsersAsync()).Where(u => (u.Status == UserStatus.Online && u.VoiceChannel != null)))).Count;
 
                 //more than half of server users voted yes
-                if (yes > 2) {
+                if (yes > online / 2 && no < yes) {
                     //check if admin voted no -> dismiss vote
                     foreach (IUser iuser in noUser) {
                         if (CheckIfAdmin(iuser as IGuildUser)) {
@@ -87,17 +92,23 @@ namespace Cirilla.Modules {
                         }
                     }
 
-                    IDMChannel dm = await user.CreateDMChannelAsync();
                     IInviteMetadata invite = await ((IGuildChannel)message.Channel).CreateInviteAsync(maxUses: 1);
                     try {
+                        IDMChannel dm = await user.CreateDMChannelAsync();
                         await dm.SendMessageAsync($"You've been kicked from the _{guild.Name}_ guild by votekick!" + nl +
                             $"As I'm very generous today, here's an invite link to the _{guild.Name}_ guild:" + nl + invite.Url);
                     } catch {
+                        //user is not allowing DMs?
                         await message.Channel.SendMessageAsync($"{Helper.GetName(user)} is not allowing private messages, " +
                             "someone gotta send him an invite link again.." + nl + invite.Url);
                     }
                     await user.KickAsync();
-                    await dm.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(user)}..");
+                    await message.Channel.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(user)}..");
+                    try {
+                        Cirilla.Client.ReactionAdded -= ReactionAdded;
+                    } catch {
+                        //event removed
+                    }
                 }
             } catch {
                 await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");

@@ -14,7 +14,7 @@ namespace Cirilla.Modules {
                 }
             };
             builder.AddInlineField("Default Text Channel", Information.TextChannel);
-            builder.AddInlineField("Prefixes", $"{Information.Prefix}, {Information.SecondaryPrefix}");
+            builder.AddInlineField("Prefixes", $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}");
             builder.AddInlineField("Repo URL", $"[GitHub]({Information.RepoUrl})");
             builder.AddInlineField("Senpai", Information.Senpai);
             builder.AddInlineField("XP Drop Interval", $"Every {Information.XpGiveInterval / 1000} Seconds");

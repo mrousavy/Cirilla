@@ -11,7 +11,7 @@ namespace Cirilla.Modules {
 
                 string mname = Environment.MachineName;
                 string nl = Environment.NewLine;
-                char pre = Information.Prefix;
+                string pre = $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
                 int cores = Environment.ProcessorCount;
 
                 EmbedBuilder builder = new EmbedBuilder {
@@ -24,7 +24,7 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", cores + " cores");
-                builder.AddInlineField("Prefix", pre);
+                builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Senpai);
                 //builder.AddField("Username", uname);

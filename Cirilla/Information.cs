@@ -20,7 +20,7 @@ namespace Cirilla {
         internal static string Token => Config.Token;
         internal static string TextChannel => Config.TextChannel;
         internal static char Prefix => Config.Prefix;
-        internal static char SecondaryPrefix => Config.SecondaryPrefix;
+        internal static string SecondaryPrefix => Config.SecondaryPrefix;
         internal static string RepoUrl => Config.RepoUrl;
         internal static string Senpai => Config.Senpai;
         internal static string IconUrl => Config.IconUrl;
@@ -86,8 +86,8 @@ namespace Cirilla {
         public string TextChannel = "general";
         //Bot prefix ($help)
         public char Prefix = '$';
-        //Bot prefix ($help)
-        public char SecondaryPrefix = '!';
+        //Bot prefix (!help)
+        public string SecondaryPrefix = "!";
         //Bot Source Code Repository URL
         public string RepoUrl = "http://github.com/mrousavy/Cirilla";
         //Bot Creator (me)

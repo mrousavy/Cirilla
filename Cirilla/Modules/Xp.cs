@@ -58,7 +58,7 @@ namespace Cirilla.Modules {
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = Context.User.IsBot ? $"{Context.User}'s XP (Bot)" : $"{Context.User}'s XP",
+                        Name = Context.User.IsBot ? $"{Helper.GetName(Context.User)}'s XP (Bot)" : $"{Helper.GetName(Context.User)}'s XP",
                         IconUrl = Context.User.GetAvatarUrl()
                     },
                     Color = new Color(50, 125, 0)
@@ -81,7 +81,7 @@ namespace Cirilla.Modules {
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = user.IsBot ? $"{user}'s XP (Bot)" : $"{user}'s XP",
+                        Name = user.IsBot ? $"{Helper.GetName(user)}'s XP (Bot)" : $"{Helper.GetName(user)}'s XP",
                         IconUrl = user.GetAvatarUrl()
                     },
                     Color = new Color(50, 125, 0)

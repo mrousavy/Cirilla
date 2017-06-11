@@ -113,11 +113,13 @@ namespace Cirilla.Modules {
 
                     //1 in [GiveRandomXpChance] chance to give user XP
                     if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
-                        XpManager.Update(user, 200, 100);
-                        if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel)
-							await ConsoleHelper.Log($"{user} randomly got 200 free XP (1 in {Information.GiveRandomXpChance} chance)",
-								LogSeverity.Info);
-                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you 200 free XP! :moneybag:");
+                        int freeXp = 200, freeReserve = 100;
+                        XpManager.Update(user, freeXp, freeReserve);
+                        if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
+                            await ConsoleHelper.Log($"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
+                                LogSeverity.Info);
+                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you {freeXp} free XP! :moneybag:");
+                        }
                     }
                 }
             }

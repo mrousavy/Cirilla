@@ -1,6 +1,7 @@
 ﻿using Discord;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace Cirilla {
                 default:
                     break;
             }
-            string text = $"[{message.Severity}] [{message.Source}] {message.Message}";
+            string text = $"[{DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}] [{message.Severity}] [{message.Source}] {message.Message}";
             Console.WriteLine(text);
             WriteOut(text);
 

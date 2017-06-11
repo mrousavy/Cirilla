@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Discord;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -13,6 +14,9 @@ namespace Cirilla {
         internal static string ClientId => Config.ClientId;
         internal static string ClientSecret => Config.ClientSecret;
         internal static string Username => Config.Username;
+
+        internal static LogSeverity LogSeverity => Config.LogSeverity;
+
         internal static string Token => Config.Token;
         internal static string TextChannel => Config.TextChannel;
         internal static char Prefix => Config.Prefix;
@@ -39,6 +43,9 @@ namespace Cirilla {
 
         public static void LoadInfo() {
             string config = Path.Combine(Directory, "config.json");
+
+            ConsoleHelper.Log($"Loading config from \"{config}\"", Discord.LogSeverity.Info);
+
             if (!File.Exists(config)) {
                 File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
                 ConsoleHelper.Log($"No configuration set, please edit {config}!", Discord.LogSeverity.Critical);
@@ -65,6 +72,8 @@ namespace Cirilla {
         public string Username = "Cirilla#2111";
         public string Token = "<YourDiscordApiToken>";
 
+        //Minimum Log Severity to output/log
+        public LogSeverity LogSeverity = LogSeverity.Info;
 
         //Default Text Channel
         public string TextChannel = "general";

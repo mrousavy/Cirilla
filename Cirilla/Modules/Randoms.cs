@@ -11,7 +11,6 @@ namespace Cirilla.Modules {
         }
 
 
-
         [Command("random"), Summary("Generate a Random number")]
         public async Task Random([Summary("Maximum Value")] int maximum) {
             int result = new Random().Next(0, maximum + 1);

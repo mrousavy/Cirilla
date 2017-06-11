@@ -6,7 +6,7 @@ namespace Cirilla.Modules {
     public class Connection : ModuleBase {
         [Command("ping"), Summary("Test Connection")]
         public async Task Ping() {
-            await ReplyAsync($"Pong! :ping_pong:" + Environment.NewLine + $"{Cirilla.Client.Latency}ms");
+            await ReplyAsync($"Pong! :ping_pong: (took {Cirilla.Client.Latency}ms)");
         }
     }
 }

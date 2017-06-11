@@ -27,6 +27,7 @@ namespace Cirilla {
 
         internal static int XpGiveInterval => Config.XpGiveInterval;
         internal static int OwnXp => Config.OwnXp;
+        internal static int GiveRandomXpChance => Config.GiveRandomXpChance;
 
         internal static int RandomReactionChance => Config.RandomReactionChance;
 
@@ -95,6 +96,8 @@ namespace Cirilla {
         public int OwnXp = 100;
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
         public double XpFactor = 1.20;
+        //1 in [GiveRandomXpChance] to give a user 100 XP on XpGiveInterval interval
+        public int GiveRandomXpChance = 100;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         public int RandomReactionChance = 150;

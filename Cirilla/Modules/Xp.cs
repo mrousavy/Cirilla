@@ -103,12 +103,20 @@ namespace Cirilla.Modules {
 
             foreach (IGuild guild in Cirilla.Client.Guilds) {
                 IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
+                Random rnd = new Random();
 
                 foreach (IUser user in users.Where(u =>
                         (!u.IsBot) &&
                         (u.Status != UserStatus.Offline))) {
                     //Update all [interval] seconds +1 XP
                     XpManager.Update(user, 0, 3);
+
+                    //1 in [GiveRandomXpChance] chance to give user XP
+                    if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
+                        XpManager.Update(user, 200, 100);
+                        if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel)
+                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you 100 free XP!");
+                    }
                 }
             }
 

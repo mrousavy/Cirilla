@@ -10,6 +10,11 @@ namespace Cirilla.Modules {
     public class Votekick : ModuleBase {
         [Command("votekick"), Summary("Votekick a User")]
         public async Task VoteToKick([Summary("The user to kick")] IGuildUser user) {
+            if (!Information.AllowVotekick) {
+                await ReplyAsync("Votekick is disabled!");
+                return;
+            }
+
             try {
                 if (user.Status != UserStatus.Online && user.Status != UserStatus.DoNotDisturb && user.Status != UserStatus.Invisible) {
                     await Context.Channel.SendMessageAsync($"You can't kick offline/afk users.. That's mean!");

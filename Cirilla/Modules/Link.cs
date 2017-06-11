@@ -28,9 +28,19 @@ namespace Cirilla.Modules {
         [Command("addlink"), Summary("Saves a new link")]
         public async Task AddLink([Summary("The link to store")] string link) {
             try {
-                await ReplyAsync($"Not yet implemented.. Go and annoy {Information.Senpai} about this!");
-                return;
-                await ReplyAsync("Link saved!");
+                if (!((IGuildUser)Context.User).GuildPermissions.Administrator) {
+                    await ReplyAsync($"You're not allowed to add links! Ask {Information.Senpai}!");
+                    return;
+                }
+
+                string file = Path.Combine(Information.Directory, "links.txt");
+                if (File.Exists(file)) {
+                    File.AppendAllLines(file, new string[] { link });
+                    await ReplyAsync("Link added!");
+                } else {
+                    File.WriteAllLines(file, new string[] { link });
+                }
+                await ReplyAsync("Link added!");
             } catch {
                 await ReplyAsync("Whoops, couldn't save that link.. :confused:");
             }

@@ -26,6 +26,7 @@ namespace Cirilla {
         internal static int VotekickExpire => Config.VotekickExpire;
         internal static string VotekickYes => Config.VotekickYes;
         internal static string VotekickNo => Config.VotekickNo;
+        internal static bool AllowVotekick => Config.AllowVotekick;
 
 
 
@@ -80,5 +81,6 @@ namespace Cirilla {
         public int VotekickExpire = 30000;
         public string VotekickYes = "👍";
         public string VotekickNo = "👎";
+        public bool AllowVotekick = true;
     }
 }

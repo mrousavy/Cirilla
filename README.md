@@ -56,6 +56,13 @@ $sqrt num
 $calc expressions
 $pi
 ```
+**Random**
+```
+$flip
+$random maximum
+```
+**UserInfo**
+```
 **Reddit**
 ```
 $dankmeme

@@ -28,6 +28,8 @@ namespace Cirilla {
         internal static string VotekickNo => Config.VotekickNo;
         internal static bool AllowVotekick => Config.AllowVotekick;
 
+        internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
+
 
 
         public static void LoadInfo() {

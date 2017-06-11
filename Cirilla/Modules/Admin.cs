@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Admin : ModuleBase {
         [Command("prefix"), Summary("Change prefix")]
-        public async Task ChangePrefix([Summary("New prefix")] string prefix) {
+        public async Task ChangePrefix([Summary("New prefix")] params string[] arguments) {
             try {
                 IGuildUser user = Context.User as IGuildUser;
                 if (user == null) {
@@ -16,6 +16,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
+                string prefix = string.Join(" ", arguments);
                 string before = Information.SecondaryPrefix;
                 Information.Config.SecondaryPrefix = prefix;
                 await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");

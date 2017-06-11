@@ -199,6 +199,7 @@ namespace Cirilla.Modules {
         //    return GetLevel(userxp, (int)(previousLevelXp * 2.15), ++level);
         //}
 
+        //Get Level for user XP
         public static int GetLevel(int xp) {
             int i = 0;
             while (xp >= GetXp(i)) {
@@ -208,6 +209,7 @@ namespace Cirilla.Modules {
         }
 
 
+        //Get required XP for a Level
         public static int GetXp(int level) {
             if (level == 1) {
                 return 100;
@@ -215,7 +217,7 @@ namespace Cirilla.Modules {
                 return 0;
             } else {
                 int previousLevel = GetXp(level - 1);
-                return previousLevel + level * 100;
+                return previousLevel + level * 170;
             }
         }
 

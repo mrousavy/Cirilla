@@ -66,7 +66,7 @@ namespace Cirilla.Modules {
                 builder.AddField("XP", xp.Xp);
                 builder.AddField("Reserve XP", xp.XpReserve);
                 builder.AddField("Level", xp.Level);
-                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1));
+                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch {
@@ -89,7 +89,7 @@ namespace Cirilla.Modules {
                 builder.AddField("XP", xp.Xp);
                 builder.AddField("Reserve XP", xp.XpReserve);
                 builder.AddField("Level", xp.Level);
-                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1));
+                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch {
@@ -192,11 +192,31 @@ namespace Cirilla.Modules {
         }
 
         //Get Level for user XP
-        public static int GetLevel(int userxp, int previousLevelXp = 100, int level = 1) {
-            if (previousLevelXp >= userxp) {
-                return level;
+        //public static int GetLevel(int userxp, int previousLevelXp = 100, int level = 1) {
+        //    if (previousLevelXp >= userxp) {
+        //        return level;
+        //    }
+        //    return GetLevel(userxp, (int)(previousLevelXp * 2.15), ++level);
+        //}
+
+        public static int GetLevel(int xp) {
+            int i = 0;
+            while (xp >= GetXp(i)) {
+                i++;
             }
-            return GetLevel(userxp, (int)(previousLevelXp * 2.15), ++level);
+            return i - 1;
+        }
+
+
+        public static int GetXp(int level) {
+            if (level == 1) {
+                return 100;
+            } else if (level == 0) {
+                return 0;
+            } else {
+                int previousLevel = GetXp(level - 1);
+                return previousLevel + level * 100;
+            }
         }
 
 

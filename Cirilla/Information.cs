@@ -87,7 +87,7 @@ namespace Cirilla {
         //Bot Creator (me)
         public string Senpai = "<@266162606161526784>";
         //URL for Bot Profile Pic
-        public string IconUrl = "http://github.com/mrousavy/Cirilla/Icon";
+        public string IconUrl = "http://github.com/mrousavy/Cirilla/raw/master/Resources/Ciri_round.png";
 
 
         //Interval in ms to give XP (300000 = 5m)

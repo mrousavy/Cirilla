@@ -54,7 +54,6 @@ namespace Cirilla {
                     message.Author.ToString(),
                     message.Content));
 
-
                 IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel).Guild, message);
                 if (emote != null)
                     await message.AddReactionAsync(emote);

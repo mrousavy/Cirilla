@@ -8,15 +8,7 @@ namespace Cirilla.Modules {
         [Command("info"), Summary("Shows host information")]
         public async Task Info() {
             try {
-                TimeSpan tspan = (DateTime.Now - Program.StartTime);
-                string uptime = "";
-                if (tspan.TotalHours >= 1) {
-                    uptime = tspan.ToString("h'h 'm'm 's's'");
-                } else if (tspan.TotalMinutes >= 1) {
-                    uptime = tspan.ToString("m'm 's's'");
-                } else {
-                    uptime = tspan.ToString("s's'");
-                }
+
                 string mname = Environment.MachineName;
                 string nl = Environment.NewLine;
                 char pre = Information.Prefix;
@@ -29,7 +21,7 @@ namespace Cirilla.Modules {
                     },
                     Color = new Color(50, 125, 0)
                 };
-                builder.AddInlineField("Uptime", uptime);
+                builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", cores + " cores");
                 builder.AddInlineField("Prefix", pre);
@@ -45,6 +37,37 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
+        }
+
+        [Command("uptime"), Summary("Shows bot uptime")]
+        public async Task Uptime() {
+            try {
+                TimeSpan tspan = (DateTime.Now - Program.StartTime);
+                string uptime = "";
+                if (tspan.TotalHours >= 1) {
+                    uptime = tspan.ToString("h'h 'm'm 's's'");
+                    await ReplyAsync("I'm already running for " + tspan.ToString("m'm 's's'") + ", I'm tired :confused:");
+                } else if (tspan.TotalMinutes >= 1) {
+                    await ReplyAsync("I'm running for " + tspan.ToString("m'm 's's'"));
+                } else {
+                    await ReplyAsync("I'm running for " + tspan.ToString("s's'"));
+                }
+            } catch (Exception ex) {
+                await ReplyAsync($"Error! ({ex.Message})");
+            }
+        }
+
+        private static string GetUptime() {
+            TimeSpan tspan = (DateTime.Now - Program.StartTime);
+            string uptime = "";
+            if (tspan.TotalHours >= 1) {
+                uptime = tspan.ToString("h'h 'm'm 's's'");
+            } else if (tspan.TotalMinutes >= 1) {
+                uptime = tspan.ToString("m'm 's's'");
+            } else {
+                uptime = tspan.ToString("s's'");
+            }
+            return uptime;
         }
 
 

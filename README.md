@@ -11,6 +11,8 @@
 
 # Commands
 These are the commands you can use:
+
+
 **BotInfo**
 ```
 $info

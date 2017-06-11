@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Cirilla.bat" />
     <None Remove="config.json" />
     <None Remove="log.txt" />
     <None Remove="userxp.json" />

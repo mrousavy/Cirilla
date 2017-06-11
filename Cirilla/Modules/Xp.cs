@@ -32,9 +32,17 @@ namespace Cirilla.Modules {
 
                 if (userxp.XpReserve >= xp) {
                     XpManager.Update(user, xp, 0);
+
+                    int lvlBefore = XpManager.Get(user).Level;
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
                     XpManager.Update(Context.User, ownXp, -xp);
-                    await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP!");
+                    int lvlAfter = XpManager.Get(user).Level;
+
+                    await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP! :money_with_wings:");
+
+                    if (lvlAfter > lvlBefore) {
+                        await ReplyAsync($":tada: {Helper.GetName(user)} was promoted to level {lvlAfter}! :tada:");
+                    }
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
                 }

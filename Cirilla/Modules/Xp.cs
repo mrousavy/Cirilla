@@ -108,7 +108,7 @@ namespace Cirilla.Modules {
                         (!u.IsBot) &&
                         (u.Status != UserStatus.Offline))) {
                     //Update all [interval] seconds +1 XP
-                    XpManager.Update(user, 0, 1);
+                    XpManager.Update(user, 0, 3);
                 }
             }
 
@@ -185,20 +185,6 @@ namespace Cirilla.Modules {
             }
         }
 
-        //Get required XP for given Level
-        public static int GetXp(int level, int xpRequired = 100) {
-            //todo: reverse GetLevel();
-            return -1;
-        }
-
-        //Get Level for user XP
-        //public static int GetLevel(int userxp, int previousLevelXp = 100, int level = 1) {
-        //    if (previousLevelXp >= userxp) {
-        //        return level;
-        //    }
-        //    return GetLevel(userxp, (int)(previousLevelXp * 2.15), ++level);
-        //}
-
         //Get Level for user XP
         public static int GetLevel(int xp) {
             int i = 0;
@@ -217,7 +203,7 @@ namespace Cirilla.Modules {
                 return 0;
             } else {
                 int previousLevel = GetXp(level - 1);
-                return previousLevel + level * 170;
+                return (int)(previousLevel * Information.XpFactor);
             }
         }
 

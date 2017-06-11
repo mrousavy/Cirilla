@@ -30,8 +30,8 @@ namespace Cirilla {
         internal static string VotekickYes => Config.VotekickYes;
         internal static string VotekickNo => Config.VotekickNo;
         internal static bool AllowVotekick => Config.AllowVotekick;
+        internal static double XpFactor => Config.XpFactor;
 
-        internal static int[] Levels = new int[] { 0, 200, 500, 900, 1500, 3000, 50000 };
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
@@ -81,9 +81,11 @@ namespace Cirilla {
 
 
         //Interval in ms to give XP (300000 = 5m)
-        public int XpGiveInterval = 300000;
+        public int XpGiveInterval = 120000;
         //1 in [OwnXp] go to the XP Giver
         public int OwnXp = 100;
+        //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
+        public double XpFactor = 1.20;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         public int RandomReactionChance = 150;

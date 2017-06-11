@@ -59,7 +59,7 @@ namespace Cirilla.Modules {
                 builder.AddField("2. Open Bash/CLI", "Run bash or any other command line tool and navigate into the Project folder: " +
                     "`cd C:\\Some\\Directory\\Cirilla\\Cirilla`");
                 builder.AddField("4. DNX Restore", "Run `dotnet restore` in the Cirilla Project Folder");
-                builder.AddField("5. DNX Run", "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime)");
+                builder.AddField("5. DNX Run", "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime))");
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {

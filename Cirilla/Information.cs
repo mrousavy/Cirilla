@@ -91,7 +91,7 @@ namespace Cirilla {
 
 
         //Interval in ms to give XP (300000 = 5m)
-        public int XpGiveInterval = 120000;
+        public int XpGiveInterval = 300000;
         //1 in [OwnXp] go to the XP Giver
         public int OwnXp = 7;
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor

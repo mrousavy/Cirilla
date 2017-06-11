@@ -108,7 +108,7 @@ namespace Cirilla.Modules {
                 foreach (IUser user in users.Where(u =>
                         (!u.IsBot) &&
                         (u.Status != UserStatus.Offline))) {
-                    //Update all [interval] seconds +1 XP
+                    //Update all [interval] seconds +3 XP
                     XpManager.Update(user, 0, 3);
 
                     //1 in [GiveRandomXpChance] chance to give user XP

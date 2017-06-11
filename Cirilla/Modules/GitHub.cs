@@ -36,7 +36,7 @@ namespace Cirilla.Modules {
             builder.AddField("5. Add a new Module", "Add a new `.cs` File in the `Modules` Folder " +
                 $"(you can see an Example on how the File has to look [here]" +
                 $"({Information.RepoUrl + "/blob/master/Cirilla/Modules/Connection.cs"}))");
-            builder.AddField("6. Push", "`Add` all files, `commit` and `push` with Git, then create a Pull Request" +
+            builder.AddField("6. Push", "`Add` all files, `commit` and `push` with Git, then create a Pull Request " +
                 "on your Repository to merge it into `mrousavy/Cirilla`!");
 
             await ReplyAsync("", embed: builder.Build());

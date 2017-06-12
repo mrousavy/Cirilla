@@ -42,10 +42,10 @@ namespace Cirilla.Modules {
                     if (lvlAfter > lvlBefore) {
                         await ReplyAsync($":tada: {Helper.GetName(user)} was promoted to level {lvlAfter}! :tada:");
                     }
+                    await ConsoleHelper.Log($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp}XP!", LogSeverity.Info);
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
                 }
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp}XP!", LogSeverity.Info);
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, I couldn't give XP to that user!");
@@ -126,19 +126,22 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log("Giving away XP to everyone...",
                                 LogSeverity.Info);
 
+                List<string> receivers = new List<string>();
+
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
                     IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
                     Random rnd = new Random();
 
                     foreach (IGuildUser user in users.Where(u =>
                             (!u.IsBot) &&
-                            (u.Status == UserStatus.Online) &&
-                            (u.Status == UserStatus.DoNotDisturb) &&
-                            (u.Status == UserStatus.Invisible) &&
+                            (u.Status == UserStatus.Online ||
+                            u.Status == UserStatus.DoNotDisturb ||
+                            u.Status == UserStatus.Invisible) &&
                             //TODO: tinker?
                             (u.VoiceChannel != null))) {
                         //Update all [interval] seconds +3 XP
                         XpManager.Update(user, 0, 3);
+                        receivers.Add(user.ToString());
 
                         //1 in [GiveRandomXpChance] chance to give user XP
                         if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
@@ -153,7 +156,7 @@ namespace Cirilla.Modules {
                     }
                 }
 
-                await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to everyone",
+                await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
                     LogSeverity.Info);
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to everyone! ({ex.Message})", LogSeverity.Error);
@@ -169,7 +172,7 @@ namespace Cirilla.Modules {
 
 
         public static string GetNameForXp() {
-			//7 times XP (so "XP" is more common) and 4 times other units
+            //7 times XP (so "XP" is more common) and 4 times other units
             string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
             return names[Program.Random.Next(0, names.Length + 1)];
         }

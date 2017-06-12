@@ -12,18 +12,20 @@ namespace Cirilla {
         public static Task Log(LogMessage message) {
             switch (message.Severity) {
                 case LogSeverity.Critical:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
                 case LogSeverity.Error:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LogSeverity.Debug:
                 case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
                 case LogSeverity.Warning:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case LogSeverity.Info:
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.White;
                     break;
                 default:
                     break;

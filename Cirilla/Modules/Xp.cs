@@ -169,7 +169,8 @@ namespace Cirilla.Modules {
 
 
         public static string GetNameForXp() {
-            string[] names = { "XP", "Robux", "Rupees", "Euros", "Lira", "Dollars", "Schilling", "Bitcoins" };
+			//7 times XP (so "XP" is more common) and 4 times other units
+            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

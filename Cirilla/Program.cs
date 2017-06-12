@@ -28,8 +28,8 @@ namespace Cirilla {
             skipIntro = true;
 #endif
 
-            // disabled for Raspberry because of DllImports
-            //ConsoleHelper.Set();
+            // disable for non Windowsx86
+            ConsoleHelper.Set();
 
             Console.Title = "Cirilla Discord Bot";
 

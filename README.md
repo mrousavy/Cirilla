@@ -8,27 +8,38 @@
 </p>
 
 
-
 # Commands
 These are the commands you can use:
 
-
+**Admin**
+```
+$prefix arguments
+```
 **BotInfo**
 ```
 $info
+$uptime
+$run
 ```
 **Clean**
 ```
 $clean
 $clean count
 ```
+**Config**
+```
+$config
+$reload
+```
 **Connection**
 ```
 $ping
 ```
-**Google**
+**GitHub**
 ```
-$google query
+$bugreport
+$repo
+$addmodule
 ```
 **Greetings**
 ```
@@ -38,6 +49,12 @@ $hallo
 $seas
 $servas
 $sup
+```
+**Hardware**
+```
+$hw user
+$hw
+$sethw title
 ```
 **Help**
 ```
@@ -56,6 +73,17 @@ $sqrt num
 $calc expressions
 $pi
 ```
+**News**
+```
+$news
+$news limit
+```
+**Profile**
+```
+$profile user
+$profile
+$setprofile
+```
 **Randoms**
 ```
 $flip
@@ -65,6 +93,11 @@ $random maximum
 ```
 $dankmeme
 $reddit rsubreddit
+```
+**Search**
+```
+$google query
+$wiki query
 ```
 **UserInfo**
 ```
@@ -78,6 +111,7 @@ $votekick user
 **Xp**
 ```
 $xp user, xp
+$setxp user, xp
 $xp
 $xp user
 ```

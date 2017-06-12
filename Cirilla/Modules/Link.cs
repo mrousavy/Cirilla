@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -19,7 +20,9 @@ namespace Cirilla.Modules {
                 } else {
                     await ReplyAsync($"No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
                 }
-            } catch {
+                await ConsoleHelper.Log($"{Context.User} requested links.", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not get links! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, can't show you my links right now.. :confused:");
             }
         }
@@ -38,8 +41,10 @@ namespace Cirilla.Modules {
                 } else {
                     File.WriteAllLines(file, new string[] { link });
                 }
+                await ConsoleHelper.Log($"{Context.User} added a new link (\"{link}\")", LogSeverity.Info);
                 await ReplyAsync("Link added! :link:");
-            } catch {
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not save link! {ex.Message}", LogSeverity.Error);
                 await ReplyAsync("Whoops, couldn't save that link.. :confused:");
             }
         }

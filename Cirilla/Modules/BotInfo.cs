@@ -8,7 +8,6 @@ namespace Cirilla.Modules {
         [Command("info"), Summary("Shows host information")]
         public async Task Info() {
             try {
-
                 string mname = Environment.MachineName;
                 string nl = Environment.NewLine;
                 string pre = $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
@@ -34,8 +33,10 @@ namespace Cirilla.Modules {
                 //builder.AddField("Source Code", $"[GitHub]({Information.RepoUrl})");
 
                 await ReplyAsync("", embed: builder.Build());
+                await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync($"Error! ({ex.Message})");
+                await ReplyAsync($"Sorry, I can't send you that information right now!");
+                await ConsoleHelper.Log($"Error retrieving Host information {ex.Message}", LogSeverity.Error);
             }
         }
 
@@ -52,8 +53,10 @@ namespace Cirilla.Modules {
                 } else {
                     await ReplyAsync("I'm running for " + tspan.ToString("s's'"));
                 }
+                await ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync($"Error! ({ex.Message})");
+                await ReplyAsync($"Sorry, I can't send you that information right now!");
+                await ConsoleHelper.Log($"Error retrieving uptime information {ex.Message}", LogSeverity.Error);
             }
         }
 
@@ -85,8 +88,8 @@ namespace Cirilla.Modules {
                 builder.AddField("5. DNX Run", "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime))");
 
                 await ReplyAsync("", embed: builder.Build());
-            } catch (Exception ex) {
-                await ReplyAsync($"Error! ({ex.Message})");
+            } catch {
+                // channel not available anymore? any unexpected error
             }
         }
     }

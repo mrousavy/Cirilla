@@ -55,8 +55,10 @@ namespace Cirilla {
                     message.Content));
 
                 IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel)?.Guild, message);
-                if (emote != null)
+                if (emote != null) {
                     await message.AddReactionAsync(emote);
+                    await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                }
 
                 // Command Begin
                 int argPos = 0;
@@ -67,8 +69,11 @@ namespace Cirilla {
                     return;
                 CommandContext context = new CommandContext(Client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos);
-                if (!result.IsSuccess)
-                    await context.Channel.SendMessageAsync(result.ErrorReason);
+                if (!result.IsSuccess) {
+                    await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}", LogSeverity.Error);
+                    //await context.Channel.SendMessageAsync(result.ErrorReason);
+                    await context.Channel.SendMessageAsync("Pardon?");
+                }
             }
         }
 

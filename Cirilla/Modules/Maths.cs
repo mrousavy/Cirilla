@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using org.mariuszgromada.math.mxparser;
 using System;
 using System.Text.RegularExpressions;
@@ -13,7 +14,7 @@ namespace Cirilla.Modules {
                                 $"{num}^2 = {Math.Pow(num, 2)}" + Environment.NewLine +
                                 "```");
             } catch (Exception ex) {
-                await ReplyAsync($"Could not square number! ({ex.Message})");
+                await ReplyAsync($"Could not square {num}! ({ex.Message})");
             }
         }
 
@@ -24,7 +25,7 @@ namespace Cirilla.Modules {
                                 $"sqrt({num}) = {Math.Sqrt(num)}" + Environment.NewLine +
                                 "```");
             } catch (Exception ex) {
-                await ReplyAsync($"Could not calculate square root! ({ex.Message})");
+                await ReplyAsync($"Could not calculate the square root of {num}! ({ex.Message})");
             }
         }
 
@@ -41,6 +42,7 @@ namespace Cirilla.Modules {
                                  $"{expression} = {result}" + Environment.NewLine +
                                  "```");
             } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not calculate expression! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync($"Could not calculate Expression! ({ex.Message})");
             }
         }

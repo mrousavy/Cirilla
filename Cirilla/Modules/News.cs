@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Discord;
+using Discord.Commands;
+using RedditNet;
+using RedditNet.Things;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using RedditNet;
-using RedditNet.Things;
 
 namespace Cirilla.Modules {
     public class News : ModuleBase {
@@ -35,7 +35,9 @@ namespace Cirilla.Modules {
                 }
 
                 await loadingMsg.DeleteAsync();
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }
         }
@@ -70,7 +72,9 @@ namespace Cirilla.Modules {
                 }
 
                 await loadingMsg.DeleteAsync();
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }
         }
@@ -111,7 +115,10 @@ namespace Cirilla.Modules {
                 Information.Config.LastArticle = link.FullName;
                 Information.Config.LastPost = DateTime.Now.Day;
                 Information.WriteOut();
-            } catch {
+
+                await ConsoleHelper.Log($"Posted daily news in #{channel.Name}!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not get daily news! ({ex.Message})", LogSeverity.Error);
                 // no news for today :/
             }
         }
@@ -143,69 +150,5 @@ namespace Cirilla.Modules {
 
             return listings.Select((t, i) => (RedditNet.Things.Link)listings.Children[i]).ToList();
         }
-
-
-
-
-
-        //public static async Task<ItemNews[]> GetNewsContent(string NewsParameters) {
-
-        //    List<ItemNews> Details = new List<ItemNews>();
-
-        //    // httpWebRequest with API URL
-        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create
-        //        ("http://news.google.com/news?q=" + NewsParameters + "&output=rss");
-
-        //    //Method GET
-        //    request.Method = "GET";
-
-        //    //HttpWebResponse for result
-        //    HttpWebResponse response = (HttpWebResponse)(await request.GetResponseAsync());
-
-
-        //    //Mapping of status code
-        //    if (response.StatusCode == HttpStatusCode.OK) {
-        //        Stream receiveStream = response.GetResponseStream();
-        //        StreamReader readStream = null;
-
-        //        readStream = new StreamReader(receiveStream);
-
-        //        //Get news data in json string
-
-        //        string data = readStream.ReadToEnd();
-
-        //        //Declare DataSet for putting data in it.
-        //        DataSet ds = new DataSet();
-        //        StringReader reader = new StringReader(data);
-        //        ds.ReadXml(reader);
-        //        DataTable dtGetNews = new DataTable();
-
-        //        if (ds.Tables.Count > 3) {
-        //            dtGetNews = ds.Tables["item"];
-
-        //            foreach (DataRow dtRow in dtGetNews.Rows) {
-        //                ItemNews DataObj = new ItemNews();
-        //                DataObj.title = dtRow["title"].ToString();
-        //                DataObj.link = dtRow["link"].ToString();
-        //                DataObj.item_id = dtRow["item_id"].ToString();
-        //                DataObj.PubDate = dtRow["pubDate"].ToString();
-        //                DataObj.Description = dtRow["description"].ToString();
-        //                Details.Add(DataObj);
-        //            }
-        //        }
-        //    }
-
-        //    //Return News array 
-        //    return Details.ToArray();
-        //}
-
-        ////Define Class to return news data
-        //public class ItemNews {
-        //    public string title { get; set; }
-        //    public string link { get; set; }
-        //    public string item_id { get; set; }
-        //    public string PubDate { get; set; }
-        //    public string Description { get; set; }
-        //}
     }
 }

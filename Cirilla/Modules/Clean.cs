@@ -22,8 +22,10 @@ namespace Cirilla.Modules {
                 IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(25).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
                 disposable.Dispose();
-            } catch {
+                await ConsoleHelper.Log($"{Context.User} cleaned the Chat (25 Messages)", LogSeverity.Info);
+            } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clean the last messages.. :confused:");
+                await ConsoleHelper.Log($"Error cleaning Chat ({ex.Message})", LogSeverity.Error);
             }
         }
 
@@ -45,8 +47,10 @@ namespace Cirilla.Modules {
                 IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(count).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
                 disposable.Dispose();
-            } catch {
+                await ConsoleHelper.Log($"{Context.User} cleaned the Chat ({count} Messages)", LogSeverity.Info);
+            } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clean the last messages.. :confused:");
+                await ConsoleHelper.Log($"Error cleaning Chat ({ex.Message})", LogSeverity.Error);
             }
         }
     }

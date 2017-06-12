@@ -1,6 +1,8 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using RedditNet;
 using RedditNet.Things;
+using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -13,7 +15,9 @@ namespace Cirilla.Modules {
                 Subreddit subreddit = await redditService.GetSubredditAsync("dankmemes");
                 RedditNet.Things.Link link = await subreddit.GetRandomLinkAsync();
                 await ReplyAsync(link.Title + " - " + link.Url);
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested a dank meme.", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Error getting random meme from /r/dankmemes! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find a dank enough post!");
             }
         }
@@ -39,7 +43,9 @@ namespace Cirilla.Modules {
                 Subreddit subreddit = await redditService.GetSubredditAsync(filtered);
                 RedditNet.Things.Link link = await subreddit.GetRandomLinkAsync();
                 await ReplyAsync(link.Title + " - " + link.Url);
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested a random link from /r/{filtered}.", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Error getting random link from {rsubreddit}! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find a random post in that subreddit!");
             }
         }

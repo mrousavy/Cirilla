@@ -34,7 +34,9 @@ namespace Cirilla.Modules {
                 Cirilla.Client.ReactionAdded += ReactionAdded;
 
                 Expire(user, message, Context.Guild);
-            } catch { }
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not start votekick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
+            }
         }
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> cachableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
@@ -52,8 +54,8 @@ namespace Cirilla.Modules {
                         Kick(user, (IUserMessage)message, guild);
                     }
                 }
-            } catch {
-                // error
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Error processing reaction! ({ex.Message})", LogSeverity.Error);
             }
         }
 
@@ -62,8 +64,11 @@ namespace Cirilla.Modules {
                 await Task.Delay(Information.VotekickExpire);
                 Cirilla.Client.ReactionAdded -= ReactionAdded;
 
+                await ConsoleHelper.Log($"Kicking {Helper.GetName(user)}..", LogSeverity.Info);
                 Kick(user, message, guild);
-            } catch {
+                await ConsoleHelper.Log($"Kicked {Helper.GetName(user)}!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not kick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
                 await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");
             }
         }
@@ -118,7 +123,8 @@ namespace Cirilla.Modules {
                     await message.Channel.SendMessageAsync($"Time's up. Less than half of the online users ({yes}) " +
                         $"voted to kick {Helper.GetName(user)}. Votekick dismissed.");
                 }
-            } catch {
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not kick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
                 await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");
             }
         }

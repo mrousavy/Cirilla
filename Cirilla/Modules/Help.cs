@@ -39,7 +39,13 @@ namespace Cirilla.Modules {
                 }
             }
 
-            await ReplyAsync("", false, builder.Build());
+            try {
+                IDMChannel dm = await Context.User.CreateDMChannelAsync();
+                await dm.SendMessageAsync("", false, builder.Build());
+            } catch {
+                //could not send private
+                await ReplyAsync("", false, builder.Build());
+            }
         }
 
         [Command("help")]

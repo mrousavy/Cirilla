@@ -45,7 +45,9 @@ namespace Cirilla.Modules {
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
                 }
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp}XP!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not give XP to {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, I couldn't give XP to that user!");
             }
         }
@@ -66,7 +68,9 @@ namespace Cirilla.Modules {
                 } else {
                     await ReplyAsync("You can't use that command in DM!");
                 }
-            } catch {
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} set {Helper.GetName(user)}'s XP to {xp}!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not set {Helper.GetName(user)}'s XP! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, I couldn't give XP to that user!");
             }
         }
@@ -118,38 +122,42 @@ namespace Cirilla.Modules {
         }
 
         public static async void TimerCallback() {
-            await ConsoleHelper.Log("Giving away XP to everyone...",
-                            LogSeverity.Info);
-
-            foreach (IGuild guild in Cirilla.Client.Guilds) {
-                IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
-                Random rnd = new Random();
-
-                foreach (IGuildUser user in users.Where(u =>
-                        (!u.IsBot) &&
-                        (u.Status == UserStatus.Online) &&
-                        (u.Status == UserStatus.DoNotDisturb) &&
-                        (u.Status == UserStatus.Invisible) &&
-                        //TODO: tinker?
-                        (u.VoiceChannel != null))) {
-                    //Update all [interval] seconds +3 XP
-                    XpManager.Update(user, 0, 3);
-
-                    //1 in [GiveRandomXpChance] chance to give user XP
-                    if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
-                        int freeXp = 200, freeReserve = 100;
-                        XpManager.Update(user, freeXp, freeReserve);
-                        if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
-                            await ConsoleHelper.Log($"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
+            try {
+                await ConsoleHelper.Log("Giving away XP to everyone...",
                                 LogSeverity.Info);
-                            await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you {freeXp} free XP! :moneybag:");
+
+                foreach (IGuild guild in Cirilla.Client.Guilds) {
+                    IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
+                    Random rnd = new Random();
+
+                    foreach (IGuildUser user in users.Where(u =>
+                            (!u.IsBot) &&
+                            (u.Status == UserStatus.Online) &&
+                            (u.Status == UserStatus.DoNotDisturb) &&
+                            (u.Status == UserStatus.Invisible) &&
+                            //TODO: tinker?
+                            (u.VoiceChannel != null))) {
+                        //Update all [interval] seconds +3 XP
+                        XpManager.Update(user, 0, 3);
+
+                        //1 in [GiveRandomXpChance] chance to give user XP
+                        if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
+                            int freeXp = 200, freeReserve = 100;
+                            XpManager.Update(user, freeXp, freeReserve);
+                            if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
+                                await ConsoleHelper.Log($"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
+                                    LogSeverity.Info);
+                                await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you {freeXp} free XP! :moneybag:");
+                            }
                         }
                     }
                 }
-            }
 
-            await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to everyone",
-                LogSeverity.Info);
+                await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to everyone",
+                    LogSeverity.Info);
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Could not give XP to everyone! ({ex.Message})", LogSeverity.Error);
+            }
         }
 
         public static void TimerLoop() {

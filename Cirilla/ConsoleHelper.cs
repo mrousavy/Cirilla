@@ -41,6 +41,7 @@ namespace Cirilla {
         }
 
         public static void WriteOut(string text) {
+            new Thread(delegate {
             lock (Helper.Lock) {
                 try {
                     string path = Path.Combine(Information.Directory, "log.txt");
@@ -52,6 +53,7 @@ namespace Cirilla {
                     Log($"Could not save Log to Log File! ({ex.Message})", LogSeverity.Error);
                 }
             }
+            }).Start();
         }
 
 

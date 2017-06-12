@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>exe</OutputType>
-    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject />

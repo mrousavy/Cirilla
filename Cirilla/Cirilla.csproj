@@ -2,10 +2,14 @@
 
   <PropertyGroup>
     <OutputType>exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
+    <RuntimeFrameworkVersion>2.0.0-preview2-002093-00</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

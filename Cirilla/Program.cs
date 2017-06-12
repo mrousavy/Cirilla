@@ -4,10 +4,14 @@ using System.Threading;
 
 namespace Cirilla {
     public class Program {
+        public static Random Random;
+
         internal static DateTime StartTime;
         internal static Cirilla Cirilla;
 
         public static void Main(string[] args) {
+            Random = new Random();
+
             Information.LoadInfo();
 
             bool skipIntro = false;

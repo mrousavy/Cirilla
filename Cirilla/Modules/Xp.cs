@@ -37,7 +37,7 @@ namespace Cirilla.Modules {
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
                     XpManager.Update(Context.User, ownXp, -xp);
 
-                    await ReplyAsync($"{Helper.GetName(Context.User)} donated {Helper.GetName(user)} {xp} XP! :money_with_wings:");
+                    await ReplyAsync($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
 
                     if (lvlAfter > lvlBefore) {
                         await ReplyAsync($":tada: {Helper.GetName(user)} was promoted to level {lvlAfter}! :tada:");
@@ -165,6 +165,12 @@ namespace Cirilla.Modules {
                 Thread.Sleep(Information.XpGiveInterval);
                 TimerCallback();
             }
+        }
+
+
+        public static string GetNameForXp() {
+            string[] names = { "XP", "Robux", "Rupees", "Euros", "Lira", "Dollars", "Schilling", "Bitcoins" };
+            return names[Program.Random.Next(0, names.Length + 1)];
         }
     }
 

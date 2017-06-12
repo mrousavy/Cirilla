@@ -20,7 +20,7 @@ namespace Cirilla.Modules {
                 string before = Information.SecondaryPrefix;
                 Information.Config.SecondaryPrefix = prefix;
                 await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");
-                Information.SaveInfo();
+                Information.WriteOut();
             } catch {
                 await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
             }

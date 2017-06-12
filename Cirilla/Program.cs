@@ -33,6 +33,7 @@ namespace Cirilla {
             Cirilla = new Cirilla(Discord.LogSeverity.Debug);
             StartTime = DateTime.Now;
             XpManager.Init();
+            News.Init();
 
             Thread.Sleep(-1);
         }

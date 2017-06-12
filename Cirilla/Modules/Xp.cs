@@ -21,8 +21,7 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Wow man. How generous. :+1:");
                     return;
                 }
-                IGuildUser guilduser = Context.User as IGuildUser;
-                if (xp < 1 && !guilduser.GuildPermissions.Administrator) {
+                if (Context.User is IGuildUser guilduser && (xp < 1 && !guilduser.GuildPermissions.Administrator)) {
                     await ReplyAsync("Nice try, you can't drain XP from Users!");
                     return;
                 }
@@ -45,6 +44,27 @@ namespace Cirilla.Modules {
                     }
                 } else {
                     await ReplyAsync($"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
+                }
+            } catch {
+                await ReplyAsync("Whoops, I couldn't give XP to that user!");
+            }
+        }
+
+
+        [Command("setxp"), Summary("Set a user's XP (Admin only)")]
+        public async Task Set([Summary("The user to set XP")]IGuildUser user, [Summary("The amount of XP you want to set")]int xp) {
+            try {
+                if (Context.User is IGuildUser setter) {
+                    if (!setter.GuildPermissions.Administrator) {
+                        await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                        return;
+                    }
+
+                    XpManager.UserXp userxp = XpManager.Get(user);
+                    XpManager.Update(user, xp - userxp.Xp, 0);
+                    await ReplyAsync($"{Helper.GetName(user)} set {user.Mention}'s XP to {xp}!");
+                } else {
+                    await ReplyAsync("You can't use that command in DM!");
                 }
             } catch {
                 await ReplyAsync("Whoops, I couldn't give XP to that user!");
@@ -98,14 +118,14 @@ namespace Cirilla.Modules {
         }
 
         public static async void TimerCallback() {
-            await ConsoleHelper.Log($"Giving away XP to everyone...",
+            await ConsoleHelper.Log("Giving away XP to everyone...",
                             LogSeverity.Info);
 
             foreach (IGuild guild in Cirilla.Client.Guilds) {
                 IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
                 Random rnd = new Random();
 
-                foreach (IUser user in users.Where(u =>
+                foreach (IGuildUser user in users.Where(u =>
                         (!u.IsBot) &&
                         (u.Status == UserStatus.Online) &&
                         (u.Status == UserStatus.DoNotDisturb) &&
@@ -143,35 +163,35 @@ namespace Cirilla.Modules {
 
     public static class XpManager {
         public static string XpFilePath { get; set; }
-        public static XpFile Xp { get; set; }
+        public static XpFile XpInfo { get; set; }
 
         public static void Init() {
             XpFilePath = Path.Combine(Information.Directory, "userxp.json");
             if (File.Exists(XpFilePath)) {
-                Xp = JsonConvert.DeserializeObject<XpFile>(File.ReadAllText(XpFilePath));
+                XpInfo = JsonConvert.DeserializeObject<XpFile>(File.ReadAllText(XpFilePath));
             } else {
-                Xp = new XpFile {
+                XpInfo = new XpFile {
                     Users = new List<UserXp>()
                 };
-                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(Xp));
+                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(XpInfo));
             }
 
-            new Thread(Modules.Xp.TimerLoop).Start();
+            new Thread(Xp.TimerLoop).Start();
         }
 
         //add new user
         public static UserXp Add(IUser user, int xp) {
             UserXp userXp = new UserXp(user.Id, xp, 0);
-            Xp.Users.Add(userXp);
+            XpInfo.Users.Add(userXp);
             WriteOut();
             return userXp;
         }
 
         public static void Update(IUser user, int plusXp, int plusReserve) {
-            for (int i = 0; i < Xp.Users.Count; i++) {
-                if (Xp.Users[i].UserId == user.Id) {
-                    Xp.Users[i].Xp += plusXp;
-                    Xp.Users[i].XpReserve += plusReserve;
+            foreach (UserXp uxp in XpInfo.Users) {
+                if (uxp.UserId == user.Id) {
+                    uxp.Xp += plusXp;
+                    uxp.XpReserve += plusReserve;
                     WriteOut();
                     return;
                 }
@@ -182,7 +202,7 @@ namespace Cirilla.Modules {
         }
 
         public static UserXp Get(IUser user) {
-            foreach (UserXp uxp in Xp.Users) {
+            foreach (UserXp uxp in XpInfo.Users) {
                 if (uxp.UserId == user.Id) {
                     return uxp;
                 }
@@ -195,7 +215,7 @@ namespace Cirilla.Modules {
         public static void WriteOut() {
             try {
                 //save to file
-                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(Xp));
+                File.WriteAllText(XpFilePath, JsonConvert.SerializeObject(XpInfo));
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not save XP info to XP File! ({ex.Message})", LogSeverity.Error);
             }
@@ -213,13 +233,14 @@ namespace Cirilla.Modules {
 
         //Get required XP for a Level
         public static int GetXp(int level) {
-            if (level == 1) {
-                return 100;
-            } else if (level == 0) {
-                return 0;
-            } else {
-                int previousLevel = GetXp(level - 1);
-                return (int)(previousLevel * Information.XpFactor);
+            switch (level) {
+                case 1:
+                    return 100;
+                case 0:
+                    return 0;
+                default:
+                    int previousLevel = GetXp(level - 1);
+                    return (int)(previousLevel * Information.XpFactor);
             }
         }
 

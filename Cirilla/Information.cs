@@ -40,6 +40,10 @@ namespace Cirilla {
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
+        internal static int LastPost => Config.LastPost;
+        internal static string LastArticle => Config.LastArticle;
+        internal static int NewsInterval => Config.NewsInterval;
+
 
 
         public static void LoadInfo() {
@@ -65,7 +69,7 @@ namespace Cirilla {
         }
 
 
-        public static void SaveInfo() {
+        public static void WriteOut() {
             string config = Path.Combine(Directory, "config.json");
             File.WriteAllText(config, JsonConvert.SerializeObject(Config));
         }
@@ -113,5 +117,12 @@ namespace Cirilla {
         public string VotekickYes = "👍";
         public string VotekickNo = "👎";
         public bool AllowVotekick = false;
+
+        //Last time news got posted
+        public int LastPost = DateTime.Now.Day;
+        //Last article (name) that got posted
+        public string LastArticle;
+        //Time (in hours) until next news article is sent
+        public int NewsInterval = 24;
     }
 }

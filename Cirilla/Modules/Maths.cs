@@ -9,7 +9,9 @@ namespace Cirilla.Modules {
         [Command("square"), Summary("Squares a number.")]
         public async Task Square([Summary("The number to square.")] double num) {
             try {
-                await ReplyAsync($"{num}^2 = {Math.Pow(num, 2)}");
+                await ReplyAsync("```c" + Environment.NewLine +
+                                $"{num}^2 = {Math.Pow(num, 2)}" + Environment.NewLine +
+                                "```");
             } catch (Exception ex) {
                 await ReplyAsync($"Could not square number! ({ex.Message})");
             }
@@ -18,7 +20,9 @@ namespace Cirilla.Modules {
         [Command("sqrt"), Summary("Calculates the Square Root of a Number.")]
         public async Task Sqrt([Summary("The number to sqrt.")] double num) {
             try {
-                await ReplyAsync($"sqrt({num}) = {Math.Sqrt(num)}");
+                await ReplyAsync("```c" + Environment.NewLine +
+                                $"sqrt({num}) = {Math.Sqrt(num)}" + Environment.NewLine +
+                                "```");
             } catch (Exception ex) {
                 await ReplyAsync($"Could not calculate square root! ({ex.Message})");
             }
@@ -33,7 +37,9 @@ namespace Cirilla.Modules {
 
                 Expression expr = new Expression(trimmed);
                 double result = expr.calculate();
-                await ReplyAsync($"{expression} = {result}");
+                await ReplyAsync("```c" + Environment.NewLine +
+                                 $"{expression} = {result}" + Environment.NewLine +
+                                 "```");
             } catch (Exception ex) {
                 await ReplyAsync($"Could not calculate Expression! ({ex.Message})");
             }

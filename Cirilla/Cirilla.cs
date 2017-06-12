@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Cirilla {
     public class Cirilla {
         #region Privates
-        private CommandService _service;
+        private readonly CommandService _service;
         #endregion
 
         #region Publics
@@ -54,7 +54,7 @@ namespace Cirilla {
                     message.Author.ToString(),
                     message.Content));
 
-                IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel).Guild, message);
+                IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel)?.Guild, message);
                 if (emote != null)
                     await message.AddReactionAsync(emote);
 
@@ -85,7 +85,7 @@ namespace Cirilla {
             await Client.StartAsync();
         }
 
-        private Task Log(LogMessage message) {
+        private static Task Log(LogMessage message) {
             ConsoleHelper.Log(message);
             return Task.CompletedTask;
         }

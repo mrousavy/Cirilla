@@ -41,18 +41,18 @@ namespace Cirilla {
         }
 
         public static void WriteOut(string text) {
-            new Thread(delegate {
-            lock (Helper.Lock) {
-                try {
-                    string path = Path.Combine(Information.Directory, "log.txt");
-                    if (!File.Exists(path)) {
-                        using (File.Create(path)) { }
+            new Thread(() => {
+                lock (Helper.Lock) {
+                    try {
+                        string path = Path.Combine(Information.Directory, "log.txt");
+                        if (!File.Exists(path)) {
+                            using (File.Create(path)) { }
+                        }
+                        File.AppendAllLines(path, new List<string>() { text });
+                    } catch (Exception ex) {
+                        Log($"Could not save Log to Log File! ({ex.Message})", LogSeverity.Error);
                     }
-                    File.AppendAllLines(path, new List<string>() { text });
-                } catch (Exception ex) {
-                    Log($"Could not save Log to Log File! ({ex.Message})", LogSeverity.Error);
                 }
-            }
             }).Start();
         }
 

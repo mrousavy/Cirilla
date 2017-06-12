@@ -21,6 +21,11 @@ namespace Cirilla.Modules {
         [Command("wiki"), Summary("Search something on Wikipedia!")]
         public async Task WikipediaSearch([Summary("The Google search query")] params string[] query) {
             try {
+                if (query.Length < 1) {
+                    await ReplyAsync($"You can't search for nothing.. Usage example: `{Information.Prefix}wiki Computer`");
+                    return;
+                }
+
                 string joined = string.Join(" ", query);
                 joined = System.Net.WebUtility.UrlEncode(joined);
 

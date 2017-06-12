@@ -27,7 +27,6 @@ namespace Cirilla.Modules {
                 }
 
                 string joined = string.Join(" ", query);
-                joined = System.Net.WebUtility.UrlEncode(joined);
 
                 WikipediaResponse response = await new WikipediaService().GetWikipediaResultsAsync(joined);
 

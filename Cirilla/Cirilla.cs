@@ -54,10 +54,12 @@ namespace Cirilla {
                     message.Author.ToString(),
                     message.Content));
 
-                IEmote emote = Modules.RandomEmote.GetRandomEmote((messageArg.Channel as IGuildChannel)?.Guild, message);
-                if (emote != null) {
-                    await message.AddReactionAsync(emote);
-                    await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                if (messageArg.Channel is IGuildChannel guildchannel) {
+                    IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
+                    if (emote != null) {
+                        await message.AddReactionAsync(emote);
+                        await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                    }
                 }
 
                 // Command Begin

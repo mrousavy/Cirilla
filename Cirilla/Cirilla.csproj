@@ -9,12 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Cirilla.bat" />
-    <None Remove="config.json" />
-    <None Remove="log.txt" />
     <None Remove="publish.bat" />
     <None Remove="run.bat" />
-    <None Remove="userxp.json" />
   </ItemGroup>
 
   <ItemGroup>

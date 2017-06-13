@@ -21,6 +21,7 @@
     <PackageReference Include="Discord.Net" Version="1.0.0-rc2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2" />
+    <PackageReference Include="Google.Apis.Translate.v2" Version="1.27.1.875" />
     <PackageReference Include="MathParser.org-mXparser" Version="4.0.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Reddit.Net" Version="1.0.0" />

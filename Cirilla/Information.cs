@@ -45,25 +45,33 @@ namespace Cirilla {
         internal static int NewsInterval => Config.NewsInterval;
 
 
+        internal static bool PmHelp => Config.PmHelp;
+        internal static long MaxLogSize => Config.MaxLogSize;
+
+
 
         public static void LoadInfo() {
-            string config = Path.Combine(Directory, "config.json");
+            //lock object so config does not get written to file (endless loop of errors)
+            lock (Helper.Lock) {
+                string config = Path.Combine(Directory, "config.json");
 
-            ConsoleHelper.Log($"Loading config from \"{config}\"", LogSeverity.Info);
+                ConsoleHelper.Log("Loading config..", LogSeverity.Info);
+                ConsoleHelper.Log($"pwd: {Directory}", LogSeverity.Info);
 
-            if (!File.Exists(config)) {
-                File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
-                ConsoleHelper.Log($"No configuration set, please edit {config}!", LogSeverity.Critical);
-                Console.ReadKey();
-                Process.GetCurrentProcess().Kill();
-            } else {
-                try {
-                    Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(config));
-                } catch (Exception ex) {
-                    ConsoleHelper.Log(ex.Message, LogSeverity.Critical);
-                    ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", LogSeverity.Critical);
+                if (!File.Exists(config)) {
+                    File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
+                    ConsoleHelper.Log($"No configuration set, please edit {config}!", LogSeverity.Critical);
                     Console.ReadKey();
                     Process.GetCurrentProcess().Kill();
+                } else {
+                    try {
+                        Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(config));
+                    } catch (Exception ex) {
+                        ConsoleHelper.Log(ex.Message, LogSeverity.Critical);
+                        ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", LogSeverity.Critical);
+                        Console.ReadKey();
+                        Process.GetCurrentProcess().Kill();
+                    }
                 }
             }
         }
@@ -124,5 +132,10 @@ namespace Cirilla {
         public string LastArticle;
         //Time (in hours) until next news article is sent
         public int NewsInterval = 24;
+
+        //Send Help in private Message
+        public bool PmHelp = true;
+        //Max Log Size in bytes
+        public long MaxLogSize = 1024 * 1024 * 10;
     }
 }

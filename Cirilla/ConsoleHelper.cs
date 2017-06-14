@@ -27,8 +27,6 @@ namespace Cirilla {
                 case LogSeverity.Info:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
-                default:
-                    break;
             }
             string text = $"[{DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}] [{message.Severity}] [{message.Source}] {message.Message}";
             Console.WriteLine(text);
@@ -46,13 +44,21 @@ namespace Cirilla {
             new Thread(() => {
                 lock (Helper.Lock) {
                     try {
-                        string path = Path.Combine(Information.Directory, "log.txt");
-                        if (!File.Exists(path)) {
-                            using (File.Create(path)) { }
+                        string logfile = Path.Combine(Information.Directory, "log.txt");
+                        if (!File.Exists(logfile)) {
+                            using (File.Create(logfile)) { }
                         }
-                        File.AppendAllLines(path, new List<string>() { text });
+
+                        // > than 10 MB (default) -> clear log
+                        if (Information.Config != null && new FileInfo(logfile).Length > Information.MaxLogSize) {
+                            File.WriteAllBytes(logfile, new byte[0]);
+                        }
+
+                        File.AppendAllLines(logfile, new List<string> { text });
                     } catch (Exception ex) {
-                        Log($"Could not save Log to Log File! ({ex.Message})", LogSeverity.Error);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
+                        Console.ResetColor();
                     }
                 }
             }).Start();
@@ -64,8 +70,8 @@ namespace Cirilla {
             Console.CursorVisible = false;
 
             //Window Close & any Close Event
-            Handler += DisposeBot;
-            SetConsoleCtrlHandler(Handler, true);
+            _handler += DisposeBot;
+            SetConsoleCtrlHandler(_handler, true);
 
             //Ctrl + C | Ctrl + Break
             Console.CancelKeyPress += CancelKey;
@@ -75,11 +81,11 @@ namespace Cirilla {
         }
 
         private static void CancelKey(object sender, ConsoleCancelEventArgs e) {
-            DisposeBot(CtrlType.CTRL_C_EVENT);
+            DisposeBot(CtrlType.CtrlCEvent);
         }
 
-        private static bool DisposeBot(CtrlType sig) {
-            if (Program.Cirilla != null && !Program.Cirilla.IsDisposed)
+        public static bool DisposeBot(CtrlType sig) {
+            if (Program.Cirilla != null)
                 Program.Cirilla.Stop().GetAwaiter().GetResult();
 
             Outro();
@@ -91,8 +97,8 @@ namespace Cirilla {
 
 
         private static void DisableMouse() {
-            const uint ENABLE_QUICK_EDIT = 0x0040;
-            const uint ENABLE_MOUSE_INPUT = 0x0010;
+            const uint enableQuickEdit = 0x0040;
+            const uint enableMouseInput = 0x0010;
 
             IntPtr consoleHandle = GetConsoleWindow();
 
@@ -102,8 +108,8 @@ namespace Cirilla {
             }
 
             // Clear quick edit & Mouse input flags
-            consoleMode &= ~ENABLE_QUICK_EDIT;
-            consoleMode &= ~ENABLE_MOUSE_INPUT;
+            consoleMode &= ~enableQuickEdit;
+            consoleMode &= ~enableMouseInput;
 
             if (!SetConsoleMode(consoleHandle, consoleMode)) {
                 // error
@@ -113,16 +119,16 @@ namespace Cirilla {
         public static void Intro() {
             Console.Clear();
 
-            string introText = "~Cirilla~";
+            const string introText = "~Cirilla~";
             int left = (Console.WindowWidth / 2) - (introText.Length / 2);
             int top = (Console.WindowHeight / 2) - 1;
-            ConsoleColor introColor = ConsoleColor.Magenta;
+            const ConsoleColor introColor = ConsoleColor.Magenta;
 
             Console.SetCursorPosition(left, top);
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = introColor;
 
-            foreach (char ch in introText.ToCharArray()) {
+            foreach (char ch in introText) {
                 Console.Write(ch);
                 Thread.Sleep(90);
             }
@@ -146,7 +152,7 @@ namespace Cirilla {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = outroColor;
 
-            foreach (char ch in introText.ToCharArray()) {
+            foreach (char ch in introText) {
                 Console.Write(ch);
                 Thread.Sleep(50);
             }
@@ -156,16 +162,12 @@ namespace Cirilla {
             Thread.Sleep(300);
         }
 
-        private enum CtrlType {
-            CTRL_C_EVENT = 0,
-            CTRL_BREAK_EVENT = 1,
-            CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT = 6
+        public enum CtrlType {
+            CtrlCEvent = 0
         }
 
         private delegate bool EventHandler(CtrlType sig);
-        private static EventHandler Handler;
+        private static EventHandler _handler;
 
 
         [DllImport("Kernel32")]

@@ -49,7 +49,7 @@ namespace Cirilla.Modules {
                 Tuple<string, string> hwProfile = ReadHardware(user.Id);
 
                 if (hwProfile == null) {
-                    await ReplyAsync($"You don't have any hardware info set! " +
+                    await ReplyAsync("You don't have any hardware info set! " +
                         $"Use `{Information.Prefix}sethw <HardwareProfileName>` to create a new Hardware Profile!");
                     return;
                 }
@@ -66,7 +66,7 @@ namespace Cirilla.Modules {
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {
-                await ReplyAsync($"Sorry, I can't show your hardware!");
+                await ReplyAsync("Sorry, I can't show your hardware!");
                 await ConsoleHelper.Log($"Error getting hardware for {Context.User} ({ex.Message})", LogSeverity.Error);
             }
         }
@@ -90,8 +90,8 @@ namespace Cirilla.Modules {
 
 
         public class HardwareListener {
-            private ITextChannel _channel;
-            private IUser _user;
+            private readonly ITextChannel _channel;
+            private readonly IUser _user;
             private bool _done;
 
             public HardwareListener(ITextChannel channel, IUser user) {
@@ -107,8 +107,7 @@ namespace Cirilla.Modules {
                         return;
 
                     IUser user = message.Author;
-                    ITextChannel channel = message.Channel as ITextChannel;
-                    if (user.Id == _user.Id && channel.Id == _channel.Id) {
+                    if (message.Channel is ITextChannel channel && (user.Id == _user.Id && channel.Id == _channel.Id)) {
                         UpdateHardware(user.Id, null, message.Content);
 
                         Cirilla.Client.MessageReceived -= HardwareReceived;
@@ -156,12 +155,12 @@ namespace Cirilla.Modules {
 
             bool contains = false;
 
-            for (int i = 0; i < UserHardwares.Hardwares.Count; i++) {
-                if (UserHardwares.Hardwares[i].UserId == userId) {
+            foreach (UserHardware usrhw in UserHardwares.Hardwares) {
+                if (usrhw.UserId == userId) {
                     if (!string.IsNullOrWhiteSpace(title))
-                        UserHardwares.Hardwares[i].Title = title;
+                        usrhw.Title = title;
                     if (!string.IsNullOrWhiteSpace(hardware))
-                        UserHardwares.Hardwares[i].Hardware = hardware;
+                        usrhw.Hardware = hardware;
                     contains = true;
                     break;
                 }

@@ -9,7 +9,6 @@ namespace Cirilla.Modules {
         public async Task Info() {
             try {
                 string mname = Environment.MachineName;
-                string nl = Environment.NewLine;
                 string pre = $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
                 int cores = Environment.ProcessorCount;
 
@@ -35,7 +34,7 @@ namespace Cirilla.Modules {
                 await ReplyAsync("", embed: builder.Build());
                 await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync($"Sorry, I can't send you that information right now!");
+                await ReplyAsync("Sorry, I can't send you that information right now!");
                 await ConsoleHelper.Log($"Error retrieving Host information {ex.Message}", LogSeverity.Error);
             }
         }
@@ -44,9 +43,7 @@ namespace Cirilla.Modules {
         public async Task Uptime() {
             try {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
-                string uptime = "";
                 if (tspan.TotalHours >= 1) {
-                    uptime = tspan.ToString("h'h 'm'm 's's'");
                     await ReplyAsync("I'm already running for " + tspan.ToString("m'm 's's'") + ", I'm tired :confused:");
                 } else if (tspan.TotalMinutes >= 1) {
                     await ReplyAsync("I'm running for " + tspan.ToString("m'm 's's'"));
@@ -55,14 +52,14 @@ namespace Cirilla.Modules {
                 }
                 await ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync($"Sorry, I can't send you that information right now!");
+                await ReplyAsync("Sorry, I can't send you that information right now!");
                 await ConsoleHelper.Log($"Error retrieving uptime information {ex.Message}", LogSeverity.Error);
             }
         }
 
         private static string GetUptime() {
             TimeSpan tspan = (DateTime.Now - Program.StartTime);
-            string uptime = "";
+            string uptime;
             if (tspan.TotalHours >= 1) {
                 uptime = tspan.ToString("h'h 'm'm 's's'");
             } else if (tspan.TotalMinutes >= 1) {

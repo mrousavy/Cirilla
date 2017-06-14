@@ -1,6 +1,8 @@
 ﻿using Cirilla.Modules;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Discord;
 
 namespace Cirilla {
     public class Program {
@@ -13,6 +15,7 @@ namespace Cirilla {
             Random = new Random();
 
             Information.LoadInfo();
+            ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
 
             bool skipIntro = false;
 
@@ -36,7 +39,7 @@ namespace Cirilla {
             if (!skipIntro)
                 ConsoleHelper.Intro();
 
-            Cirilla = new Cirilla(Discord.LogSeverity.Debug);
+            Cirilla = new Cirilla(LogSeverity.Debug);
             StartTime = DateTime.Now;
             XpManager.Init();
             News.Init();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Help : ModuleBase<CommandContext> {
-        private CommandService _service;
+        private readonly CommandService _service;
 
         public Help(CommandService service)           // Create a constructor for the commandservice dependency
         {
@@ -39,11 +39,15 @@ namespace Cirilla.Modules {
                 }
             }
 
-            try {
-                IDMChannel dm = await Context.User.CreateDMChannelAsync();
-                await dm.SendMessageAsync("", false, builder.Build());
-            } catch {
-                //could not send private
+            if (Information.PmHelp) {
+                try {
+                    IDMChannel dm = await Context.User.CreateDMChannelAsync();
+                    await dm.SendMessageAsync("", false, builder.Build());
+                } catch {
+                    //could not send private
+                    await ReplyAsync("", false, builder.Build());
+                }
+            } else {
                 await ReplyAsync("", false, builder.Build());
             }
         }

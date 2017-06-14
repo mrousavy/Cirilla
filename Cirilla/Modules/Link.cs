@@ -37,9 +37,9 @@ namespace Cirilla.Modules {
 
                 string file = Path.Combine(Information.Directory, "links.txt");
                 if (File.Exists(file)) {
-                    File.AppendAllLines(file, new string[] { link });
+                    File.AppendAllLines(file, new[] { link });
                 } else {
-                    File.WriteAllLines(file, new string[] { link });
+                    File.WriteAllLines(file, new[] { link });
                 }
                 await ConsoleHelper.Log($"{Context.User} added a new link (\"{link}\")", LogSeverity.Info);
                 await ReplyAsync("Link added! :link:");

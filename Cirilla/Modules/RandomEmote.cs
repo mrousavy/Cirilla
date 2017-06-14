@@ -7,13 +7,10 @@ namespace Cirilla.Modules {
 
         internal static IEmote GetRandomEmote(IGuild guild) {
             List<GuildEmote> emotes = new List<GuildEmote>(guild.Emotes);
-            System.Random random = new System.Random();
+            Random random = new Random();
             int emote = random.Next(0, emotes.Count - 1);
 
-            if (random.Next(0, Information.RandomReactionChance - 1) == 0) {
-                return emotes[emote];
-            }
-            return null;
+            return random.Next(0, Information.RandomReactionChance - 1) == 0 ? emotes[emote] : null;
         }
     }
 }

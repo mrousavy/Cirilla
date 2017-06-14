@@ -43,7 +43,7 @@ namespace Cirilla.Modules {
             string text = ReadProfile(user.Id);
 
             if (text == null) {
-                await ReplyAsync($"You don't have a custom profile set up!" + Environment.NewLine +
+                await ReplyAsync("You don't have a custom profile set up!" + Environment.NewLine +
                     $"Setup a new profile by using the `{Information.Prefix}setprofile My Profile Description` command!");
                 return;
             }
@@ -68,15 +68,15 @@ namespace Cirilla.Modules {
             ProfileListener listener = new ProfileListener(Context.Channel as ITextChannel, Context.User);
             Cirilla.Client.MessageReceived += listener.ProfileTextReceived;
 
-            await ReplyAsync($"What text do you want to display on your Profile?");
+            await ReplyAsync("What text do you want to display on your Profile?");
             await ConsoleHelper.Log($"{Helper.GetName(Context.User)} is creating a new Profile..", LogSeverity.Info);
         }
 
 
 
         public class ProfileListener {
-            private ITextChannel _channel;
-            private IUser _user;
+            private readonly ITextChannel _channel;
+            private readonly IUser _user;
             private bool _done;
 
             public ProfileListener(ITextChannel channel, IUser user) {
@@ -92,8 +92,7 @@ namespace Cirilla.Modules {
                         return;
 
                     IUser user = message.Author;
-                    ITextChannel channel = message.Channel as ITextChannel;
-                    if (user.Id == _user.Id && channel.Id == _channel.Id) {
+                    if (message.Channel is ITextChannel channel && user.Id == _user.Id && channel.Id == _channel.Id) {
                         UpdateProfile(user.Id, message.Content);
 
                         Cirilla.Client.MessageReceived -= ProfileTextReceived;
@@ -125,7 +124,7 @@ namespace Cirilla.Modules {
             if (File.Exists(profiles)) {
                 Profiles = JsonConvert.DeserializeObject<UserProfiles>(File.ReadAllText(profiles));
 
-                UserProfile profile = Profiles.Profiles.FirstOrDefault(p => p.UserId == userId);
+                UserProfile profile = Profiles.ProfilesList.FirstOrDefault(p => p.UserId == userId);
                 return profile?.ProfileText;
             } else {
                 return null;
@@ -140,16 +139,16 @@ namespace Cirilla.Modules {
 
             bool contains = false;
 
-            for (int i = 0; i < Profiles.Profiles.Count; i++) {
-                if (Profiles.Profiles[i].UserId == userId) {
-                    Profiles.Profiles[i].ProfileText = text;
+            foreach (UserProfile uprof in Profiles.ProfilesList) {
+                if (uprof.UserId == userId) {
+                    uprof.ProfileText = text;
                     contains = true;
                     break;
                 }
             }
 
             if (!contains) {
-                Profiles.Profiles.Add(new UserProfile(userId, text));
+                Profiles.ProfilesList.Add(new UserProfile(userId, text));
             }
 
             File.WriteAllText(profiles, JsonConvert.SerializeObject(Profiles));
@@ -160,10 +159,10 @@ namespace Cirilla.Modules {
 
         public class UserProfiles {
             public UserProfiles() {
-                Profiles = new List<UserProfile>();
+                ProfilesList = new List<UserProfile>();
             }
 
-            public List<UserProfile> Profiles { get; set; }
+            public List<UserProfile> ProfilesList { get; set; }
         }
 
         public class UserProfile {

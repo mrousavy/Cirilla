@@ -12,7 +12,7 @@ namespace Cirilla {
         #endregion
 
         #region Publics
-        public bool IsDisposed { get; set; }
+        public bool StopRequested { get; set; }
         public static DiscordSocketClient Client;
         #endregion
 
@@ -80,11 +80,17 @@ namespace Cirilla {
         }
 
         public async Task Stop() {
+            if (StopRequested)
+                return;
+            StopRequested = true;
+
             if (Client.ConnectionState == ConnectionState.Connected)
                 await Client.SetStatusAsync(UserStatus.Offline);
             if (Client.ConnectionState != ConnectionState.Disconnecting &&
                 Client.ConnectionState != ConnectionState.Disconnected)
                 await Client.StopAsync();
+            //await Client.LogoutAsync();
+            Console.WriteLine("stopped");
         }
 
         public async Task Login() {

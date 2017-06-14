@@ -31,7 +31,7 @@ namespace Cirilla.Modules {
                 WikipediaResponse response = await new WikipediaService().GetWikipediaResultsAsync(joined);
 
                 // Empty response.
-                if (response == null || response.Query == null || !response.Query.Pages.Any()) {
+                if (response?.Query == null || !response.Query.Pages.Any()) {
                     await ReplyAsync($"Failed to find anything for \"{joined}\" on Wikipedia!");
                     return;
                 }
@@ -89,16 +89,10 @@ namespace Cirilla.Modules {
             }
         }
 
-        private string LmgtfyQuery(params string[] tags) {
+        private static string LmgtfyQuery(params string[] tags) {
             string query = string.Join(" ", tags);
             query = System.Net.WebUtility.UrlEncode(query);
             return $"http://lmgtfy.com/?q={query}";
-        }
-
-        private string GoogleQuery(params string[] tags) {
-            string query = string.Join(" ", tags);
-            query = System.Net.WebUtility.UrlEncode(query);
-            return $"https://www.google.at/#q={query}";
         }
     }
 }

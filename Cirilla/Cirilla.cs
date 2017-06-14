@@ -74,7 +74,13 @@ namespace Cirilla {
                 if (!result.IsSuccess) {
                     await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}", LogSeverity.Error);
                     //await context.Channel.SendMessageAsync(result.ErrorReason);
-                    await context.Channel.SendMessageAsync("Pardon?");
+
+                    Embed embed = Helper.WrongCommand(message, _service, context);
+                    if (embed == null) {
+                        await context.Channel.SendMessageAsync("Pardon?");
+                    } else {
+                        await context.Channel.SendMessageAsync("", embed: embed);
+                    }
                 }
             }
         }

@@ -8,8 +8,7 @@ namespace Cirilla.Modules {
     public class Help : ModuleBase<CommandContext> {
         private readonly CommandService _service;
 
-        public Help(CommandService service)           // Create a constructor for the commandservice dependency
-        {
+        public Help(CommandService service) {
             _service = service;
         }
 
@@ -53,26 +52,27 @@ namespace Cirilla.Modules {
         }
 
         [Command("help"), Summary("Show information and usage about a command")]
-        public async Task HelpAsync(string command) {
+        public async Task HelpAsync([Summary("The command you want to see the documentation about")]string command) {
             SearchResult result = _service.Search(Context, command);
             string nl = Environment.NewLine;
 
             if (!result.IsSuccess) {
-                await ReplyAsync($"Sorry, I couldn't find a command like **{command}**.");
+                await ReplyAsync($"Sorry, I couldn't find the **{command}** command.");
                 return;
             }
 
             EmbedBuilder builder = new EmbedBuilder() {
                 Color = new Color(114, 137, 218),
-                Description = $"Here are some commands like **{command}**:"
+                Description = $"Here's some Information about the **{command}** command:"
             };
 
             foreach (CommandMatch match in result.Commands) {
                 CommandInfo cmd = match.Command;
+                bool multiple = cmd.Parameters.Count < 1;
 
                 builder.AddField(x => {
                     x.Name = $"{Information.Prefix}{cmd.Aliases.First()} {string.Join(" ", cmd.Parameters)}";
-                    if (cmd.Parameters.Count < 1) {
+                    if (multiple) {
                         x.Value = $"Summary: {cmd.Summary}";
                     } else {
                         x.Value = $"Summary: {cmd.Summary}" + nl +

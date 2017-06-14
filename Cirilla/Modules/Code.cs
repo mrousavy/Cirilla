@@ -32,7 +32,7 @@ namespace Cirilla.Modules {
             Exception exception = null;
             bool successful = false;
             bool compiled = false;
-            long compileTime = 0, execTime = 0;
+            long compileTime = -1, execTime = -1;
             Stopwatch compileSw = new Stopwatch();
             Stopwatch execSw = new Stopwatch();
 
@@ -82,6 +82,7 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log($"{Helper.GetName(Context.User)} ran a Roslyn script:{nl}{nl}{code}{nl}", LogSeverity.Info);
 
                 builder.Color = new Color(0, 255, 0);
+                builder.AddField("Requested by", Context.User.Mention);
                 builder.AddField("Result", "Successful");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
                 if (result == null) {
@@ -90,12 +91,13 @@ namespace Cirilla.Modules {
                     builder.AddField($"Result: {result.GetType()}", $"```cs{nl}{result}{nl}```");
                 }
                 builder.Footer = new EmbedFooterBuilder {
-                    Text = $"Compile: {compileTime}ms | Execution: {execTime}ms"
+                    Text = $"Compilation: {compileTime}ms | Execution: {execTime}ms"
                 };
             } else {
                 await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(Context.User)}! ({exception.Message})", LogSeverity.Info);
 
                 builder.Color = new Color(255, 0, 0);
+                builder.AddField("Requested by", Context.User.Mention);
                 builder.AddField("Result", "Failed");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
                 if (compiled) {
@@ -105,6 +107,9 @@ namespace Cirilla.Modules {
                     //Exception at compilation
                     builder.AddField("Compiler Error:", $"```accesslog{nl}{exception.Message}{nl}```");
                 }
+                builder.Footer = new EmbedFooterBuilder {
+                    Text = $"Compilation: {compileTime}ms | Execution: {execTime}ms"
+                };
             }
 
             await ReplyAsync("", embed: builder.Build());

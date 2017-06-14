@@ -28,12 +28,12 @@ namespace Cirilla.Modules {
                     Color = new Color(50, 125, 0)
                 };
 
-                builder.AddField("Nickname", nick);
-                builder.AddField("Created At", createdAt);
-                builder.AddField("Joined At", joinedAt);
-                builder.AddField("Status", status);
-                builder.AddField("Game", game);
-                builder.AddField("XP", xp);
+                builder.AddInlineField("Nickname", nick);
+                builder.AddInlineField("Created At", createdAt);
+                builder.AddInlineField("Joined At", joinedAt);
+                builder.AddInlineField("Status", status);
+                builder.AddInlineField("Game", game);
+                builder.AddInlineField("XP", xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {
@@ -64,12 +64,12 @@ namespace Cirilla.Modules {
                         },
                         Color = new Color(50, 125, 0)
                     };
-                    builder.AddField("Nickname", nick);
-                    builder.AddField("Created At", createdAt);
-                    builder.AddField("Joined At", joinedAt);
-                    builder.AddField("Status", status);
-                    builder.AddField("Game", game);
-                    builder.AddField("XP", xp);
+                    builder.AddInlineField("Nickname", nick);
+                    builder.AddInlineField("Created At", createdAt);
+                    builder.AddInlineField("Joined At", joinedAt);
+                    builder.AddInlineField("Status", status);
+                    builder.AddInlineField("Game", game);
+                    builder.AddInlineField("XP", xp);
 
                     await ReplyAsync("", embed: builder.Build());
                 }

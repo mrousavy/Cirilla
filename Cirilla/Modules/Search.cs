@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Search : ModuleBase {
         [Command("google"), Summary("Google something!")]
-        public async Task GoogleSearch([Summary("The Google search query")] params string[] query) {
+        public async Task GoogleSearch([Summary("The Google search query")] [Remainder]string query) {
             try {
                 await ReplyAsync("" + Environment.NewLine + LmgtfyQuery(query));
             } catch {
@@ -19,20 +19,18 @@ namespace Cirilla.Modules {
 
 
         [Command("wiki"), Summary("Search something on Wikipedia!")]
-        public async Task WikipediaSearch([Summary("The Google search query")] params string[] query) {
+        public async Task WikipediaSearch([Summary("The Google search query")] [Remainder]string query) {
             try {
-                if (query.Length < 1) {
+                if (string.IsNullOrWhiteSpace(query)) {
                     await ReplyAsync($"You can't search for nothing.. Usage example: `{Information.Prefix}wiki Computer`");
                     return;
                 }
 
-                string joined = string.Join(" ", query);
-
-                WikipediaResponse response = await new WikipediaService().GetWikipediaResultsAsync(joined);
+                WikipediaResponse response = await new WikipediaService().GetWikipediaResultsAsync(query);
 
                 // Empty response.
                 if (response?.Query == null || !response.Query.Pages.Any()) {
-                    await ReplyAsync($"Failed to find anything for \"{joined}\" on Wikipedia!");
+                    await ReplyAsync($"Failed to find anything for \"{query}\" on Wikipedia!");
                     return;
                 }
 
@@ -43,7 +41,7 @@ namespace Cirilla.Modules {
 
                 // Double check
                 if (message.Length == 0 || message == Environment.NewLine) {
-                    await ReplyAsync($"Failed to find anything for \"{joined}\" on Wikipedia!");
+                    await ReplyAsync($"Failed to find anything for \"{query}\" on Wikipedia!");
                     return;
                 }
 
@@ -59,7 +57,7 @@ namespace Cirilla.Modules {
                         EmbedBuilder builder = new EmbedBuilder {
 
                             Author = new EmbedAuthorBuilder {
-                                Name = $"Wikipedia results for \"{joined}\" (pt {i + 1})",
+                                Name = $"Wikipedia results for \"{query}\" (pt {i + 1})",
                                 IconUrl = "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
                             },
                             Color = new Color(255, 255, 255),
@@ -72,7 +70,7 @@ namespace Cirilla.Modules {
                 } else {
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
-                            Name = $"Wikipedia results for \"{joined}\"",
+                            Name = $"Wikipedia results for \"{query}\"",
                             IconUrl = "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
                         },
                         Color = new Color(255, 255, 255),
@@ -82,15 +80,14 @@ namespace Cirilla.Modules {
 
                     await ReplyAsync("", embed: builder.Build());
                 }
-                await ConsoleHelper.Log($"{Context.User} requested a Wikipedia article about \"{joined}\"", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} requested a Wikipedia article about \"{query}\"", LogSeverity.Info);
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Error on getting wikipedia article! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, couldn't find that for you.. Now you have to do it yourself! :confused:");
             }
         }
 
-        private static string LmgtfyQuery(params string[] tags) {
-            string query = string.Join(" ", tags);
+        private static string LmgtfyQuery(string query) {
             query = System.Net.WebUtility.UrlEncode(query);
             return $"http://lmgtfy.com/?q={query}";
         }

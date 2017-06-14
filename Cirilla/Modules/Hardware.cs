@@ -68,20 +68,19 @@ namespace Cirilla.Modules {
         }
 
         [Command("sethw"), Summary("Set your custom hardware, this will be displayed in a Markdown Embed!")]
-        public async Task SetHardware([Summary("The hardware title")] params string[] title) {
-            if (title.Length < 1) {
+        public async Task SetHardware([Summary("The hardware title")] [Remainder] string title) {
+            if (string.IsNullOrWhiteSpace(title)) {
                 await ReplyAsync($"Please enter a valid hardware title! Usage: `{Information.Prefix}sethw <HardwareProfileName>`");
                 return;
             }
 
             HardwareListener listener = new HardwareListener(Context.Channel as ITextChannel, Context.User);
             Cirilla.Client.MessageReceived += listener.HardwareReceived;
-            string joined = string.Join(" ", title);
-            HardwareManager.UpdateHardware(Context.User.Id, joined, null);
+            HardwareManager.UpdateHardware(Context.User.Id, title, null);
 
-            await ConsoleHelper.Log($"{Context.User} is creating a new hardware profile (\"{joined}\")", LogSeverity.Info);
+            await ConsoleHelper.Log($"{Context.User} is creating a new hardware profile (\"{title}\")", LogSeverity.Info);
 
-            await ReplyAsync($"What text do you want to display on the hardware profile _{joined}_? (Hint: Use `Shift` + `Enter` for new lines)");
+            await ReplyAsync($"What text do you want to display on the hardware profile _{title}_? (Hint: Use `Shift` + `Enter` for new lines)");
         }
     }
 }

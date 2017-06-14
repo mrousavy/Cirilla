@@ -30,9 +30,8 @@ namespace Cirilla.Modules {
         }
 
         [Command("calc"), Summary("Calculates Expressions.")]
-        public async Task Calc([Summary("The expression to evaluate.")] params string[] expressions) {
+        public async Task Calc([Summary("The expression to evaluate.")] [Remainder]string expression) {
             try {
-                string expression = string.Join(" ", expressions);
                 string trimmed = Regex.Replace(expression, @"\s+", "");
                 trimmed = trimmed.Replace("\"", "");
 

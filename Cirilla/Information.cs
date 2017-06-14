@@ -48,6 +48,9 @@ namespace Cirilla {
         internal static bool PmHelp => Config.PmHelp;
         internal static long MaxLogSize => Config.MaxLogSize;
 
+        internal static int CompileTimeout => Config.CompileTimeout;
+        internal static int ExecutionTimeout => Config.ExecutionTimeout;
+
 
 
         public static void LoadInfo() {
@@ -137,5 +140,10 @@ namespace Cirilla {
         public bool PmHelp = true;
         //Max Log Size in bytes
         public long MaxLogSize = 1024 * 1024 * 10;
+
+        //Time in milliseconds until the compilation of $execute scipts cancels
+        public int CompileTimeout = 15000;
+        //Time in milliseconds until the execution of $execute scripts cancels
+        public int ExecutionTimeout = 5000;
     }
 }

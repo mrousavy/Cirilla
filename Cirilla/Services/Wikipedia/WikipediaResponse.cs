@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Cirilla.Services {
+namespace Cirilla.Services.Wikipedia {
     public class WikipediaResponse {
         public WikipediaQuery Query { get; set; }
     }

@@ -1,18 +1,14 @@
-﻿using Discord;
+﻿using Cirilla.Services.Profiles;
+using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Profile : ModuleBase {
         [Command("profile"), Summary("Show a user's Profile")]
         public async Task ShowProfile([Summary("The user you want to show the Profile of")]IGuildUser user) {
-            string text = ReadProfile(user.Id);
+            string text = ProfileManager.ReadProfile(user.Id);
 
             if (text == null) {
                 await ReplyAsync($"{Helper.GetName(user)} does not have a custom profile set up!" + Environment.NewLine +
@@ -40,7 +36,7 @@ namespace Cirilla.Modules {
             if (user == null)
                 return;
 
-            string text = ReadProfile(user.Id);
+            string text = ProfileManager.ReadProfile(user.Id);
 
             if (text == null) {
                 await ReplyAsync("You don't have a custom profile set up!" + Environment.NewLine +
@@ -70,109 +66,6 @@ namespace Cirilla.Modules {
 
             await ReplyAsync("What text do you want to display on your Profile?");
             await ConsoleHelper.Log($"{Helper.GetName(Context.User)} is creating a new Profile..", LogSeverity.Info);
-        }
-
-
-
-        public class ProfileListener {
-            private readonly ITextChannel _channel;
-            private readonly IUser _user;
-            private bool _done;
-
-            public ProfileListener(ITextChannel channel, IUser user) {
-                _channel = channel;
-                _user = user;
-                Hourglass();
-            }
-
-            public async Task ProfileTextReceived(SocketMessage arg) {
-                try {
-                    SocketUserMessage message = arg as SocketUserMessage;
-                    if (message == null)
-                        return;
-
-                    IUser user = message.Author;
-                    if (message.Channel is ITextChannel channel && user.Id == _user.Id && channel.Id == _channel.Id) {
-                        UpdateProfile(user.Id, message.Content);
-
-                        Cirilla.Client.MessageReceived -= ProfileTextReceived;
-                        _done = true;
-                        await arg.Channel.SendMessageAsync("Profile set successfully!");
-                        await ConsoleHelper.Log($"{Helper.GetName(_user)} created a new profile!", LogSeverity.Info);
-                    }
-                } catch (Exception ex) {
-                    await ConsoleHelper.Log($"Could not create profile! ({ex.Message})", LogSeverity.Error);
-                    await arg.Channel.SendMessageAsync("Sorry, I couldn't set your Profile Information :confused:");
-                }
-            }
-
-            public async void Hourglass() {
-                //time in Minutes until the bot stops listening
-                int time = 5;
-                await Task.Delay(1000 * 60 * time);
-                if (!_done) {
-                    Cirilla.Client.MessageReceived -= ProfileTextReceived;
-                    await _channel.SendMessageAsync("Sorry, I'm out of time! :hourglass:");
-                }
-            }
-        }
-
-
-
-        public static string ReadProfile(ulong userId) {
-            string profiles = Path.Combine(Information.Directory, "profiles.json");
-            if (File.Exists(profiles)) {
-                Profiles = JsonConvert.DeserializeObject<UserProfiles>(File.ReadAllText(profiles));
-
-                UserProfile profile = Profiles.ProfilesList.FirstOrDefault(p => p.UserId == userId);
-                return profile?.ProfileText;
-            } else {
-                return null;
-            }
-        }
-
-        public static void UpdateProfile(ulong userId, string text) {
-            string profiles = Path.Combine(Information.Directory, "profiles.json");
-
-            if (Profiles == null)
-                Profiles = new UserProfiles();
-
-            bool contains = false;
-
-            foreach (UserProfile uprof in Profiles.ProfilesList) {
-                if (uprof.UserId == userId) {
-                    uprof.ProfileText = text;
-                    contains = true;
-                    break;
-                }
-            }
-
-            if (!contains) {
-                Profiles.ProfilesList.Add(new UserProfile(userId, text));
-            }
-
-            File.WriteAllText(profiles, JsonConvert.SerializeObject(Profiles));
-        }
-
-
-        public static UserProfiles Profiles;
-
-        public class UserProfiles {
-            public UserProfiles() {
-                ProfilesList = new List<UserProfile>();
-            }
-
-            public List<UserProfile> ProfilesList { get; set; }
-        }
-
-        public class UserProfile {
-            public UserProfile(ulong id, string text) {
-                UserId = id;
-                ProfileText = text;
-            }
-
-            public ulong UserId { get; set; }
-            public string ProfileText { get; set; }
         }
     }
 }

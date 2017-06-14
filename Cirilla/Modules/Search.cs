@@ -1,4 +1,4 @@
-﻿using Cirilla.Services;
+﻿using Cirilla.Services.Wikipedia;
 using Discord;
 using Discord.Commands;
 using System;

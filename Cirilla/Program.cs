@@ -1,8 +1,8 @@
-﻿using Cirilla.Modules;
+﻿using Cirilla.Services.News;
+using Cirilla.Services.Xp;
+using Discord;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Discord;
 
 namespace Cirilla {
     public class Program {
@@ -42,7 +42,7 @@ namespace Cirilla {
             Cirilla = new Cirilla(LogSeverity.Debug);
             StartTime = DateTime.Now;
             XpManager.Init();
-            News.Init();
+            NewsService.Init();
 
             Thread.Sleep(-1);
         }

@@ -7,7 +7,7 @@ namespace Cirilla.Modules {
         [Command("bugreport"), Summary("Report a Bug in Cirilla on GitHub")]
         public async Task Bugreport() {
             EmbedBuilder builder = new EmbedBuilder {
-                Color = new Color(44, 163, 42),
+                Color = new Color(244, 196, 65),
                 ThumbnailUrl = Information.GitHubLogo
             };
             builder.AddField("Bug Report on GitHub", $"You've found a bug? Report it [here]({Information.RepoUrl + "/issues/new"})!");
@@ -23,7 +23,7 @@ namespace Cirilla.Modules {
         [Command("addModule"), Summary("Help making Cirilla better by adding Modules!")]
         public async Task AddModules() {
             EmbedBuilder builder = new EmbedBuilder {
-                Color = new Color(44, 163, 42),
+                Color = new Color(66, 179, 244),
                 ThumbnailUrl = Information.GitHubLogo,
                 Title = "Help making Cirilla better!",
             };

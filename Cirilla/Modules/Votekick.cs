@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -17,7 +18,7 @@ namespace Cirilla.Modules {
 
             try {
                 if (user.Status != UserStatus.Online && user.Status != UserStatus.DoNotDisturb && user.Status != UserStatus.Invisible) {
-                    await Context.Channel.SendMessageAsync($"You can't kick offline/afk users.. That's mean!");
+                    await Context.Channel.SendMessageAsync("You can't kick offline/afk users.. That's mean!");
                     return;
                 }
 
@@ -31,108 +32,158 @@ namespace Cirilla.Modules {
                     "This vote expires in 30 seconds!");
                 await message.AddReactionAsync(new Emoji(Information.VotekickYes));
                 await message.AddReactionAsync(new Emoji(Information.VotekickNo));
-                Cirilla.Client.ReactionAdded += ReactionAdded;
 
-                Expire(user, message, Context.Guild);
+                ReactionHandler handler = new ReactionHandler(user, message, Context.Guild);
+                Cirilla.Client.ReactionAdded += handler.ReactionAdded;
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not start votekick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
             }
         }
 
-        private async Task ReactionAdded(Cacheable<IUserMessage, ulong> cachableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
-            try {
-                if (channel == null)
-                    return;
 
-                IGuild guild = ((IGuildChannel)channel).Guild;
-                IMessage message = await channel.GetMessageAsync(cachableMessage.Id);
 
-                if (message.Author.Id == Cirilla.Client.CurrentUser.Id) {
-                    ulong id = message.MentionedUserIds.FirstOrDefault();
-                    IGuildUser user = await guild.GetUserAsync(id);
-                    if (id != 0) {
-                        Kick(user, (IUserMessage)message, guild);
+
+
+
+
+        //Individual handler for each reactions
+        public class ReactionHandler {
+            private readonly IGuildUser _user;
+            private readonly IUserMessage _message;
+            private readonly IGuild _guild;
+            private readonly CancellationTokenSource _cts;
+
+
+            public ReactionHandler(IGuildUser user, IUserMessage message, IGuild guild) {
+                _user = user;
+                _message = message;
+                _guild = guild;
+                _cts = new CancellationTokenSource();
+                Expire();
+            }
+
+
+            private async void Expire() {
+                try {
+                    //Wait until time's up
+                    await Task.Delay(Information.VotekickExpire, _cts.Token);
+                    Cirilla.Client.ReactionAdded -= ReactionAdded;
+
+                    if (await HasMajority()) {
+                        await ConsoleHelper.Log($"Kicking {Helper.GetName(_user)}..", LogSeverity.Info);
+                        IUserMessage sentInvite = await DmInvite();
+                        try {
+                            await Kick();
+                        } catch {
+                            //delete invite again if he couldn't be kicked
+                            await sentInvite.DeleteAsync();
+                            //rethrow for outer exception handler
+                            throw;
+                        }
+                        await ConsoleHelper.Log($"Kicked {Helper.GetName(_user)}!", LogSeverity.Info);
+                    } else {
+                        await _message.Channel.SendMessageAsync(
+                            $"Time's up! :alarm_clock: Not enough users voted to kick {Helper.GetName(_user)}. Votekick dismissed."
+                        );
                     }
+                } catch (TaskCanceledException) {
+                    // Expire cancelled, already kicked by ReactionAdded Event
+                } catch (Exception ex) {
+                    await ConsoleHelper.Log($"Could not kick {Helper.GetName(_user)}! ({ex.Message})", LogSeverity.Error);
+                    await _message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(_user)}.. :confused:");
                 }
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Error processing reaction! ({ex.Message})", LogSeverity.Error);
             }
-        }
 
-        private async void Expire(IGuildUser user, IUserMessage message, IGuild guild) {
-            try {
-                await Task.Delay(Information.VotekickExpire);
-                Cirilla.Client.ReactionAdded -= ReactionAdded;
+            public async Task ReactionAdded(Cacheable<IUserMessage, ulong> cachableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
+                try {
+                    if (channel == null)
+                        return;
 
-                await ConsoleHelper.Log($"Kicking {Helper.GetName(user)}..", LogSeverity.Info);
-                Kick(user, message, guild);
-                await ConsoleHelper.Log($"Kicked {Helper.GetName(user)}!", LogSeverity.Info);
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not kick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
-                await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");
-            }
-        }
-
-
-        private async void Kick(IGuildUser user, IUserMessage message, IGuild guild) {
-            try {
-                if (await guild.GetUserAsync(user.Id) == null) {
-                    //already kicked by ReactionAdded event or server left
-                    return;
-                }
-
-                List<IUser> yesUser = new List<IUser>(await message.GetReactionUsersAsync(Information.VotekickYes));
-                List<IUser> noUser = new List<IUser>(await message.GetReactionUsersAsync(Information.VotekickNo));
-
-                string nl = Environment.NewLine;
-
-                // -1 for own reaction
-                int yes = yesUser.Count - 1;
-                int no = noUser.Count - 1;
-                //only users in a voice channel can votekick
-                int online = new List<IGuildUser>(((await guild.GetUsersAsync()).Where(u => (u.Status == UserStatus.Online && u.VoiceChannel != null)))).Count;
-
-                //more than half of server users voted yes
-                if (yes > online / 2 && no < yes) {
-                    //check if admin voted no -> dismiss vote
-                    foreach (IUser iuser in noUser) {
-                        if (CheckIfAdmin(iuser as IGuildUser)) {
-                            await message.Channel.SendMessageAsync($"An admin voted _no_, _{Helper.GetName(user)}_ cannot be kicked!");
-                            return;
+                    if (await channel.GetMessageAsync(cachableMessage.Id) is IUserMessage message) {
+                        //Check if Message is exactly the one we attached this Reaction handler to
+                        if (message.Id == _message.Id) {
+                            if (await HasMajority()) {
+                                IUserMessage sentInvite = await DmInvite();
+                                try {
+                                    await Kick();
+                                } catch {
+                                    //delete invite again if he couldn't be kicked
+                                    await sentInvite.DeleteAsync();
+                                    //rethrow for outer exception handler
+                                    throw;
+                                }
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    await ConsoleHelper.Log($"Error processing reaction! ({ex.Message})", LogSeverity.Error);
+                }
+            }
 
-                    IInviteMetadata invite = await ((IGuildChannel)message.Channel).CreateInviteAsync(maxUses: 1);
-                    try {
-                        IDMChannel dm = await user.CreateDMChannelAsync();
-                        await dm.SendMessageAsync($"You've been kicked from the _{guild.Name}_ guild by votekick!" + nl +
-                            $"As I'm very generous today, here's an invite link to the _{guild.Name}_ guild:" + nl + invite.Url);
-                    } catch {
-                        //user is not allowing DMs?
-                        await message.Channel.SendMessageAsync($"{Helper.GetName(user)} is not allowing private messages, " +
-                            "someone gotta send him an invite link again.." + nl + invite.Url);
+            //Is User Admin?
+            private static bool CheckIfAdmin(IGuildUser user) { return user != null && user.GuildPermissions.Administrator; }
+
+            //Is the majority of the Guild for yes?
+            public async Task<bool> HasMajority() {
+                //Get total users and all voters
+                IReadOnlyCollection<IGuildUser> totalUsers = await _guild.GetUsersAsync();
+                IReadOnlyCollection<IUser> yesUser = await _message.GetReactionUsersAsync(Information.VotekickYes);
+                IReadOnlyCollection<IUser> noUser = await _message.GetReactionUsersAsync(Information.VotekickNo);
+                int yes = yesUser.Count;
+                int no = noUser.Count;
+                int online = totalUsers.Count(u => u.VoiceChannel != null);
+
+                //more than half of online users voted yes AND
+                //only half of the yes-voters voted for no
+                if (yes > online / 2 && yes > no * 2) {
+                    //check if admin voted no -> dismiss vote
+                    if (noUser.Any(iuser => CheckIfAdmin(iuser as IGuildUser))) {
+                        await _message.Channel.SendMessageAsync($"An admin voted _no_, _{Helper.GetName(_user)}_ cannot be kicked!");
+                        return false;
                     }
-                    await user.KickAsync();
-                    await message.Channel.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(user)}..");
+
+                    return true;
+                }
+                return false;
+            }
+
+            //Send user an Invite via DM
+            private async Task<IUserMessage> DmInvite() {
+                string nl = Environment.NewLine;
+                IInviteMetadata invite = await ((IGuildChannel)_message.Channel).CreateInviteAsync(maxUses: 1);
+                try {
+                    //DM the invite
+                    IDMChannel dm = await _user.CreateDMChannelAsync();
+                    return await dm.SendMessageAsync($"You've been kicked from the _{_guild.Name}_ guild by votekick!" + nl +
+                                              $"As I'm very generous today, here's an invite link to the _{_guild.Name}_ guild:" + nl + invite.Url);
+                } catch {
+                    //user is not allowing DMs?
+                    return await _message.Channel.SendMessageAsync($"{Helper.GetName(_user)} is not allowing private messages, " +
+                                                           "someone @here gotta send him an invite link again.." + nl + invite.Url);
+                }
+            }
+
+            //Actually kick the user
+            private async Task Kick() {
+                try {
+                    _cts.Cancel();
+
+                    if (await _guild.GetUserAsync(_user.Id) == null) {
+                        //already kicked by ReactionAdded event or server left
+                        return;
+                    }
+                    await _user.KickAsync();
+                    await _message.Channel.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(_user)}..");
                     try {
                         Cirilla.Client.ReactionAdded -= ReactionAdded;
                     } catch {
-                        //event removed
+                        //event already removed
                     }
-                } else {
-                    await message.Channel.SendMessageAsync($"Time's up. Less than half of the online users ({yes}) " +
-                        $"voted to kick {Helper.GetName(user)}. Votekick dismissed.");
+                } catch (Exception ex) {
+                    await ConsoleHelper.Log($"Could not kick {Helper.GetName(_user)}! ({ex.Message})", LogSeverity.Error);
+                    await _message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(_user)}.. :confused:");
                 }
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not kick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
-                await message.Channel.SendMessageAsync($"Could not kick {Helper.GetName(user)}.. :confused:");
             }
-        }
-
-        private bool CheckIfAdmin(IGuildUser user) {
-            if (user == null)
-                return false;
-            return user.GuildPermissions.Administrator;
         }
     }
 }

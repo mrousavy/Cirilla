@@ -81,7 +81,7 @@ namespace Cirilla.Modules {
             if (successful) {
                 await ConsoleHelper.Log($"{Helper.GetName(Context.User)} ran a Roslyn script:{nl}{nl}{code}{nl}", LogSeverity.Info);
 
-                builder.Color = new Color(0, 255, 0);
+                builder.Color = new Color(50, 155, 0);
                 builder.AddField("Requested by", Context.User.Mention);
                 builder.AddField("Result", "Successful");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
@@ -96,7 +96,7 @@ namespace Cirilla.Modules {
             } else {
                 await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(Context.User)}! ({exception.Message})", LogSeverity.Info);
 
-                builder.Color = new Color(255, 0, 0);
+                builder.Color = new Color(180, 8, 8);
                 builder.AddField("Requested by", Context.User.Mention);
                 builder.AddField("Result", "Failed");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");

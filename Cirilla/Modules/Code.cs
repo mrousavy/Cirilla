@@ -79,7 +79,7 @@ namespace Cirilla.Modules {
             }
 
             if (successful) {
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} ran a Roslyn script:{nl}    {code}", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} ran a Roslyn script:{nl}{nl}{code}{nl}", LogSeverity.Info);
 
                 builder.Color = new Color(0, 255, 0);
                 builder.AddField("Result", "Successful");

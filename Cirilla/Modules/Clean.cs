@@ -29,8 +29,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("clean"), Summary("Clean the last x messages in the chat!")]
-        public async Task CleanChat([Summary("The numer of messages to remove")] int count) {
+        [Command("clean"), Summary("Clean the last [x] messages in the chat!")]
+        public async Task CleanChat([Summary("The number of messages to remove")] int count) {
             try {
                 IGuildUser user = Context.User as IGuildUser;
                 if (user == null) {

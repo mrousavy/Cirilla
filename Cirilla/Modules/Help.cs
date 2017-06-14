@@ -13,7 +13,7 @@ namespace Cirilla.Modules {
             _service = service;
         }
 
-        [Command("help")]
+        [Command("help"), Summary("Show all available Commands")]
         public async Task HelpAsync() {
             char prefix = Information.Prefix;
             EmbedBuilder builder = new EmbedBuilder() {
@@ -52,9 +52,10 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("help")]
+        [Command("help"), Summary("Show information and usage about a command")]
         public async Task HelpAsync(string command) {
             SearchResult result = _service.Search(Context, command);
+            string nl = Environment.NewLine;
 
             if (!result.IsSuccess) {
                 await ReplyAsync($"Sorry, I couldn't find a command like **{command}**.");
@@ -70,9 +71,13 @@ namespace Cirilla.Modules {
                 CommandInfo cmd = match.Command;
 
                 builder.AddField(x => {
-                    x.Name = string.Join(", ", cmd.Aliases);
-                    x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}" + Environment.NewLine +
-                              $"Summary: {cmd.Summary}";
+                    x.Name = $"{Information.Prefix}{cmd.Aliases.First()} {string.Join(" ", cmd.Parameters)}";
+                    if (cmd.Parameters.Count < 1) {
+                        x.Value = $"Summary: {cmd.Summary}";
+                    } else {
+                        x.Value = $"Summary: {cmd.Summary}" + nl +
+                                  $"Parameters: {nl}\t{string.Join($"\t{nl}", cmd.Parameters.Select(p => $"_{p.Name}_: {p.Summary}"))}";
+                    }
                     x.IsInline = false;
                 });
             }

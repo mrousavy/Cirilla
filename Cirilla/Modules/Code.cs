@@ -15,6 +15,7 @@ namespace Cirilla.Modules {
         public async Task Execute([Summary("The Code to execute")] [Remainder] string code) {
             //Requirements to execute C# Roslyn scripts
             if (!(Context.User is IGuildUser user) || !user.GuildPermissions.KickMembers) {
+                await ReplyAsync("You're not allowed to use this super premium command!");
                 return;
             }
 
@@ -37,7 +38,13 @@ namespace Cirilla.Modules {
 
             try {
 
-                Script script = CSharpScript.Create(code);
+                ScriptOptions options = ScriptOptions.Default;
+                options.AddImports("System");
+                options.AddImports("System.Threading");
+                options.AddImports("System.Threading.Tasks");
+                options.AddImports("System.Math");
+
+                Script script = CSharpScript.Create(code, options);
 
                 //Compile script
                 compileSw.Start();
@@ -77,9 +84,13 @@ namespace Cirilla.Modules {
                 builder.Color = new Color(0, 255, 0);
                 builder.AddField("Result", "Successful");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                builder.AddField($"Result: {result.GetType()}", $"```cs{nl}{result}{nl}```");
+                if (result == null) {
+                    builder.AddField($"Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
+                } else {
+                    builder.AddField($"Result: {result.GetType()}", $"```cs{nl}{result}{nl}```");
+                }
                 builder.Footer = new EmbedFooterBuilder {
-                    Text = $"Compile: {compileTime}ms | Compile: {execTime}ms"
+                    Text = $"Compile: {compileTime}ms | Execution: {execTime}ms"
                 };
             } else {
                 await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(Context.User)}! ({exception.Message})", LogSeverity.Info);

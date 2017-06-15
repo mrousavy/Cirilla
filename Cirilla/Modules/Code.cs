@@ -12,6 +12,10 @@ namespace Cirilla.Modules {
                 await ReplyAsync("You're not allowed to use this super premium command!");
                 return;
             }
+            if (!Information.AllowScripts) {
+                await ReplyAsync("C# Roslyn Scripts are disabled via Config.");
+                return;
+            }
 
             IUserMessage tempMessage = await ReplyAsync("Compiling.. :inbox_tray:");
 

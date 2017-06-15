@@ -48,6 +48,7 @@ namespace Cirilla {
         internal static bool PmHelp => Config.PmHelp;
         internal static long MaxLogSize => Config.MaxLogSize;
 
+        internal static bool AllowScripts => Config.AllowScripts;
         internal static int CompileTimeout => Config.CompileTimeout;
         internal static int ExecutionTimeout => Config.ExecutionTimeout;
 
@@ -118,7 +119,7 @@ namespace Cirilla {
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
         public double XpFactor = 1.20;
         //1 in [GiveRandomXpChance] to give a user 100 XP on XpGiveInterval interval
-        public int GiveRandomXpChance = 100;
+        public int GiveRandomXpChance = 250;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         public int RandomReactionChance = 150;
@@ -141,6 +142,8 @@ namespace Cirilla {
         //Max Log Size in bytes
         public long MaxLogSize = 1024 * 1024 * 10;
 
+        //Enable Roslyn Scripting using the $exec Command
+        public bool AllowScripts = false;
         //Time in milliseconds until the compilation of $execute scipts cancels
         public int CompileTimeout = 15000;
         //Time in milliseconds until the execution of $execute scripts cancels

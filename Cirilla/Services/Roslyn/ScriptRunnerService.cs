@@ -1,16 +1,59 @@
 ﻿using Discord;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Scripting;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Cirilla.Services.Roslyn {
     public static class ScriptRunnerService {
+
+        private static readonly string[] DefaultImports =
+        {
+            "System",
+            "System.IO",
+            "System.Linq",
+            "System.Collections.Generic",
+            "System.Text",
+            "System.Text.RegularExpressions",
+            "System.Net",
+            "System.Threading",
+            "System.Threading.Tasks",
+            "System.Net.Http"
+        };
+
+        private static readonly Assembly[] DefaultReferences =
+        {
+            typeof(Enumerable).GetTypeInfo().Assembly,
+            typeof(List<string>).GetTypeInfo().Assembly,
+            typeof(JsonConvert).GetTypeInfo().Assembly,
+            typeof(string).GetTypeInfo().Assembly,
+            typeof(ValueTuple).GetTypeInfo().Assembly,
+            typeof(HttpClient).GetTypeInfo().Assembly
+        };
+
+        private static readonly ScriptOptions Options =
+            ScriptOptions.Default
+                .WithImports(DefaultImports)
+                .WithReferences(DefaultReferences);
+
+        private static readonly ImmutableArray<DiagnosticAnalyzer> Analyzers =
+            ImmutableArray.Create<DiagnosticAnalyzer>(new BlacklistedTypesAnalyzer());
+
+        private static readonly Random random = new Random();
+
+
+
         /// <summary>
         /// Run a Script from a string with the Roslyn compiler and return results as an Embed
         /// </summary>
@@ -27,66 +70,52 @@ namespace Cirilla.Services.Roslyn {
                 }
             };
 
-            object result = null;
-            Exception exception = null;
+            StringBuilder stringBuilder = new StringBuilder();
+            StringWriter textWriter = new StringWriter(stringBuilder);
             bool successful = false;
-            bool compiled = false;
-            long compileTime = -1, execTime = -1;
-            Stopwatch compileSw = new Stopwatch();
-            Stopwatch execSw = new Stopwatch();
-            string diagnosticResult = null;
+            long compileTime, execTime;
+            CompilationErrorException compileException = null;
+            Exception runEx = null;
 
-            CancellationTokenSource compileCancellation = null;
+            Stopwatch compileSw = Stopwatch.StartNew();
+            Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
+            CompilationWithAnalyzers compilation = script.GetCompilation().WithAnalyzers(Analyzers);
+            ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync();
+            ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error).ToImmutableArray();
+            compileSw.Stop();
+            compileTime = compileSw.ElapsedMilliseconds;
+            string diagnostics = string.Empty;
+            foreach (Diagnostic diagnostic in compileResult) {
+                diagnostics += diagnostic.ToString();
+            }
+
+            if (compileErrors.Length > 0) {
+                compileException = new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())), compileErrors);
+                successful = false;
+            }
+
+            Globals globals = new Globals {
+                Console = textWriter,
+                Random = random
+            };
+
+            Stopwatch execSw = Stopwatch.StartNew();
+            ScriptState<object> result = null;
             try {
-                ScriptOptions options = ScriptOptions.Default;
-                options.AddImports("System");
-                options.AddImports("System.Threading");
-                options.AddImports("System.Threading.Tasks");
-                options.AddImports("System.Math");
+                result = await script.RunAsync(globals, ex => true);
 
-                Script script = CSharpScript.Create(code, options);
-
-                //Compile script
-                compileSw.Start();
-                compileCancellation = new CancellationTokenSource(Information.CompileTimeout);
-                ImmutableArray<Diagnostic> diagnostics = script.Compile(compileCancellation.Token);
-                diagnosticResult = Enumerable.Aggregate(diagnostics, "",
-                    (current, diagnostic) => $"{current}+{diagnostic}{nl}");
-                if (!string.IsNullOrWhiteSpace(diagnosticResult)) {
-                    await ConsoleHelper.Log(diagnosticResult, LogSeverity.Debug);
-                }
-                compileSw.Stop();
-                compileTime = compileSw.ElapsedMilliseconds;
-                compiled = true;
-
-                //Run script
-                execSw.Start();
-                CancellationTokenSource execCancellation = new CancellationTokenSource(Information.ExecutionTimeout);
-                ScriptState state = await script.RunAsync(null, execCancellation.Token);
-                result = state.ReturnValue;
-                execSw.Stop();
-                execTime = execSw.ElapsedMilliseconds;
-
-                successful = true;
-            } catch (CompilationErrorException ex) {
-                exception = ex;
-                compiled = false;
-                compileTime = -1;
-            } catch (TaskCanceledException ex) {
-                if (ex.CancellationToken == compileCancellation?.Token) {
-                    compiled = false;
-                    compileTime = -1;
-                    exception =
-                        new CompileTimeoutException($"Compilation took longer than {Information.CompileTimeout}ms!");
+                if (result.Exception == null) {
+                    successful = true;
                 } else {
-                    compiled = true;
-                    execTime = -1;
-                    exception =
-                        new CompileTimeoutException($"Execution took longer than {Information.ExecutionTimeout}ms!");
+                    runEx = result.Exception;
+                    successful = false;
                 }
             } catch (Exception ex) {
-                exception = ex;
+                runEx = ex;
+                successful = false;
             }
+            execSw.Stop();
+            execTime = execSw.ElapsedMilliseconds;
 
             if (successful) {
                 await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
@@ -96,27 +125,32 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Successful");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                if (result == null) {
-                    builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
+                if (result.ReturnValue == null) {
+                    if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
+                        builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
+                    } else {
+                        builder.AddField("Console Output:", $"```accesslog{nl}{stringBuilder.ToString()}{nl}```");
+                    }
                 } else {
-                    builder.AddField($"Result: {result.GetType()}", $"```cs{nl}{result}{nl}```");
+                    builder.AddField($"Result: {result.ReturnValue.GetType()}", $"```cs{nl}{result.ReturnValue}{nl}```");
                 }
-                if (!string.IsNullOrWhiteSpace(diagnosticResult)) {
+                if (!string.IsNullOrWhiteSpace(diagnostics)) {
                     builder.AddField("Diagnostics",
-                        diagnosticResult.Length < 255
-                            ? $"```{nl}{diagnosticResult}{nl}```"
-                            : $"```{nl}{diagnosticResult.Substring(0, 255)} [...]{nl}```");
+                        diagnostics.Length < 255
+                            ? $"```{nl}{diagnostics}{nl}```"
+                            : $"```{nl}{diagnostics.Substring(0, 255)} [...]{nl}```");
                 }
             } else {
-                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({exception.Message})",
+                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({compileException?.Message})",
                     LogSeverity.Info);
 
                 builder.Color = new Color(180, 8, 8);
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Failed");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                builder.AddField(compiled ? $"Exception: {exception.GetType()}" : "Compiler Error:",
-                    $"```accesslog{nl}{exception.Message}{nl}```");
+                builder.AddField(compileException == null ?
+                    $"Exception: {runEx.GetType()}" : "Compiler Error:",
+                    $"```accesslog{nl}{compileException.Message}{nl}```");
             }
 
             string compileTimeStr = compileTime == -1 ? "/" : compileTime + "ms";

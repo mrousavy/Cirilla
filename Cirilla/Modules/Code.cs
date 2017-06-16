@@ -16,6 +16,10 @@ namespace Cirilla.Modules {
                 await ReplyAsync("C# Roslyn Scripts are disabled via Config.");
                 return;
             }
+            //if (ForbiddenScripts.IsForbiddenScript(code)) {
+            //    await ReplyAsync("The Script contains forbidden words!");
+            //    return;
+            //}
 
             //Clean for code formatting
             string cleaned = code.Replace("`", string.Empty);

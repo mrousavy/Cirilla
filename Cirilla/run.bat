@@ -1,3 +1,3 @@
 SET mypath=%~dp0
-dotnet build
-dotnet run
+dotnet build -c Release
+dotnet run -c Release

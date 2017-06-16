@@ -59,8 +59,8 @@ namespace Cirilla.Services.Hardware {
         public class UserHardware {
             public UserHardware(ulong id, string title, string hardware) {
                 UserId = id;
-                Title = title;
-                Hardware = hardware;
+                Title = title ?? string.Empty;
+                Hardware = hardware ?? string.Empty;
             }
 
             public ulong UserId { get; set; }

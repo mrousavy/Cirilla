@@ -23,9 +23,9 @@ namespace Cirilla.Services.Hardware {
 
                 IUser user = message.Author;
                 if (message.Channel is ITextChannel channel && (user.Id == _user.Id && channel.Id == _channel.Id)) {
-                    HardwareManager.UpdateHardware(user.Id, null, message.Content);
-
                     Cirilla.Client.MessageReceived -= HardwareReceived;
+
+                    HardwareManager.UpdateHardware(user.Id, null, message.Content);
                     _done = true;
                     await ConsoleHelper.Log($"Created hardware profile for {_user}!", LogSeverity.Info);
                     await arg.Channel.SendMessageAsync("Hardware successfully set!");
@@ -42,7 +42,11 @@ namespace Cirilla.Services.Hardware {
             int time = 5;
             await Task.Delay(1000 * 60 * time);
             if (!_done) {
-                Cirilla.Client.MessageReceived -= HardwareReceived;
+                try {
+                    Cirilla.Client.MessageReceived -= HardwareReceived;
+                } catch {
+                    // event already removed
+                }
                 await _channel.SendMessageAsync($"Sorry {Helper.GetName(_user)}, I'm out of time! :hourglass:");
             }
         }

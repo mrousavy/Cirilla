@@ -23,9 +23,9 @@ namespace Cirilla.Services.Profiles {
 
                 IUser user = message.Author;
                 if (message.Channel is ITextChannel channel && user.Id == _user.Id && channel.Id == _channel.Id) {
-                    ProfileManager.UpdateProfile(user.Id, message.Content);
-
                     Cirilla.Client.MessageReceived -= ProfileTextReceived;
+
+                    ProfileManager.UpdateProfile(user.Id, message.Content);
                     _done = true;
                     await arg.Channel.SendMessageAsync("Profile set successfully!");
                     await ConsoleHelper.Log($"{Helper.GetName(_user)} created a new profile!", LogSeverity.Info);
@@ -41,7 +41,11 @@ namespace Cirilla.Services.Profiles {
             int time = 5;
             await Task.Delay(1000 * 60 * time);
             if (!_done) {
-                Cirilla.Client.MessageReceived -= ProfileTextReceived;
+                try {
+                    Cirilla.Client.MessageReceived -= ProfileTextReceived;
+                } catch {
+                    // event already removed
+                }
                 await _channel.SendMessageAsync("Sorry, I'm out of time! :hourglass:");
             }
         }

@@ -52,7 +52,7 @@ namespace Cirilla.Services.Profiles {
         public class UserProfile {
             public UserProfile(ulong id, string text) {
                 UserId = id;
-                ProfileText = text;
+                ProfileText = text ?? string.Empty;
             }
 
             public ulong UserId { get; set; }

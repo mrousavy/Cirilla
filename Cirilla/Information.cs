@@ -117,8 +117,8 @@ namespace Cirilla {
         public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
 
 
-        //Interval in ms to give XP (300000 = 5m)
-        public int XpGiveInterval = 300000;
+        //Interval in ms to give XP (600000 = 10m)
+        public int XpGiveInterval = 600000;
 
         //1 in [OwnXp] go to the XP Giver
         public int OwnXp = 7;

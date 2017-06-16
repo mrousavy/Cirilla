@@ -17,27 +17,29 @@ namespace Cirilla {
             Information.LoadInfo();
             ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
 
+#pragma warning disable 219
             bool skipIntro = false;
+#pragma warning restore 219
 
             foreach (string arg in args) {
                 string larg = arg.ToLower();
                 switch (larg) {
                     case "skip":
+                        // ReSharper disable once RedundantAssignment
                         skipIntro = true;
                         break;
                 }
             }
-#if DEBUG
-            skipIntro = true;
-#endif
 
             // disable for non Windowsx86
             ConsoleHelper.Set();
 
             Console.Title = "Cirilla Discord Bot";
 
-            if (!skipIntro)
+#if !DEBUG
+            if (skipIntro)
                 ConsoleHelper.Intro();
+#endif
 
             Cirilla = new Cirilla(LogSeverity.Debug);
             StartTime = DateTime.Now;

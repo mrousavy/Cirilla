@@ -105,20 +105,20 @@ namespace Cirilla.Services.Xp {
                     Random rnd = new Random();
 
                     foreach (IGuildUser user in users.Where(u =>
-                            (!u.IsBot) &&
+                            !u.IsBot &&
                             (u.Status == UserStatus.Online ||
                             u.Status == UserStatus.DoNotDisturb ||
                             u.Status == UserStatus.Invisible) &&
-                            //TODO: tinker?
-                            (u.VoiceChannel != null))) {
+                            u.VoiceChannel != null)) {
                         //Update all [interval] seconds +3 XP
-                        XpManager.Update(user, 0, 3);
+                        Update(user, 0, 3);
                         receivers.Add(user.ToString());
 
                         //1 in [GiveRandomXpChance] chance to give user XP
                         if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
-                            int freeXp = 200, freeReserve = 100;
-                            XpManager.Update(user, freeXp, freeReserve);
+                            const int freeXp = 200;
+                            const int freeReserve = 100;
+                            Update(user, freeXp, freeReserve);
                             if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
                                 await ConsoleHelper.Log($"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
                                     LogSeverity.Info);

@@ -17,13 +17,17 @@ namespace Cirilla.Modules {
                 return;
             }
 
-            IUserMessage tempMessage = await ReplyAsync("Compiling.. :inbox_tray:");
+            //Clean for code formatting
+            string cleaned = code.Replace("`", string.Empty);
 
-            Embed embed = await ScriptRunnerService.ScriptEmbed(code, Context.User);
+            IUserMessage message = await ReplyAsync("Compiling.. :inbox_tray:");
 
-            await tempMessage.DeleteAsync();
+            Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User);
 
-            await ReplyAsync("", embed: embed);
+            await message.ModifyAsync(props => {
+                props.Content = string.Empty;
+                props.Embed = embed;
+            });
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace Cirilla.Services.Roslyn {
 
             EmbedBuilder builder = new EmbedBuilder {
                 Author = new EmbedAuthorBuilder {
-                    Name = $"Roslyn Scripting",
+                    Name = "Roslyn Scripting",
                     IconUrl = "http://ourcodeworld.com/public-media/gallery/categorielogo-5713d627ccabf.png" //C# Icon
                 }
             };
@@ -34,8 +35,9 @@ namespace Cirilla.Services.Roslyn {
             long compileTime = -1, execTime = -1;
             Stopwatch compileSw = new Stopwatch();
             Stopwatch execSw = new Stopwatch();
+            string diagnosticResult = null;
 
-            CancellationTokenSource compileCancellation = null, execCancellation = null;
+            CancellationTokenSource compileCancellation = null;
             try {
 
                 ScriptOptions options = ScriptOptions.Default;
@@ -50,11 +52,7 @@ namespace Cirilla.Services.Roslyn {
                 compileSw.Start();
                 compileCancellation = new CancellationTokenSource(Information.CompileTimeout);
                 ImmutableArray<Diagnostic> diagnostics = script.Compile(compileCancellation.Token);
-                Compilation compilation = script.GetCompilation();
-                string diagnosticResult = "";
-                foreach (Diagnostic diagnostic in diagnostics) {
-                    diagnosticResult += diagnostic.Descriptor + nl;
-                }
+                diagnosticResult = Enumerable.Aggregate(diagnostics, "", (current, diagnostic) => $"{current}+{diagnostic}{nl}");
                 if (!string.IsNullOrWhiteSpace(diagnosticResult)) {
                     await ConsoleHelper.Log(diagnosticResult, LogSeverity.Debug);
                 }
@@ -64,7 +62,7 @@ namespace Cirilla.Services.Roslyn {
 
                 //Run script
                 execSw.Start();
-                execCancellation = new CancellationTokenSource(Information.ExecutionTimeout);
+                CancellationTokenSource execCancellation = new CancellationTokenSource(Information.ExecutionTimeout);
                 ScriptState state = await script.RunAsync(null, execCancellation.Token);
                 result = state.ReturnValue;
                 execSw.Stop();
@@ -76,7 +74,7 @@ namespace Cirilla.Services.Roslyn {
                 compiled = false;
                 compileTime = -1;
             } catch (TaskCanceledException ex) {
-                if (ex.CancellationToken == compileCancellation.Token) {
+                if (ex.CancellationToken == compileCancellation?.Token) {
                     compiled = false;
                     compileTime = -1;
                     exception = new CompileTimeoutException($"Compilation took longer than {Information.CompileTimeout}ms!");
@@ -97,9 +95,15 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Result", "Successful");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
                 if (result == null) {
-                    builder.AddField($"Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
+                    builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                 } else {
                     builder.AddField($"Result: {result.GetType()}", $"```cs{nl}{result}{nl}```");
+                }
+                if (!string.IsNullOrWhiteSpace(diagnosticResult)) {
+                    builder.AddField("Diagnostics",
+                        diagnosticResult.Length < 255
+                            ? $"```{nl}{diagnosticResult}{nl}```"
+                            : $"```{nl}{diagnosticResult.Substring(0, 255)} [...]{nl}```");
                 }
             } else {
                 await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({exception.Message})", LogSeverity.Info);
@@ -108,13 +112,8 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Failed");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                if (compiled) {
-                    //Exception at runtime
-                    builder.AddField($"Exception: {exception.GetType()}", $"```accesslog{nl}{exception.Message}{nl}```");
-                } else {
-                    //Exception at compilation
-                    builder.AddField("Compiler Error:", $"```accesslog{nl}{exception.Message}{nl}```");
-                }
+                builder.AddField(compiled ? $"Exception: {exception.GetType()}" : "Compiler Error:",
+                    $"```accesslog{nl}{exception.Message}{nl}```");
             }
 
             string compileTimeStr = compileTime == -1 ? "/" : compileTime + "ms";

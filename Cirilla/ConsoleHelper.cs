@@ -15,6 +15,9 @@ namespace Cirilla {
             if (ShuttingDown)
                 return Task.CompletedTask;
 
+            if (Information.Config != null && Information.LogSeverity > message.Severity)
+                return Task.CompletedTask;
+
             switch (message.Severity) {
                 case LogSeverity.Critical:
                     Console.ForegroundColor = ConsoleColor.DarkRed;

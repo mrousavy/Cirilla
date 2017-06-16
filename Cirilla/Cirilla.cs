@@ -9,12 +9,16 @@ using Cirilla.Services.Permissions;
 namespace Cirilla {
     public class Cirilla {
         #region Privates
+
         private readonly CommandService _service;
+
         #endregion
 
         #region Publics
+
         public bool StopRequested { get; set; }
         public static DiscordSocketClient Client;
+
         #endregion
 
         public Cirilla(LogSeverity logSeverity) {
@@ -49,7 +53,8 @@ namespace Cirilla {
             try {
                 PermissionValidator.ValidatePermission(arg);
             } catch (Exception ex) {
-                ConsoleHelper.Log($"Could not validate Permissions for Discord Guild \"{arg.Name}\"! {ex.Message}", LogSeverity.Error);
+                ConsoleHelper.Log($"Could not validate Permissions for Discord Guild \"{arg.Name}\"! {ex.Message}",
+                    LogSeverity.Error);
             }
             return Task.CompletedTask;
         }
@@ -78,13 +83,14 @@ namespace Cirilla {
                 int argPos = 0;
                 // Determine if the message is a command
                 if (!(message.HasCharPrefix(Information.Prefix, ref argPos) ||
-                    message.HasStringPrefix(Information.SecondaryPrefix, ref argPos) ||
-                    message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+                      message.HasStringPrefix(Information.SecondaryPrefix, ref argPos) ||
+                      message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                     return;
                 CommandContext context = new CommandContext(Client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess) {
-                    await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}", LogSeverity.Error);
+                    await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}",
+                        LogSeverity.Error);
                     //await context.Channel.SendMessageAsync(result.ErrorReason);
 
                     Embed embed = Helper.WrongCommand(message, _service, context);

@@ -18,7 +18,8 @@ namespace Cirilla.Modules {
                     builder.AddField(":link: Links:", links);
                     await ReplyAsync("", embed: builder.Build());
                 } else {
-                    await ReplyAsync("No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
+                    await ReplyAsync(
+                        "No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
                 }
                 await ConsoleHelper.Log($"{Context.User} requested links.", LogSeverity.Info);
             } catch (Exception ex) {
@@ -30,16 +31,16 @@ namespace Cirilla.Modules {
         [Command("addlink"), Summary("Saves a new link")]
         public async Task AddLink([Summary("The link to store")] string link) {
             try {
-                if (!((IGuildUser)Context.User).GuildPermissions.Administrator) {
+                if (!((IGuildUser) Context.User).GuildPermissions.Administrator) {
                     await ReplyAsync($"You're not allowed to add links! Ask {Information.Senpai}!");
                     return;
                 }
 
                 string file = Path.Combine(Information.Directory, "links.txt");
                 if (File.Exists(file)) {
-                    File.AppendAllLines(file, new[] { link });
+                    File.AppendAllLines(file, new[] {link});
                 } else {
-                    File.WriteAllLines(file, new[] { link });
+                    File.WriteAllLines(file, new[] {link});
                 }
                 await ConsoleHelper.Log($"{Context.User} added a new link (\"{link}\")", LogSeverity.Info);
                 await ReplyAsync("Link added! :link:");

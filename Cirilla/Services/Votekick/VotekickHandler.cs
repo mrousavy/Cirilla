@@ -55,7 +55,8 @@ namespace Cirilla.Services.Votekick {
             }
         }
 
-        public async Task ReactionAdded(Cacheable<IUserMessage, ulong> cachableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
+        public async Task ReactionAdded(Cacheable<IUserMessage, ulong> cachableMessage, ISocketMessageChannel channel,
+            SocketReaction reaction) {
             try {
                 if (channel == null)
                     return;
@@ -82,7 +83,9 @@ namespace Cirilla.Services.Votekick {
         }
 
         //Is User Admin?
-        private static bool CheckIfAdmin(IGuildUser user) { return user != null && user.GuildPermissions.Administrator; }
+        private static bool CheckIfAdmin(IGuildUser user) {
+            return user != null && user.GuildPermissions.Administrator;
+        }
 
         //Is the majority of the Guild for yes?
         public async Task<bool> HasMajority() {
@@ -99,7 +102,8 @@ namespace Cirilla.Services.Votekick {
             if (yes > online / 2 && yes > no * 2) {
                 //check if admin voted no -> dismiss vote
                 if (noUser.Any(iuser => CheckIfAdmin(iuser as IGuildUser))) {
-                    await _message.Channel.SendMessageAsync($"An admin voted _no_, _{Helper.GetName(_user)}_ cannot be kicked!");
+                    await _message.Channel.SendMessageAsync(
+                        $"An admin voted _no_, _{Helper.GetName(_user)}_ cannot be kicked!");
                     return false;
                 }
 
@@ -111,16 +115,19 @@ namespace Cirilla.Services.Votekick {
         //Send user an Invite via DM
         private async Task<IUserMessage> DmInvite() {
             string nl = Environment.NewLine;
-            IInviteMetadata invite = await ((IGuildChannel)_message.Channel).CreateInviteAsync(maxUses: 1);
+            IInviteMetadata invite = await ((IGuildChannel) _message.Channel).CreateInviteAsync(maxUses: 1);
             try {
                 //DM the invite
                 IDMChannel dm = await _user.CreateDMChannelAsync();
-                return await dm.SendMessageAsync($"You've been kicked from the _{_guild.Name}_ guild by votekick!" + nl +
-                                          $"As I'm very generous today, here's an invite link to the _{_guild.Name}_ guild:" + nl + invite.Url);
+                return await dm.SendMessageAsync($"You've been kicked from the _{_guild.Name}_ guild by votekick!" +
+                                                 nl +
+                                                 $"As I'm very generous today, here's an invite link to the _{_guild.Name}_ guild:" +
+                                                 nl + invite.Url);
             } catch {
                 //user is not allowing DMs?
-                return await _message.Channel.SendMessageAsync($"{Helper.GetName(_user)} is not allowing private messages, " +
-                                                       "someone @here gotta send him an invite link again.." + nl + invite.Url);
+                return await _message.Channel.SendMessageAsync(
+                    $"{Helper.GetName(_user)} is not allowing private messages, " +
+                    "someone @here gotta send him an invite link again.." + nl + invite.Url);
             }
         }
 

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 
 namespace Cirilla.Services.Xp {
-
     public static class XpManager {
         public static string XpFilePath { get; set; }
         public static XpFile XpInfo { get; set; }
@@ -88,7 +87,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int)(previousLevel * Information.XpFactor);
+                    return (int) (previousLevel * Information.XpFactor);
             }
         }
 
@@ -96,7 +95,7 @@ namespace Cirilla.Services.Xp {
         public static async void TimerCallback() {
             try {
                 await ConsoleHelper.Log("Giving away XP to everyone...",
-                                LogSeverity.Info);
+                    LogSeverity.Info);
 
                 List<string> receivers = new List<string>();
 
@@ -105,11 +104,11 @@ namespace Cirilla.Services.Xp {
                     Random rnd = new Random();
 
                     foreach (IGuildUser user in users.Where(u =>
-                            !u.IsBot &&
-                            (u.Status == UserStatus.Online ||
-                            u.Status == UserStatus.DoNotDisturb ||
-                            u.Status == UserStatus.Invisible) &&
-                            u.VoiceChannel != null)) {
+                        !u.IsBot &&
+                        (u.Status == UserStatus.Online ||
+                         u.Status == UserStatus.DoNotDisturb ||
+                         u.Status == UserStatus.Invisible) &&
+                        u.VoiceChannel != null)) {
                         //Update all [interval] seconds +3 XP
                         Update(user, 0, 3);
                         receivers.Add(user.ToString());
@@ -120,15 +119,18 @@ namespace Cirilla.Services.Xp {
                             const int freeReserve = 100;
                             Update(user, freeXp, freeReserve);
                             if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
-                                await ConsoleHelper.Log($"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
+                                await ConsoleHelper.Log(
+                                    $"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
                                     LogSeverity.Info);
-                                await channel.SendMessageAsync($"Lucky you, {user.Mention}! The gods have decided to give you {freeXp} free XP! :moneybag:");
+                                await channel.SendMessageAsync(
+                                    $"Lucky you, {user.Mention}! The gods have decided to give you {freeXp} free XP! :moneybag:");
                             }
                         }
                     }
                 }
 
-                await ConsoleHelper.Log($"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
+                await ConsoleHelper.Log(
+                    $"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
                     LogSeverity.Info);
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to everyone! ({ex.Message})", LogSeverity.Error);

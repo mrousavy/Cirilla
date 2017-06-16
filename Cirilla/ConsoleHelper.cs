@@ -28,13 +28,15 @@ namespace Cirilla {
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
             }
-            string text = $"[{DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}] [{message.Severity}] [{message.Source}] {message.Message}";
+            string text =
+                $"[{DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}] [{message.Severity}] [{message.Source}] {message.Message}";
             Console.WriteLine(text);
             WriteOut(text);
 
             Console.ResetColor();
             return Task.CompletedTask;
         }
+
         public static Task Log(string message, LogSeverity logSeverity) {
             Log(new LogMessage(logSeverity, "Print", message));
             return Task.CompletedTask;
@@ -46,7 +48,8 @@ namespace Cirilla {
                     try {
                         string logfile = Path.Combine(Information.Directory, "log.txt");
                         if (!File.Exists(logfile)) {
-                            using (File.Create(logfile)) { }
+                            using (File.Create(logfile)) {
+                            }
                         }
 
                         // > than 10 MB (default) -> clear log
@@ -54,7 +57,7 @@ namespace Cirilla {
                             File.WriteAllBytes(logfile, new byte[0]);
                         }
 
-                        File.AppendAllLines(logfile, new List<string> { text });
+                        File.AppendAllLines(logfile, new List<string> {text});
                     } catch (Exception ex) {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
@@ -80,9 +83,7 @@ namespace Cirilla {
             DisableMouse();
         }
 
-        private static void CancelKey(object sender, ConsoleCancelEventArgs e) {
-            DisposeBot(CtrlType.CtrlCEvent);
-        }
+        private static void CancelKey(object sender, ConsoleCancelEventArgs e) { DisposeBot(CtrlType.CtrlCEvent); }
 
         public static bool DisposeBot(CtrlType sig) {
             if (Program.Cirilla != null)
@@ -167,6 +168,7 @@ namespace Cirilla {
         }
 
         private delegate bool EventHandler(CtrlType sig);
+
         private static EventHandler _handler;
 
 

@@ -8,9 +8,7 @@ namespace Cirilla.Modules {
     public class Help : ModuleBase<CommandContext> {
         private readonly CommandService _service;
 
-        public Help(CommandService service) {
-            _service = service;
-        }
+        public Help(CommandService service) { _service = service; }
 
         [Command("help"), Summary("Show all available Commands")]
         public async Task HelpAsync() {
@@ -25,7 +23,9 @@ namespace Cirilla.Modules {
                 foreach (var cmd in module.Commands) {
                     PreconditionResult result = await cmd.CheckPreconditionsAsync(Context);
                     if (result.IsSuccess) {
-                        description += $"{prefix}{cmd.Aliases.First()} {string.Join(", ", cmd.Parameters.Select(p => p.Name))}" + Environment.NewLine;
+                        description +=
+                            $"{prefix}{cmd.Aliases.First()} {string.Join(", ", cmd.Parameters.Select(p => p.Name))}" +
+                            Environment.NewLine;
                     }
                 }
 
@@ -52,7 +52,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("help"), Summary("Show information and usage about a command")]
-        public async Task HelpAsync([Summary("The command you want to see the documentation about")]string command) {
+        public async Task HelpAsync([Summary("The command you want to see the documentation about")] string command) {
             SearchResult result = _service.Search(Context, command);
             string nl = Environment.NewLine;
 

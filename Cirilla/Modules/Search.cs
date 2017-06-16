@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Search : ModuleBase {
         [Command("google"), Summary("Google something!")]
-        public async Task GoogleSearch([Summary("The Google search query")] [Remainder]string query) {
+        public async Task GoogleSearch([Summary("The Google search query")] [Remainder] string query) {
             try {
                 await ReplyAsync("" + Environment.NewLine + LmgtfyQuery(query));
             } catch {
@@ -19,10 +19,11 @@ namespace Cirilla.Modules {
 
 
         [Command("wiki"), Summary("Search something on Wikipedia!")]
-        public async Task WikipediaSearch([Summary("The Google search query")] [Remainder]string query) {
+        public async Task WikipediaSearch([Summary("The Google search query")] [Remainder] string query) {
             try {
                 if (string.IsNullOrWhiteSpace(query)) {
-                    await ReplyAsync($"You can't search for nothing.. Usage example: `{Information.Prefix}wiki Computer`");
+                    await ReplyAsync(
+                        $"You can't search for nothing.. Usage example: `{Information.Prefix}wiki Computer`");
                     return;
                 }
 
@@ -55,14 +56,15 @@ namespace Cirilla.Modules {
 
                     for (int i = 0; i < batchCount; i++) {
                         EmbedBuilder builder = new EmbedBuilder {
-
                             Author = new EmbedAuthorBuilder {
                                 Name = $"Wikipedia results for \"{query}\" (pt {i + 1})",
-                                IconUrl = "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
+                                IconUrl =
+                                    "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
                             },
                             Color = new Color(255, 255, 255),
                             Title = "\u200B",
-                            Description = message.Substring(cursor, (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize)
+                            Description = message.Substring(cursor,
+                                (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize)
                         };
                         await ReplyAsync("", embed: builder.Build());
                         cursor += DiscordConfig.MaxMessageSize;
@@ -80,7 +82,8 @@ namespace Cirilla.Modules {
 
                     await ReplyAsync("", embed: builder.Build());
                 }
-                await ConsoleHelper.Log($"{Context.User} requested a Wikipedia article about \"{query}\"", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} requested a Wikipedia article about \"{query}\"",
+                    LogSeverity.Info);
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Error on getting wikipedia article! ({ex.Message})", LogSeverity.Error);
                 await ReplyAsync("Whoops, couldn't find that for you.. Now you have to do it yourself! :confused:");

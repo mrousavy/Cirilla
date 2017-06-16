@@ -51,9 +51,7 @@ namespace Cirilla.Services.Hardware {
         public static UserHardwareFile UserHardwares;
 
         public class UserHardwareFile {
-            public UserHardwareFile() {
-                Hardwares = new List<UserHardware>();
-            }
+            public UserHardwareFile() { Hardwares = new List<UserHardware>(); }
 
             public List<UserHardware> Hardwares { get; set; }
         }

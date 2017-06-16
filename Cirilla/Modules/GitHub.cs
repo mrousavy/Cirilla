@@ -10,7 +10,8 @@ namespace Cirilla.Modules {
                 Color = new Color(244, 196, 65),
                 ThumbnailUrl = Information.GitHubLogo
             };
-            builder.AddField("Bug Report on GitHub", $"You've found a bug? Report it [here]({Information.RepoUrl + "/issues/new"})!");
+            builder.AddField("Bug Report on GitHub",
+                $"You've found a bug? Report it [here]({Information.RepoUrl + "/issues/new"})!");
 
             await ReplyAsync("", embed: builder.Build());
         }
@@ -29,15 +30,15 @@ namespace Cirilla.Modules {
             };
             builder.AddField("1. Fork it", $"Fork the Project on GitHub [here]({Information.RepoUrl + "/fork"})!");
             builder.AddField("2. Clone it", "Clone the Project with any git client " +
-                "(git bash: `git clone http://github.com/YOURNAME/Cirilla`)!");
+                                            "(git bash: `git clone http://github.com/YOURNAME/Cirilla`)!");
             builder.AddField("3. DNX Restore", "Run `dotnet restore` in the Cirilla Project Folder");
             builder.AddField("4. Open the Project", "Open the Project with Visual Studio " +
-                "(you need the [.NET Core Tools](https://www.microsoft.com/net/core))");
+                                                    "(you need the [.NET Core Tools](https://www.microsoft.com/net/core))");
             builder.AddField("5. Add a new Module", "Add a new `.cs` File in the `Modules` Folder " +
-                $"(you can see an Example on how the File has to look [here]" +
-                $"({Information.RepoUrl + "/blob/master/Cirilla/Modules/Connection.cs"}))");
+                                                    $"(you can see an Example on how the File has to look [here]" +
+                                                    $"({Information.RepoUrl + "/blob/master/Cirilla/Modules/Connection.cs"}))");
             builder.AddField("6. Push", "`Add` all files, `commit` and `push` with Git, then create a Pull Request " +
-                "on your Repository to merge it into `mrousavy/Cirilla`!");
+                                        "on your Repository to merge it into `mrousavy/Cirilla`!");
 
             await ReplyAsync("", embed: builder.Build());
         }

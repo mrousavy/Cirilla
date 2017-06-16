@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Profile : ModuleBase {
         [Command("profile"), Summary("Show a user's Profile")]
-        public async Task ShowProfile([Summary("The user you want to show the Profile of")]IGuildUser user) {
+        public async Task ShowProfile([Summary("The user you want to show the Profile of")] IGuildUser user) {
             string text = ProfileManager.ReadProfile(user.Id);
 
             if (text == null) {
-                await ReplyAsync($"{Helper.GetName(user)} does not have a custom profile set up!" + Environment.NewLine +
-                    $"He can setup a new profile by using the `{Information.Prefix}setprofile My Profile Description` command");
+                await ReplyAsync($"{Helper.GetName(user)} does not have a custom profile set up!" +
+                                 Environment.NewLine +
+                                 $"He can setup a new profile by using the `{Information.Prefix}setprofile My Profile Description` command");
                 return;
             }
 
@@ -27,7 +28,8 @@ namespace Cirilla.Modules {
             builder.AddField("\u200B", text);
 
             await ReplyAsync("", embed: builder.Build());
-            await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested {Helper.GetName(user)}'s profile.", LogSeverity.Info);
+            await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested {Helper.GetName(user)}'s profile.",
+                LogSeverity.Info);
         }
 
         [Command("profile"), Summary("Show your own Profile")]
@@ -40,7 +42,7 @@ namespace Cirilla.Modules {
 
             if (text == null) {
                 await ReplyAsync("You don't have a custom profile set up!" + Environment.NewLine +
-                    $"Setup a new profile by using the `{Information.Prefix}setprofile My Profile Description` command!");
+                                 $"Setup a new profile by using the `{Information.Prefix}setprofile My Profile Description` command!");
                 return;
             }
 

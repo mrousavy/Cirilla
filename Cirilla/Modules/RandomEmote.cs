@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Cirilla.Modules {
     internal class RandomEmote {
-
         internal static IEmote GetRandomEmote(IGuild guild) {
             List<GuildEmote> emotes = new List<GuildEmote>(guild.Emotes);
             Random random = new Random();

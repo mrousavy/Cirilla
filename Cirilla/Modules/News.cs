@@ -19,22 +19,23 @@ namespace Cirilla.Modules {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },
-                        ThumbnailUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
+                        ThumbnailUrl =
+                            "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
                         Color = new Color(119, 200, 255)
                     };
 
                     builder.AddField(links[i].Title, links[i].Url ?? links[i].SelfText);
                     await ReplyAsync("", embed: builder.Build());
                     int i1 = i;
-                    await loadingMsg.ModifyAsync(mp => {
-                        mp.Content = string.Format(loadingStr, i1 + 1);
-                    });
+                    await loadingMsg.ModifyAsync(mp => { mp.Content = string.Format(loadingStr, i1 + 1); });
                 }
 
                 await loadingMsg.DeleteAsync();
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
+                    LogSeverity.Info);
             } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})", LogSeverity.Error);
+                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
+                    LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }
         }
@@ -50,28 +51,29 @@ namespace Cirilla.Modules {
                 const string loadingStr = "Loading top stories.. ({0}/{1}) :newspaper2:";
                 IUserMessage loadingMsg = await ReplyAsync(string.Format(loadingStr, 0, limit));
 
-                List<RedditNet.Things.Link> links = await NewsService.HotNews((int)limit);
+                List<RedditNet.Things.Link> links = await NewsService.HotNews((int) limit);
                 for (int i = 0; i < links.Count; i++) {
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },
-                        ThumbnailUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
+                        ThumbnailUrl =
+                            "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
                         Color = new Color(119, 200, 255)
                     };
 
                     builder.AddField(links[i].Title, links[i].Url ?? links[i].SelfText);
                     await ReplyAsync("", embed: builder.Build());
                     int i1 = i;
-                    await loadingMsg.ModifyAsync(mp => {
-                        mp.Content = string.Format(loadingStr, i1 + 1, limit);
-                    });
+                    await loadingMsg.ModifyAsync(mp => { mp.Content = string.Format(loadingStr, i1 + 1, limit); });
                 }
 
                 await loadingMsg.DeleteAsync();
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
+                    LogSeverity.Info);
             } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})", LogSeverity.Error);
+                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
+                    LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }
         }

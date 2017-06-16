@@ -53,7 +53,6 @@ namespace Cirilla {
         internal static int ExecutionTimeout => Config.ExecutionTimeout;
 
 
-
         public static void LoadInfo() {
             //lock object so config does not get written to file (endless loop of errors)
             lock (Helper.Lock) {
@@ -91,6 +90,7 @@ namespace Cirilla {
     public class Config {
         //Discord API Infos
         public string ClientId = "323123443136593920";
+
         public string ClientSecret = "<YourDiscordApiClientSecret>";
         public string Username = "Cirilla#2111";
         public string Token = "<YourDiscordApiToken>";
@@ -100,24 +100,32 @@ namespace Cirilla {
 
         //Default Text Channel
         public string TextChannel = "general";
+
         //Bot prefix ($help)
         public char Prefix = '$';
+
         //Bot prefix (!help)
         public string SecondaryPrefix = "!";
+
         //Bot Source Code Repository URL
         public string RepoUrl = "http://github.com/mrousavy/Cirilla";
+
         //Bot Creator (me)
         public string Senpai = "<@266162606161526784>";
+
         //URL for Bot Profile Pic
         public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
 
 
         //Interval in ms to give XP (300000 = 5m)
         public int XpGiveInterval = 300000;
+
         //1 in [OwnXp] go to the XP Giver
         public int OwnXp = 7;
+
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
         public double XpFactor = 1.20;
+
         //1 in [GiveRandomXpChance] to give a user 100 XP on XpGiveInterval interval
         public int GiveRandomXpChance = 250;
 
@@ -126,26 +134,32 @@ namespace Cirilla {
 
         //Time in ms until a votekick expires
         public int VotekickExpire = 30000;
+
         public string VotekickYes = "👍";
         public string VotekickNo = "👎";
         public bool AllowVotekick = false;
 
         //Last time news got posted
         public int LastPost = DateTime.Now.Day;
+
         //Last article (name) that got posted
         public string LastArticle;
+
         //Time (in hours) until next news article is sent
         public int NewsInterval = 24;
 
         //Send Help in private Message
         public bool PmHelp = true;
+
         //Max Log Size in bytes
         public long MaxLogSize = 1024 * 1024 * 10;
 
         //Enable Roslyn Scripting using the $exec Command
         public bool AllowScripts = false;
+
         //Time in milliseconds until the compilation of $execute scipts cancels
         public int CompileTimeout = 15000;
+
         //Time in milliseconds until the execution of $execute scripts cancels
         public int ExecutionTimeout = 5000;
     }

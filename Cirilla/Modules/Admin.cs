@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Admin : ModuleBase {
-
         [Command("prefix"), Summary("Change prefix")]
         public async Task ChangePrefix([Summary("New prefix")] [Remainder] string prefix) {
             try {
@@ -23,7 +22,8 @@ namespace Cirilla.Modules {
                 Information.Config.SecondaryPrefix = prefix;
                 await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");
                 Information.WriteOut();
-                await ConsoleHelper.Log($"{Context.User} changed the prefix from {before} to {prefix}!", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} changed the prefix from {before} to {prefix}!",
+                    LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
                 await ConsoleHelper.Log($"Error chaning prefix, {ex.Message}!", LogSeverity.Error);

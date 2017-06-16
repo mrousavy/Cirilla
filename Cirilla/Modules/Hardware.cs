@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class Hardware : ModuleBase {
         [Command("hw"), Summary("Show a user's Hardware")]
-        public async Task ShowHardware([Summary("The user you want to show the Hardware of")]IGuildUser user) {
+        public async Task ShowHardware([Summary("The user you want to show the Hardware of")] IGuildUser user) {
             try {
                 Tuple<string, string> hwProfile = HardwareManager.ReadHardware(user.Id);
 
                 if (hwProfile == null) {
                     await ReplyAsync($"{Helper.GetName(user)} does not have his hardware set! " +
-                        $"Create a new hardware profile by using the `{Information.Prefix}sethw <HardwareProfileName>` command!");
+                                     $"Create a new hardware profile by using the `{Information.Prefix}sethw <HardwareProfileName>` command!");
                     return;
                 }
 
@@ -46,7 +46,7 @@ namespace Cirilla.Modules {
 
                 if (hwProfile == null) {
                     await ReplyAsync("You don't have any hardware info set! " +
-                        $"Use `{Information.Prefix}sethw <HardwareProfileName>` to create a new Hardware Profile!");
+                                     $"Use `{Information.Prefix}sethw <HardwareProfileName>` to create a new Hardware Profile!");
                     return;
                 }
 
@@ -70,7 +70,8 @@ namespace Cirilla.Modules {
         [Command("sethw"), Summary("Set your custom hardware, this will be displayed in a Markdown Embed!")]
         public async Task SetHardware([Summary("The hardware title")] [Remainder] string title) {
             if (string.IsNullOrWhiteSpace(title)) {
-                await ReplyAsync($"Please enter a valid hardware title! Usage: `{Information.Prefix}sethw <HardwareProfileName>`");
+                await ReplyAsync(
+                    $"Please enter a valid hardware title! Usage: `{Information.Prefix}sethw <HardwareProfileName>`");
                 return;
             }
 
@@ -78,9 +79,11 @@ namespace Cirilla.Modules {
             Cirilla.Client.MessageReceived += listener.HardwareReceived;
             HardwareManager.UpdateHardware(Context.User.Id, title, null);
 
-            await ConsoleHelper.Log($"{Context.User} is creating a new hardware profile (\"{title}\")", LogSeverity.Info);
+            await ConsoleHelper.Log($"{Context.User} is creating a new hardware profile (\"{title}\")",
+                LogSeverity.Info);
 
-            await ReplyAsync($"What text do you want to display on the hardware profile _{title}_? (Hint: Use `Shift` + `Enter` for new lines)");
+            await ReplyAsync(
+                $"What text do you want to display on the hardware profile _{title}_? (Hint: Use `Shift` + `Enter` for new lines)");
         }
     }
 }

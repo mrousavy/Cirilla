@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Services.Roslyn {
     public static class ScriptRunnerService {
-
         /// <summary>
         /// Run a Script from a string with the Roslyn compiler and return results as an Embed
         /// </summary>
@@ -39,7 +38,6 @@ namespace Cirilla.Services.Roslyn {
 
             CancellationTokenSource compileCancellation = null;
             try {
-
                 ScriptOptions options = ScriptOptions.Default;
                 options.AddImports("System");
                 options.AddImports("System.Threading");
@@ -52,7 +50,8 @@ namespace Cirilla.Services.Roslyn {
                 compileSw.Start();
                 compileCancellation = new CancellationTokenSource(Information.CompileTimeout);
                 ImmutableArray<Diagnostic> diagnostics = script.Compile(compileCancellation.Token);
-                diagnosticResult = Enumerable.Aggregate(diagnostics, "", (current, diagnostic) => $"{current}+{diagnostic}{nl}");
+                diagnosticResult = Enumerable.Aggregate(diagnostics, "",
+                    (current, diagnostic) => $"{current}+{diagnostic}{nl}");
                 if (!string.IsNullOrWhiteSpace(diagnosticResult)) {
                     await ConsoleHelper.Log(diagnosticResult, LogSeverity.Debug);
                 }
@@ -77,18 +76,21 @@ namespace Cirilla.Services.Roslyn {
                 if (ex.CancellationToken == compileCancellation?.Token) {
                     compiled = false;
                     compileTime = -1;
-                    exception = new CompileTimeoutException($"Compilation took longer than {Information.CompileTimeout}ms!");
+                    exception =
+                        new CompileTimeoutException($"Compilation took longer than {Information.CompileTimeout}ms!");
                 } else {
                     compiled = true;
                     execTime = -1;
-                    exception = new CompileTimeoutException($"Execution took longer than {Information.ExecutionTimeout}ms!");
+                    exception =
+                        new CompileTimeoutException($"Execution took longer than {Information.ExecutionTimeout}ms!");
                 }
             } catch (Exception ex) {
                 exception = ex;
             }
 
             if (successful) {
-                await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
+                    LogSeverity.Info);
 
                 builder.Color = new Color(50, 155, 0);
                 builder.AddField("Requested by", user.Mention);
@@ -106,7 +108,8 @@ namespace Cirilla.Services.Roslyn {
                             : $"```{nl}{diagnosticResult.Substring(0, 255)} [...]{nl}```");
                 }
             } else {
-                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({exception.Message})", LogSeverity.Info);
+                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({exception.Message})",
+                    LogSeverity.Info);
 
                 builder.Color = new Color(180, 8, 8);
                 builder.AddField("Requested by", user.Mention);
@@ -125,7 +128,6 @@ namespace Cirilla.Services.Roslyn {
             return builder.Build();
         }
     }
-
 
 
     public class CompileTimeoutException : Exception {

@@ -74,9 +74,10 @@ namespace Cirilla.Services.News {
         public static async Task<List<Link>> HotNews(int limit, string after = null) {
             RedditApi redditService = new RedditApi();
             Subreddit subreddit = await redditService.GetSubredditAsync("news");
-            Listing listings = await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest { Limit = limit, After = after });
+            Listing listings =
+                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest {Limit = limit, After = after});
 
-            return listings.Select((t, i) => (Link)listings.Children[i]).ToList();
+            return listings.Select((t, i) => (Link) listings.Children[i]).ToList();
         }
     }
 }

@@ -31,7 +31,8 @@ namespace Cirilla.Services.Hardware {
                     await arg.Channel.SendMessageAsync("Hardware successfully set!");
                 }
             } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not create hardware profile for {_user}! ({ex.Message})", LogSeverity.Error);
+                await ConsoleHelper.Log($"Could not create hardware profile for {_user}! ({ex.Message})",
+                    LogSeverity.Error);
                 await arg.Channel.SendMessageAsync("Sorry, I couldn't set your Hardware :confused:");
             }
         }

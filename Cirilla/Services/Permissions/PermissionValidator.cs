@@ -27,7 +27,8 @@ namespace Cirilla.Services.Permissions {
                 await ConsoleHelper.Log($"\"{guild.Name}\" successfully validated!", LogSeverity.Info);
             } else {
                 await guild.LeaveAsync();
-                await ConsoleHelper.Log($"\"{guild.Name}\" does not grant required permissions! Server left!", LogSeverity.Info);
+                await ConsoleHelper.Log($"\"{guild.Name}\" does not grant required permissions! Server left!",
+                    LogSeverity.Info);
             }
         }
 

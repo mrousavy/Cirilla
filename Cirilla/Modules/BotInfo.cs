@@ -9,7 +9,8 @@ namespace Cirilla.Modules {
         public async Task Info() {
             try {
                 string mname = Environment.MachineName;
-                string pre = $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
+                string pre =
+                    $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
                 int cores = Environment.ProcessorCount;
 
                 EmbedBuilder builder = new EmbedBuilder {
@@ -44,7 +45,8 @@ namespace Cirilla.Modules {
             try {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
                 if (tspan.TotalHours >= 1) {
-                    await ReplyAsync("I'm already running for " + tspan.ToString("m'm 's's'") + ", I'm tired :confused:");
+                    await ReplyAsync(
+                        "I'm already running for " + tspan.ToString("m'm 's's'") + ", I'm tired :confused:");
                 } else if (tspan.TotalMinutes >= 1) {
                     await ReplyAsync("I'm running for " + tspan.ToString("m'm 's's'"));
                 } else {
@@ -79,10 +81,12 @@ namespace Cirilla.Modules {
                     Color = new Color(50, 125, 0)
                 };
                 builder.AddField("1. Clone", $"Clone project from GitHub (git bash: `git clone {Information.RepoUrl}`");
-                builder.AddField("2. Open Bash/CLI", "Run bash or any other command line tool and navigate into the Project folder: " +
+                builder.AddField("2. Open Bash/CLI",
+                    "Run bash or any other command line tool and navigate into the Project folder: " +
                     "`cd C:\\Some\\Directory\\Cirilla\\Cirilla`");
                 builder.AddField("4. DNX Restore", "Run `dotnet restore` in the Cirilla Project Folder");
-                builder.AddField("5. DNX Run", "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime))");
+                builder.AddField("5. DNX Run",
+                    "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime))");
 
                 await ReplyAsync("", embed: builder.Build());
             } catch {

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Services.Wikipedia {
     public class WikipediaService {
-        private const string WikipediaApiScheme = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&titles={0}&redirects=";
+        private const string WikipediaApiScheme =
+                "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&titles={0}&redirects="
+            ;
 
         public async Task<WikipediaResponse> GetWikipediaResultsAsync(string phrase) {
             string query = string.Join(" ", phrase);

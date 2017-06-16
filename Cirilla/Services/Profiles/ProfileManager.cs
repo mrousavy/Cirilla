@@ -44,9 +44,7 @@ namespace Cirilla.Services.Profiles {
         public static UserProfiles Profiles;
 
         public class UserProfiles {
-            public UserProfiles() {
-                ProfilesList = new List<UserProfile>();
-            }
+            public UserProfiles() { ProfilesList = new List<UserProfile>(); }
 
             public List<UserProfile> ProfilesList { get; set; }
         }

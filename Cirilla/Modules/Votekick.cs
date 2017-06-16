@@ -14,7 +14,8 @@ namespace Cirilla.Modules {
             }
 
             try {
-                if (user.Status != UserStatus.Online && user.Status != UserStatus.DoNotDisturb && user.Status != UserStatus.Invisible) {
+                if (user.Status != UserStatus.Online && user.Status != UserStatus.DoNotDisturb &&
+                    user.Status != UserStatus.Invisible) {
                     await Context.Channel.SendMessageAsync("You can't kick offline/afk users.. That's mean!");
                     return;
                 }
@@ -33,7 +34,8 @@ namespace Cirilla.Modules {
                 VotekickHandler handler = new VotekickHandler(user, message, Context.Guild);
                 Cirilla.Client.ReactionAdded += handler.ReactionAdded;
             } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not start votekick {Helper.GetName(user)}! ({ex.Message})", LogSeverity.Error);
+                await ConsoleHelper.Log($"Could not start votekick {Helper.GetName(user)}! ({ex.Message})",
+                    LogSeverity.Error);
             }
         }
     }

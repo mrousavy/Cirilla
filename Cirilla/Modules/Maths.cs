@@ -11,8 +11,8 @@ namespace Cirilla.Modules {
         public async Task Square([Summary("The number to square.")] double num) {
             try {
                 await ReplyAsync("```c" + Environment.NewLine +
-                                $"{num}^2 = {Math.Pow(num, 2)}" + Environment.NewLine +
-                                "```");
+                                 $"{num}^2 = {Math.Pow(num, 2)}" + Environment.NewLine +
+                                 "```");
             } catch (Exception ex) {
                 await ReplyAsync($"Could not square {num}! ({ex.Message})");
             }
@@ -22,15 +22,15 @@ namespace Cirilla.Modules {
         public async Task Sqrt([Summary("The number to sqrt.")] double num) {
             try {
                 await ReplyAsync("```c" + Environment.NewLine +
-                                $"sqrt({num}) = {Math.Sqrt(num)}" + Environment.NewLine +
-                                "```");
+                                 $"sqrt({num}) = {Math.Sqrt(num)}" + Environment.NewLine +
+                                 "```");
             } catch (Exception ex) {
                 await ReplyAsync($"Could not calculate the square root of {num}! ({ex.Message})");
             }
         }
 
         [Command("calc"), Summary("Calculates Expressions.")]
-        public async Task Calc([Summary("The expression to evaluate.")] [Remainder]string expression) {
+        public async Task Calc([Summary("The expression to evaluate.")] [Remainder] string expression) {
             try {
                 string trimmed = Regex.Replace(expression, @"\s+", "");
                 trimmed = trimmed.Replace("\"", "");

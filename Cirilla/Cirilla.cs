@@ -1,10 +1,10 @@
-﻿using Discord;
+﻿using Cirilla.Services.Permissions;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Cirilla.Services.Permissions;
 
 namespace Cirilla {
     public class Cirilla {
@@ -23,8 +23,10 @@ namespace Cirilla {
 
         public Cirilla(LogSeverity logSeverity) {
             DiscordSocketConfig config = new DiscordSocketConfig {
-                LogLevel = logSeverity
+                LogLevel = logSeverity,
+                WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance
             };
+            //Client = new WS4NetClient();
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
             Client.MessageReceived += MessageReceived;

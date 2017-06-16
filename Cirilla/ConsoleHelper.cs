@@ -9,7 +9,12 @@ using System.Threading.Tasks;
 
 namespace Cirilla {
     public class ConsoleHelper {
+        public static bool ShuttingDown { get; set; } = false;
+
         public static Task Log(LogMessage message) {
+            if (ShuttingDown)
+                return Task.CompletedTask;
+
             switch (message.Severity) {
                 case LogSeverity.Critical:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -57,7 +62,7 @@ namespace Cirilla {
                             File.WriteAllBytes(logfile, new byte[0]);
                         }
 
-                        File.AppendAllLines(logfile, new List<string> {text});
+                        File.AppendAllLines(logfile, new List<string> { text });
                     } catch (Exception ex) {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
@@ -142,6 +147,8 @@ namespace Cirilla {
         }
 
         public static void Outro() {
+            ShuttingDown = true;
+
             Console.Clear();
 
             string introText = "Shutting down..";

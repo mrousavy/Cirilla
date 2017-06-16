@@ -6,8 +6,6 @@ using System.Linq;
 
 namespace Cirilla.Services.Hardware {
     public class HardwareManager {
-
-
         public static Tuple<string, string> ReadHardware(ulong userId) {
             string hwfile = Path.Combine(Information.Directory, "hardware.json");
             if (File.Exists(hwfile)) {

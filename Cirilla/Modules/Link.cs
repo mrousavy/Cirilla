@@ -18,7 +18,7 @@ namespace Cirilla.Modules {
                     builder.AddField(":link: Links:", links);
                     await ReplyAsync("", embed: builder.Build());
                 } else {
-                    await ReplyAsync($"No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
+                    await ReplyAsync("No Links are saved yet! Start adding links with `$addlink [Name](http://url.com)`!");
                 }
                 await ConsoleHelper.Log($"{Context.User} requested links.", LogSeverity.Info);
             } catch (Exception ex) {

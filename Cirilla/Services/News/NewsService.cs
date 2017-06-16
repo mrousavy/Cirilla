@@ -11,7 +11,7 @@ namespace Cirilla.Services.News {
     public class NewsService {
         public static async void DailyNews(ITextChannel channel) {
             try {
-                RedditNet.Things.Link link;
+                Link link;
                 const int maxRetries = 10;
                 int retries = 0;
                 string lastName = null;

@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Cirilla.Services.Permissions;
 
 namespace Cirilla {
     public class Cirilla {
@@ -25,6 +26,8 @@ namespace Cirilla {
             Client.MessageReceived += MessageReceived;
             Client.UserJoined += EventHelper.UserJoined;
             Client.UserLeft += EventHelper.UserLeft;
+            Client.JoinedGuild += GuildInfoReceived;
+            Client.GuildAvailable += GuildInfoReceived;
 
             CommandServiceConfig serviceConfig = new CommandServiceConfig {
                 CaseSensitiveCommands = false,
@@ -40,6 +43,15 @@ namespace Cirilla {
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not login as Discord Bot! {ex.Message}", LogSeverity.Critical);
             }
+        }
+
+        private static Task GuildInfoReceived(SocketGuild arg) {
+            try {
+                PermissionValidator.ValidatePermission(arg);
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not validate Permissions for Discord Guild \"{arg.Name}\"! {ex.Message}", LogSeverity.Error);
+            }
+            return Task.CompletedTask;
         }
 
         private async Task MessageReceived(SocketMessage messageArg) {

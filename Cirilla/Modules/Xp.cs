@@ -18,10 +18,21 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Wow man. How generous. :+1:");
                     return;
                 }
-                if (Context.User is IGuildUser guilduser && (xp < 1 && !guilduser.GuildPermissions.Administrator)) {
-                    await ReplyAsync("Nice try, you can't drain XP from Users!");
-                    return;
+                bool canDrain = false; //Is sender Admin?
+                bool drainOwn = true; //False if Admin is draining XP
+                if (Context.User is IGuildUser guilduser && guilduser.GuildPermissions.Administrator) {
+                    canDrain = true;
                 }
+                if (xp < 1) {
+                    if (!canDrain) {
+                        await ReplyAsync("Nice try, you can't drain XP from Users!");
+                        return;
+                    } else {
+                        drainOwn = false;
+                    }
+                }
+
+
                 int ownXp = xp / Information.OwnXp;
 
                 UserXp userxp = XpManager.Get(Context.User);
@@ -32,10 +43,15 @@ namespace Cirilla.Modules {
                     int lvlAfter = XpManager.Get(user).Level;
 
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
-                    XpManager.Update(Context.User, -xp + ownXp);
+                    if (drainOwn) {
+                        XpManager.Update(Context.User, -xp + ownXp);
+                    }
 
-                    await ReplyAsync(
-                        $"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
+                    if (xp < 1) {
+                        await ReplyAsync($"{Helper.GetName(Context.User)} drained {Helper.GetName(user)} {-xp} {GetNameForXp()}! :money_with_wings:");
+                    } else {
+                        await ReplyAsync($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
+                    }
 
                     if (lvlAfter > lvlBefore) {
                         await ReplyAsync($":tada: {Helper.GetName(user)} was promoted to level {lvlAfter}! :tada:");

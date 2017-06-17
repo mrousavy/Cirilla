@@ -18,10 +18,8 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDisposable disposable = Context.Channel.EnterTypingState();
                 IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(25).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
-                disposable.Dispose();
                 await ConsoleHelper.Log($"{Context.User} cleaned the Chat (25 Messages)", LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clean the last messages.. :confused:");
@@ -41,12 +39,10 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDisposable disposable = Context.Channel.EnterTypingState();
                 //++ because own delete own message aswell
                 count++;
                 IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(count).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
-                disposable.Dispose();
                 await ConsoleHelper.Log($"{Context.User} cleaned the Chat ({count} Messages)", LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clean the last messages.. :confused:");

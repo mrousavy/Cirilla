@@ -9,7 +9,7 @@ namespace Cirilla {
         //Directory to store configs in
         internal static string Directory { get; set; } = AppContext.BaseDirectory;
 
-        internal static Config Config { get; set; }
+        internal static Configuration Config { get; set; }
 
         internal static string ClientId => Config.ClientId;
         internal static string ClientSecret => Config.ClientSecret;
@@ -62,13 +62,13 @@ namespace Cirilla {
                 ConsoleHelper.Log($"pwd: {Directory}", LogSeverity.Info);
 
                 if (!File.Exists(config)) {
-                    File.WriteAllText(config, JsonConvert.SerializeObject(new Config()));
+                    File.WriteAllText(config, JsonConvert.SerializeObject(new Configuration()));
                     ConsoleHelper.Log($"No configuration set, please edit {config}!", LogSeverity.Critical);
                     Console.ReadKey();
                     Process.GetCurrentProcess().Kill();
                 } else {
                     try {
-                        Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(config));
+                        Config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(config));
                     } catch (Exception ex) {
                         ConsoleHelper.Log(ex.Message, LogSeverity.Critical);
                         ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", LogSeverity.Critical);
@@ -87,7 +87,7 @@ namespace Cirilla {
     }
 
 
-    public class Config {
+    public class Configuration {
         //Discord API Infos
         public string ClientId = "323123443136593920";
 

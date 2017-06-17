@@ -1,5 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
+using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -45,5 +47,48 @@ namespace Cirilla.Modules {
                 }
             }
         }
+
+
+
+
+        #region Set
+        //[Command("config"), Summary("Set a specific setting (string) in bot config")]
+        public async Task SetConfig([Summary("The Property you want to set")] string property, [Summary("The value for the specific property")] string value) {
+            await SetProperty(property, value);
+        }
+        //[Command("config"), Summary("Set a specific setting (bool) in bot config")]
+        public async Task SetConfig([Summary("The Property you want to set")] string property, [Summary("The value for the specific property")] bool value) {
+            await SetProperty(property, value);
+        }
+        //[Command("config"), Summary("Set a specific setting (int) in bot config")]
+        public async Task SetConfig([Summary("The Property you want to set")] string property, [Summary("The value for the specific property")] int value) {
+            await SetProperty(property, value);
+        }
+        //[Command("config"), Summary("Set a specific setting (double) in bot config")]
+        public async Task SetConfig([Summary("The Property you want to set")] string property, [Summary("The value for the specific property")] double value) {
+            await SetProperty(property, value);
+        }
+        //[Command("config"), Summary("Set a specific setting (LogSeverity) in bot config")]
+        public async Task SetConfig([Summary("The Property you want to set")] string property, [Summary("The value for the specific property")] LogSeverity value) {
+            await SetProperty(property, value);
+        }
+
+
+        public async Task SetProperty(string property, object value) {
+            try {
+                PropertyInfo pinfo = typeof(Configuration).GetProperty(property);
+
+                if (pinfo.PropertyType == value.GetType()) {
+                    pinfo.SetValue(Information.Config, value);
+                    Information.WriteOut();
+                    await ReplyAsync($"{property} was set to {value}! Use `{Information.Prefix}config` to see the current config!");
+                } else {
+                    await ReplyAsync($"{property} does not accept values of Type {value.GetType()}");
+                }
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"Error setting Information.Config.{property}! ({ex.Message})", LogSeverity.Error);
+            }
+        }
+        #endregion
     }
 }

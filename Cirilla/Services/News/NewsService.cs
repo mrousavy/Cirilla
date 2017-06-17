@@ -41,7 +41,7 @@ namespace Cirilla.Services.News {
                 await channel.SendMessageAsync("", embed: builder.Build());
 
                 Information.Config.LastArticle = link.FullName;
-                Information.Config.LastPost = DateTime.Now.Day;
+                Information.Config.LastPost = DateTime.Now;
                 Information.WriteOut();
 
                 await ConsoleHelper.Log($"Posted daily news in #{channel.Name}!", LogSeverity.Info);
@@ -56,13 +56,19 @@ namespace Cirilla.Services.News {
 
         public static async void TimerLoop() {
             while (true) {
-                Thread.Sleep(Information.NewsInterval * 60 * 60 * 1000);
+                DateTime nextPost = Information.LastPost.AddHours(Information.NewsInterval);
+                TimeSpan diff = nextPost - DateTime.Now;
+                double sleep = diff.TotalMilliseconds;
+
+                await ConsoleHelper.Log($"Next News in {diff.ToString()}.. I'm going to sleep!", LogSeverity.Info);
+                Thread.Sleep((int)sleep);
                 await ConsoleHelper.Log("Fetching news..", LogSeverity.Info);
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
                     try {
                         ITextChannel channel = await guild.GetDefaultChannelAsync();
-                        if (channel != null)
+                        if (channel != null) {
                             DailyNews(channel);
+                        }
                     } catch {
                         // could not send news
                     }
@@ -75,9 +81,9 @@ namespace Cirilla.Services.News {
             RedditApi redditService = new RedditApi();
             Subreddit subreddit = await redditService.GetSubredditAsync("news");
             Listing listings =
-                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest {Limit = limit, After = after});
+                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest { Limit = limit, After = after });
 
-            return listings.Select((t, i) => (Link) listings.Children[i]).ToList();
+            return listings.Select((t, i) => (Link)listings.Children[i]).ToList();
         }
     }
 }

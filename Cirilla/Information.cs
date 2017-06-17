@@ -40,7 +40,7 @@ namespace Cirilla {
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
-        internal static int LastPost => Config.LastPost;
+        internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;
         internal static int NewsInterval => Config.NewsInterval;
 
@@ -140,7 +140,7 @@ namespace Cirilla {
         public bool AllowVotekick = false;
 
         //Last time news got posted
-        public int LastPost = DateTime.Now.Day;
+        public DateTime LastPost = DateTime.Now;
 
         //Last article (name) that got posted
         public string LastArticle;

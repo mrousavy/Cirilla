@@ -57,8 +57,21 @@ namespace Cirilla.Services.News {
         public static async void TimerLoop() {
             while (true) {
                 DateTime nextPost = Information.LastPost.AddHours(Information.NewsInterval);
-                TimeSpan diff = nextPost - DateTime.Now;
-                double sleep = diff.TotalMilliseconds;
+                DateTime now = DateTime.Now;
+                TimeSpan diff;
+
+                if (nextPost > now) {
+                    diff = nextPost - now;
+                } else {
+                    diff = now - nextPost;
+                }
+
+                double sleep = Math.Abs(diff.TotalMilliseconds);
+
+                if (sleep < 0) {
+                    Thread.Sleep(1000);
+                    return;
+                }
 
                 await ConsoleHelper.Log($"Next News in {diff.ToString()}.. I'm going to sleep!", LogSeverity.Info);
                 Thread.Sleep((int)sleep);

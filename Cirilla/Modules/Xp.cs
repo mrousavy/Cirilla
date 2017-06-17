@@ -26,13 +26,13 @@ namespace Cirilla.Modules {
 
                 UserXp userxp = XpManager.Get(Context.User);
 
-                if (userxp.XpReserve >= xp) {
+                if (userxp.Xp >= xp) {
                     int lvlBefore = XpManager.Get(user).Level;
-                    XpManager.Update(user, xp, 0);
+                    XpManager.Update(user, xp);
                     int lvlAfter = XpManager.Get(user).Level;
 
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
-                    XpManager.Update(Context.User, ownXp, -xp);
+                    XpManager.Update(Context.User, -xp + ownXp);
 
                     await ReplyAsync(
                         $"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
@@ -44,7 +44,7 @@ namespace Cirilla.Modules {
                         LogSeverity.Info);
                 } else {
                     await ReplyAsync(
-                        $"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.XpReserve} XP!");
+                        $"You can't give {xp} XP to {Helper.GetName(user)}, you only have {userxp.Xp} XP!");
                 }
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to {Helper.GetName(user)}! ({ex.Message})",
@@ -65,7 +65,7 @@ namespace Cirilla.Modules {
                     }
 
                     UserXp userxp = XpManager.Get(user);
-                    XpManager.Update(user, xp - userxp.Xp, 0);
+                    XpManager.Update(user, xp - userxp.Xp);
                     await ReplyAsync($"{Helper.GetName(user)} set {user.Mention}'s XP to {xp}!");
                 } else {
                     await ReplyAsync("You can't use that command in DM!");
@@ -93,10 +93,9 @@ namespace Cirilla.Modules {
                     },
                     Color = new Color(50, 125, 0)
                 };
-                builder.AddField("XP", xp.Xp);
-                builder.AddField("Reserve XP", xp.XpReserve);
-                builder.AddField("Level", xp.Level);
-                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
+                builder.AddInlineField("XP", xp.Xp);
+                builder.AddInlineField("Level", xp.Level);
+                builder.AddInlineField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch {
@@ -116,10 +115,9 @@ namespace Cirilla.Modules {
                     },
                     Color = new Color(50, 125, 0)
                 };
-                builder.AddField("XP", xp.Xp);
-                builder.AddField("Reserve XP", xp.XpReserve);
-                builder.AddField("Level", xp.Level);
-                builder.AddField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
+                builder.AddInlineField("XP", xp.Xp);
+                builder.AddInlineField("Level", xp.Level);
+                builder.AddInlineField("Next Level", XpManager.GetXp(xp.Level + 1) - xp.Xp);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch {
@@ -130,7 +128,7 @@ namespace Cirilla.Modules {
 
         public static string GetNameForXp() {
             //7 times XP (so "XP" is more common) and 4 times other units
-            string[] names = {"XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins"};
+            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

@@ -34,11 +34,10 @@ namespace Cirilla.Services.Xp {
             return userXp;
         }
 
-        public static void Update(IUser user, int plusXp, int plusReserve) {
+        public static void Update(IUser user, int plusXp) {
             foreach (UserXp uxp in XpInfo.Users) {
                 if (uxp.UserId == user.Id) {
                     uxp.Xp += plusXp;
-                    uxp.XpReserve += plusReserve;
                     WriteOut();
                     return;
                 }
@@ -87,7 +86,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int) (previousLevel * Information.XpFactor);
+                    return (int)(previousLevel * Information.XpFactor);
             }
         }
 
@@ -110,14 +109,13 @@ namespace Cirilla.Services.Xp {
                          u.Status == UserStatus.Invisible) &&
                         u.VoiceChannel != null)) {
                         //Update all [interval] seconds +3 XP
-                        Update(user, 0, 3);
+                        Update(user, 3);
                         receivers.Add(user.ToString());
 
                         //1 in [GiveRandomXpChance] chance to give user XP
                         if (rnd.Next(0, Information.GiveRandomXpChance) == 0) {
                             const int freeXp = 200;
-                            const int freeReserve = 100;
-                            Update(user, freeXp, freeReserve);
+                            Update(user, freeXp);
                             if (await guild.GetChannelAsync(guild.DefaultChannelId) is ITextChannel channel) {
                                 await ConsoleHelper.Log(
                                     $"{user} randomly got {freeXp} free XP (1 in {Information.GiveRandomXpChance} chance)",
@@ -150,12 +148,10 @@ namespace Cirilla.Services.Xp {
         public UserXp(ulong userId, int xp, int reserve) {
             UserId = userId;
             Xp = xp;
-            XpReserve = reserve;
         }
 
         public ulong UserId { get; set; }
         public int Xp { get; set; }
-        public int XpReserve { get; set; }
 
         [JsonIgnore]
         public int Level => XpManager.GetLevel(Xp);

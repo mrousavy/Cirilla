@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -29,6 +30,51 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log($"Error chaning prefix, {ex.Message}!", LogSeverity.Error);
             }
         }
+
+        [Command("log"), Summary("Upload the Bot's log")]
+        public async Task GetLog() {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                IDMChannel dm = await user.CreateDMChannelAsync();
+                await dm.SendFileAsync(Path.Combine(Information.Directory, "log.txt"), "Here you go");
+                await ConsoleHelper.Log($"{Context.User} requested the bot config!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't send you the config.. :confused:");
+                await ConsoleHelper.Log($"Error sending config, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        [Command("clearlog"), Summary("Clear the Bot's log")]
+        public async Task ClearLog() {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                string file = Path.Combine(Information.Directory, "log.txt");
+                long size = new FileInfo(file).Length;
+                File.WriteAllBytes(file, new byte[0]);
+                await ReplyAsync($"Config cleared! ({size / 1000} kB)");
+                await ConsoleHelper.Log($"{Context.User} cleared the bot config!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't clear the config.. :confused:");
+                await ConsoleHelper.Log($"Error clear config, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
 
 
         [Command("shutdown"), Summary("Shutdown the Bot")]

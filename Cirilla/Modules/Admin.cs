@@ -52,10 +52,10 @@ namespace Cirilla.Modules {
                 lock (Helper.Lock)
                     File.Delete(file);
 
-                await ConsoleHelper.Log($"{Context.User} requested the bot config!", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync("Whoops, unfortunately I couldn't send you the config.. :confused:");
-                await ConsoleHelper.Log($"Error sending config, {ex.Message}!", LogSeverity.Error);
+                await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. :confused:");
+                await ConsoleHelper.Log($"Error sending log, {ex.Message}!", LogSeverity.Error);
             }
         }
 
@@ -75,11 +75,11 @@ namespace Cirilla.Modules {
                 long size = new FileInfo(file).Length;
                 lock (Helper.Lock)
                     File.WriteAllBytes(file, new byte[0]);
-                await ReplyAsync($"Config cleared! ({size / 1000} kB)");
-                await ConsoleHelper.Log($"{Context.User} cleared the bot config! ({size / 1000} kB)", LogSeverity.Info);
+                await ReplyAsync($"Log cleared! ({size / 1000} kB)");
+                await ConsoleHelper.Log($"{Context.User} cleared the bot log! ({size / 1000} kB)", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync("Whoops, unfortunately I couldn't clear the config.. :confused:");
-                await ConsoleHelper.Log($"Error clear config, {ex.Message}!", LogSeverity.Error);
+                await ReplyAsync("Whoops, unfortunately I couldn't clear the log.. :confused:");
+                await ConsoleHelper.Log($"Error clear log, {ex.Message}!", LogSeverity.Error);
             }
         }
 

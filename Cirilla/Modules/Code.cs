@@ -8,7 +8,7 @@ namespace Cirilla.Modules {
         [Command("exec"), Summary("Execute or run C# Code/Scripts")]
         public async Task Execute([Summary("The Code to execute")] [Remainder] string code) {
             //Requirements to execute C# Roslyn scripts
-            if (!(Context.User is IGuildUser user) || !user.GuildPermissions.Administrator) {
+            if (!(Context.User is IGuildUser user) || !user.GuildPermissions.Speak) {
                 await ReplyAsync("You're not allowed to use this super premium command!");
                 return;
             }

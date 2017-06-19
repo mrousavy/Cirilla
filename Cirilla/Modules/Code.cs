@@ -17,6 +17,12 @@ namespace Cirilla.Modules {
                 return;
             }
 
+            //Handle exec async - so MessageReceived is not blocking
+            HandleExecAsync(code);
+        }
+
+
+        public async void HandleExecAsync(string code) {
             //Clean for code formatting
             string cleaned = code.Replace("```cs", string.Empty).Replace("`", string.Empty);
 

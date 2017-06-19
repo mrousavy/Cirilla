@@ -13,22 +13,29 @@ These are the commands you can use:
 
 **Admin**
 ```
-$prefix arguments
+$prefix prefix
+$log 
+$clearlog 
+$shutdown
 ```
 **BotInfo**
 ```
-$info
-$uptime
+$info 
+$uptime 
 $run
 ```
 **Clean**
 ```
-$clean
+$clean 
 $clean count
+```
+**Code**
+```
+$exec code
 ```
 **Config**
 ```
-$config
+$config 
 $reload
 ```
 **Connection**
@@ -37,61 +44,61 @@ $ping
 ```
 **GitHub**
 ```
-$bugreport
-$repo
+$bugreport 
+$repo 
 $addmodule
 ```
 **Greetings**
 ```
-$hi
-$hello
-$hallo
-$seas
-$servas
+$hi 
+$hello 
+$hallo 
+$seas 
+$servas 
 $sup
 ```
 **Hardware**
 ```
 $hw user
-$hw
+$hw 
 $sethw title
 ```
 **Help**
 ```
-$help
+$help 
 $help command
 ```
 **Link**
 ```
-$links
+$links 
 $addlink link
 ```
 **Maths**
 ```
 $square num
 $sqrt num
-$calc expressions
+$calc expression
 $pi
 ```
 **News**
 ```
-$news
+$news 
 $news limit
 ```
 **Profile**
 ```
 $profile user
-$profile
+$profile 
 $setprofile
 ```
 **Randoms**
 ```
-$flip
+$flip 
 $random maximum
 ```
 **Reddit**
 ```
-$dankmeme
+$dankmeme 
 $reddit rsubreddit
 ```
 **Search**
@@ -112,6 +119,6 @@ $votekick user
 ```
 $xp user, xp
 $setxp user, xp
-$xp
+$xp 
 $xp user
 ```

@@ -10,14 +10,14 @@ namespace Cirilla {
     public class Cirilla {
         #region Privates
 
-        private readonly CommandService _service;
+        private readonly CommandService _service { get; set; }
 
         #endregion
 
         #region Publics
 
         public bool StopRequested { get; set; }
-        public static DiscordSocketClient Client;
+        public static DiscordSocketClient Client { get; set; }
 
         #endregion
 

@@ -10,7 +10,7 @@ namespace Cirilla {
     public class Cirilla {
         #region Privates
 
-        private readonly CommandService _service { get; set; }
+        private CommandService _service { get; }
 
         #endregion
 

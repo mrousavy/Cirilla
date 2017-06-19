@@ -127,9 +127,15 @@ namespace Cirilla.Services.Xp {
                     }
                 }
 
-                await ConsoleHelper.Log(
-                    $"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
-                    LogSeverity.Info);
+                if (receivers.Count < 1) {
+                    await ConsoleHelper.Log(
+                        $"{Information.XpGiveInterval / 1000} Second interval - no-one gained XP!",
+                        LogSeverity.Info);
+                } else {
+                    await ConsoleHelper.Log(
+                        $"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
+                        LogSeverity.Info);
+                }
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to everyone! ({ex.Message})", LogSeverity.Error);
             }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Cirilla {
     public static class Helper {
-        public static object Lock { get; set; } = new object();
+        public static object Lock { get; } = new object();
 
         public static string GetName(IUser user) {
             if (user == null) {

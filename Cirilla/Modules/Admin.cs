@@ -44,7 +44,14 @@ namespace Cirilla.Modules {
                 }
 
                 IDMChannel dm = await user.CreateDMChannelAsync();
-                await dm.SendFileAsync(Path.Combine(Information.Directory, "log.txt"), "Here you go");
+
+                string file = Path.Combine(Information.Directory, "botlog.txt");
+                lock (Helper.Lock)
+                    File.Copy(Path.Combine(Information.Directory, "log.txt"), file);
+                await dm.SendFileAsync(file, "Here you go");
+                lock (Helper.Lock)
+                    File.Delete(file);
+
                 await ConsoleHelper.Log($"{Context.User} requested the bot config!", LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't send you the config.. :confused:");
@@ -66,7 +73,8 @@ namespace Cirilla.Modules {
 
                 string file = Path.Combine(Information.Directory, "log.txt");
                 long size = new FileInfo(file).Length;
-                File.WriteAllBytes(file, new byte[0]);
+                lock (Helper.Lock)
+                    File.WriteAllBytes(file, new byte[0]);
                 await ReplyAsync($"Config cleared! ({size / 1000} kB)");
                 await ConsoleHelper.Log($"{Context.User} cleared the bot config!", LogSeverity.Info);
             } catch (Exception ex) {

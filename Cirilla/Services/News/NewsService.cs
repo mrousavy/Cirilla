@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Services.News {
     public class NewsService {
-        public static async void DailyNews(ITextChannel channel) {
+        public static async Task DailyNews(ITextChannel channel) {
             try {
                 Link link;
                 const int maxRetries = 10;
@@ -73,14 +73,14 @@ namespace Cirilla.Services.News {
                     return;
                 }
 
-                await ConsoleHelper.Log($"Next News in {diff.ToString()}.. I'm going to sleep!", LogSeverity.Info);
+                await ConsoleHelper.Log($"Next News in {diff}.. I'm going to sleep!", LogSeverity.Info);
                 Thread.Sleep((int)sleep);
                 await ConsoleHelper.Log("Fetching news..", LogSeverity.Info);
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
                     try {
                         ITextChannel channel = await guild.GetDefaultChannelAsync();
                         if (channel != null) {
-                            DailyNews(channel);
+                            await DailyNews(channel);
                         }
                     } catch {
                         // could not send news

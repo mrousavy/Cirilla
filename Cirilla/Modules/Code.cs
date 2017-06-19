@@ -18,17 +18,17 @@ namespace Cirilla.Modules {
             }
 
             //Handle exec async - so MessageReceived is not blocking
-            HandleExecAsync(code);
+            HandleExecAsync(code, Context.Channel);
         }
 
 
-        public async void HandleExecAsync(string code) {
+        public async void HandleExecAsync(string code, IMessageChannel contextChannel) {
             //Clean for code formatting
             string cleaned = code.Replace("```cs", string.Empty).Replace("`", string.Empty);
 
             IUserMessage message = await ReplyAsync("Compiling.. :inbox_tray:");
 
-            Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User);
+            Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User, contextChannel);
 
             await message.ModifyAsync(props => {
                 props.Content = string.Empty;

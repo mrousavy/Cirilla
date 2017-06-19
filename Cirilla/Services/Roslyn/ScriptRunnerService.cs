@@ -50,7 +50,7 @@ namespace Cirilla.Services.Roslyn {
         private static readonly ImmutableArray<DiagnosticAnalyzer> Analyzers =
             ImmutableArray.Create<DiagnosticAnalyzer>(new BlacklistedTypesAnalyzer());
 
-        private static readonly Random random = new Random();
+        private static readonly Random Random = new Random();
 
 
 
@@ -72,7 +72,7 @@ namespace Cirilla.Services.Roslyn {
 
             StringBuilder stringBuilder = new StringBuilder();
             StringWriter textWriter = new StringWriter(stringBuilder);
-            bool successful = false;
+            bool successful;
             long compileTime, execTime;
             CompilationErrorException compileException = null;
             Exception runEx = null;
@@ -84,19 +84,16 @@ namespace Cirilla.Services.Roslyn {
             ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error).ToImmutableArray();
             compileSw.Stop();
             compileTime = compileSw.ElapsedMilliseconds;
-            string diagnostics = string.Empty;
-            foreach (Diagnostic diagnostic in compileResult) {
-                diagnostics += diagnostic.ToString();
-            }
+            string diagnostics = Enumerable.Aggregate(compileResult, string.Empty, (current, diagnostic) => current + diagnostic.ToString());
 
             if (compileErrors.Length > 0) {
                 compileException = new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())), compileErrors);
-                successful = false;
             }
 
             Globals globals = new Globals {
                 Console = textWriter,
-                Random = random
+                Random = Random,
+                Client = Cirilla.Client
             };
 
             Stopwatch execSw = Stopwatch.StartNew();
@@ -129,7 +126,7 @@ namespace Cirilla.Services.Roslyn {
                     if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
                         builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                     } else {
-                        builder.AddField("Console Output:", $"```accesslog{nl}{stringBuilder.ToString()}{nl}```");
+                        builder.AddField("Console Output:", $"```accesslog{nl}{stringBuilder}{nl}```");
                     }
                 } else {
                     builder.AddField($"Result: {result.ReturnValue.GetType()}", $"```cs{nl}{result.ReturnValue}{nl}```");
@@ -148,9 +145,10 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Failed");
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                builder.AddField(compileException == null ?
-                    $"Exception: {runEx.GetType()}" : "Compiler Error:",
-                    $"```accesslog{nl}{compileException.Message}{nl}```");
+
+                string exceptionTitle = compileException == null ? $"Exception: {runEx.GetType()}" : "Compiler Error:";
+                string exceptionContent = compileException == null ? $"```accesslog{nl}{runEx.Message}{nl}```" : $"```accesslog{nl}{compileException.Message}{nl}```";
+                builder.AddField(exceptionTitle, exceptionContent);
             }
 
             string compileTimeStr = compileTime == -1 ? "/" : compileTime + "ms";

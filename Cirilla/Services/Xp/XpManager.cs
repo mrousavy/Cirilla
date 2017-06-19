@@ -28,7 +28,7 @@ namespace Cirilla.Services.Xp {
 
         //add new user
         public static UserXp Add(IUser user, int xp) {
-            UserXp userXp = new UserXp(user.Id, xp, 0);
+            UserXp userXp = new UserXp(user.Id, xp);
             XpInfo.Users.Add(userXp);
             WriteOut();
             return userXp;
@@ -151,7 +151,7 @@ namespace Cirilla.Services.Xp {
 
 
     public class UserXp {
-        public UserXp(ulong userId, int xp, int reserve) {
+        public UserXp(ulong userId, int xp) {
             UserId = userId;
             Xp = xp;
         }

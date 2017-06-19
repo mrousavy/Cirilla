@@ -38,7 +38,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
@@ -66,7 +66,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
@@ -76,7 +76,7 @@ namespace Cirilla.Modules {
                 lock (Helper.Lock)
                     File.WriteAllBytes(file, new byte[0]);
                 await ReplyAsync($"Config cleared! ({size / 1000} kB)");
-                await ConsoleHelper.Log($"{Context.User} cleared the bot config!", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} cleared the bot config! ({size / 1000} kB)", LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clear the config.. :confused:");
                 await ConsoleHelper.Log($"Error clear config, {ex.Message}!", LogSeverity.Error);
@@ -92,7 +92,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }

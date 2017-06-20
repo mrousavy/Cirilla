@@ -32,6 +32,21 @@ namespace Cirilla {
 
 
 
+        public static async Task JoinedGuild(SocketGuild arg) {
+            try {
+                if (arg.CurrentUser.GuildPermissions.SendMessages) {
+                    await arg.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :smile: :wave:");
+
+                    string dataPath = Path.Combine(Information.Directory, arg.Id.ToString());
+                    if (!Directory.Exists(dataPath)) {
+                        Directory.CreateDirectory(dataPath);
+                    }
+                }
+            } catch (Exception ex) {
+                await ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
+                    Discord.LogSeverity.Error);
+            }
+        }
         public static Task LeftGuild(SocketGuild arg) {
             try {
                 string guildDir = Path.Combine(Information.Directory, arg.Id.ToString());

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Cirilla.Services.Xp {
@@ -18,31 +17,35 @@ namespace Cirilla.Services.Xp {
             string[] xpfiles = new string[directories.Length];
             XpInfo = new XpFile();
 
-            ConsoleHelper.Log($"Loading {directories.Length} Guild XP Files..", LogSeverity.Info);
-            Stopwatch sw = Stopwatch.StartNew();
+            if (directories.Length > 0) {
+                ConsoleHelper.Log($"Loading {directories.Length} Guild XP Files..", LogSeverity.Info);
+                Stopwatch sw = Stopwatch.StartNew();
 
-            for (int i = 0; i < directories.Length; i++) {
-                string directory = directories[i];
-                string xpfile = Path.Combine(directory, "userxp.json");
-                //Regex.Match(directory, "\\\\[0-9]+$").ToString();
-                string guildidstr = Path.GetFileName(Path.GetDirectoryName(xpfile));
-                ulong guildid = ulong.Parse(guildidstr);
+                for (int i = 0; i < directories.Length; i++) {
+                    string directory = directories[i];
+                    string xpfile = Path.Combine(directory, "userxp.json");
+                    //Regex.Match(directory, "\\\\[0-9]+$").ToString();
+                    string guildidstr = Path.GetFileName(Path.GetDirectoryName(xpfile));
+                    ulong guildid = ulong.Parse(guildidstr);
 
-                if (!File.Exists(xpfile)) {
-                    GuildXp guildxp = new GuildXp();
-                    File.WriteAllText(xpfile, JsonConvert.SerializeObject(guildxp));
-                    XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
-                } else {
-                    GuildXp guildxp = JsonConvert.DeserializeObject<GuildXp>(File.ReadAllText(xpfile));
-                    XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
+                    if (!File.Exists(xpfile)) {
+                        GuildXp guildxp = new GuildXp();
+                        File.WriteAllText(xpfile, JsonConvert.SerializeObject(guildxp));
+                        XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
+                    } else {
+                        GuildXp guildxp = JsonConvert.DeserializeObject<GuildXp>(File.ReadAllText(xpfile));
+                        XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
+                    }
+                    xpfiles[i] = xpfile;
                 }
-                xpfiles[i] = xpfile;
+
+                sw.Stop();
+                ConsoleHelper.Log($"Done loading {directories.Length} Guild XP Files! (took {sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
+            } else {
+                ConsoleHelper.Log("No XP Files stored yet.", LogSeverity.Info);
             }
 
             new Thread(TimerLoop).Start();
-
-            sw.Stop();
-            ConsoleHelper.Log($"Done loading {directories.Length} Guild XP Files! (took {sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
         }
 
 
@@ -97,7 +100,7 @@ namespace Cirilla.Services.Xp {
                     string directory = Path.Combine(Information.Directory, pairs.Key.ToString());
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
-                        ConsoleHelper.Log($"Created new Directory for server {pairs.Key}.", LogSeverity.Error);
+                        ConsoleHelper.Log($"Created new Directory for server {pairs.Key}.", LogSeverity.Info);
                     }
                     string xpfile = Path.Combine(directory, "userxp.json");
                     string serialized =

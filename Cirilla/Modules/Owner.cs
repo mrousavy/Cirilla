@@ -36,6 +36,10 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
+                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.AttachFiles) {
+                    await ReplyAsync("Sorry, I can't upload files here..");
+                    return;
+                }
 
                 IDMChannel dm = await user.CreateDMChannelAsync();
 
@@ -73,6 +77,7 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log($"Error clear log, {ex.Message}!", LogSeverity.Error);
             }
         }
+
         [Command("game"), Summary("Change Bot's \"playing ..\" status")]
         public async Task SetGame([Summary("The new game")] string game) {
             try {
@@ -88,8 +93,6 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log($"Error setting game, {ex.Message}!", LogSeverity.Error);
             }
         }
-
-
 
         [Command("shutdown"), Summary("Shutdown the Bot")]
         public async Task Shutdown() {

@@ -127,8 +127,8 @@ namespace Cirilla {
         //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
         public double XpFactor = 1.20;
 
-        //1 in [GiveRandomXpChance] to give a user 100 XP on XpGiveInterval interval
-        public int GiveRandomXpChance = 250;
+        //1 in [GiveRandomXpChance] to give a user 200 XP on XpGiveInterval interval
+        public int GiveRandomXpChance = 400;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
         public int RandomReactionChance = 200;

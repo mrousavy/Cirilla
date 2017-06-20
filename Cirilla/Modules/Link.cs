@@ -32,7 +32,7 @@ namespace Cirilla.Modules {
         public async Task AddLink([Summary("The link to store")] string link) {
             try {
                 if (!((IGuildUser)Context.User).GuildPermissions.Administrator) {
-                    await ReplyAsync($"You're not allowed to add links! Ask {Information.Senpai}!");
+                    await ReplyAsync($"You're not allowed to add links! Ask {Information.Owner}!");
                     return;
                 }
 

@@ -1,8 +1,11 @@
-﻿using Discord.Rest;
+﻿using System;
+using Discord.Rest;
 using Discord.WebSocket;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Cirilla.Services.Permissions;
 
 namespace Cirilla {
     public static class EventHelper {
@@ -26,6 +29,24 @@ namespace Cirilla {
 
             RestDMChannel dm = await arg.CreateDMChannelAsync();
             await dm.SendMessageAsync("Why did you leave man?", true);
+        }
+
+
+
+        public static Task LeftGuild(SocketGuild arg) {
+            try {
+                string guildDir = Path.Combine(Information.Directory, arg.Id.ToString());
+                //cleanup
+                if (Directory.Exists(guildDir)) {
+                    Directory.Delete(guildDir, true);
+                }
+                PermissionValidator.RemoveGuild(arg.Id);
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\"! ({ex.Message})", Discord.LogSeverity.Error);
+            }
+            ConsoleHelper.Log($"Left \"{arg.Name}\" guild!", Discord.LogSeverity.Info);
+
+            return Task.CompletedTask;
         }
     }
 }

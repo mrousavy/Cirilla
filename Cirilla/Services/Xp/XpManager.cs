@@ -97,6 +97,7 @@ namespace Cirilla.Services.Xp {
                     string directory = Path.Combine(Information.Directory, pairs.Key.ToString());
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
+                        ConsoleHelper.Log($"Created new Directory for server {pairs.Key}.", LogSeverity.Error);
                     }
                     string xpfile = Path.Combine(directory, "userxp.json");
                     string serialized =

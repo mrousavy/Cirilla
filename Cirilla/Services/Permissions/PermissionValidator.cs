@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Cirilla.Services.Permissions {
     public static class PermissionValidator {
-        public static async void ValidatePermission(SocketGuild guild) {
+        public static async void ValidatePermissions(SocketGuild guild) {
             ulong id = guild.Id;
             if (IsAlreadyValidated(id)) {
                 return;
@@ -63,6 +63,22 @@ namespace Cirilla.Services.Permissions {
                 string serialized = File.ReadAllText(guildsFile);
                 GuildsFile file = JsonConvert.DeserializeObject<GuildsFile>(serialized);
                 file.GuildIds.Add(id);
+                serialized = JsonConvert.SerializeObject(file);
+                File.WriteAllText(guildsFile, serialized);
+            }
+        }
+
+
+        //Remove guild from file (server left cleanup)
+        public static void RemoveGuild(ulong id) {
+            string guildsFile = Path.Combine(Information.Directory, "guilds.json");
+
+            if (File.Exists(guildsFile)) {
+                string serialized = File.ReadAllText(guildsFile);
+                GuildsFile file = JsonConvert.DeserializeObject<GuildsFile>(serialized);
+                if (file.GuildIds.Contains(id)) {
+                    file.GuildIds.Remove(id);
+                }
                 serialized = JsonConvert.SerializeObject(file);
                 File.WriteAllText(guildsFile, serialized);
             }

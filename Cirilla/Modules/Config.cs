@@ -19,7 +19,7 @@ namespace Cirilla.Modules {
             builder.AddInlineField("Prefixes",
                 $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}");
             builder.AddInlineField("Repo URL", $"[GitHub]({Information.RepoUrl})");
-            builder.AddInlineField("Senpai", Information.Senpai);
+            builder.AddInlineField("Senpai", Information.Owner);
             builder.AddInlineField("XP Drop Interval", $"Every {Information.XpGiveInterval / 1000} Seconds");
             builder.AddInlineField("Regain gift XP", $"{100 / Information.OwnXp}% XP");
             builder.AddInlineField("XP Level Factor", $"Lvl = PreviousLvl * {Information.XpFactor}");

@@ -10,7 +10,7 @@ namespace Cirilla {
     public class Cirilla {
         #region Privates
 
-        private CommandService _service { get; }
+        private CommandService Service { get; }
 
         #endregion
 
@@ -32,17 +32,20 @@ namespace Cirilla {
             Client.MessageReceived += MessageReceived;
             Client.UserJoined += EventHelper.UserJoined;
             Client.UserLeft += EventHelper.UserLeft;
-            Client.JoinedGuild += GuildInfoReceived;
+            Client.LeftGuild += EventHelper.LeftGuild;
+
+            //TODO:
             Client.GuildAvailable += GuildInfoReceived;
+            Client.GuildMembersDownloaded += GuildInfoReceived;
 
             CommandServiceConfig serviceConfig = new CommandServiceConfig {
                 CaseSensitiveCommands = false,
                 SeparatorChar = '$',
                 LogLevel = logSeverity
             };
-            _service = new CommandService(serviceConfig);
-            _service.Log += Log;
-            _service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
+            Service = new CommandService(serviceConfig);
+            Service.Log += Log;
+            Service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
             try {
                 Login().GetAwaiter().GetResult();
@@ -53,7 +56,7 @@ namespace Cirilla {
 
         private static Task GuildInfoReceived(SocketGuild arg) {
             try {
-                PermissionValidator.ValidatePermission(arg);
+                PermissionValidator.ValidatePermissions(arg);
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not validate Permissions for Discord Guild \"{arg.Name}\"! {ex.Message}",
                     LogSeverity.Error);
@@ -81,30 +84,34 @@ namespace Cirilla {
                     }
                 }
 
-                // Command Begin
+                // Command (after prefix) Begin
                 int argPos = 0;
-                // Determine if the message is a command
+                // Determine if the message is a command by checking for all prefixes
                 if (!(message.HasCharPrefix(Information.Prefix, ref argPos) ||
                       message.HasStringPrefix(Information.SecondaryPrefix, ref argPos) ||
                       message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
                     return;
                 CommandContext context = new CommandContext(Client, message);
-                IResult result = await _service.ExecuteAsync(context, argPos);
+                IResult result = await Service.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess) {
                     await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}",
                         LogSeverity.Error);
                     //await context.Channel.SendMessageAsync(result.ErrorReason);
 
-                    Embed embed = Helper.WrongCommand(message, _service, context);
+                    //Find out what the user probably meant
+                    Embed embed = Helper.WrongCommand(message, Service, context);
                     if (embed == null) {
+                        //unknown command/overloads
                         await context.Channel.SendMessageAsync("Pardon?");
                     } else {
+                        //Send "did you mean this?:" message
                         await context.Channel.SendMessageAsync("", embed: embed);
                     }
                 }
             }
         }
 
+        //stop bot
         public async Task Stop() {
             if (StopRequested)
                 return;

@@ -25,7 +25,7 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Core #", cores + " cores");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
-                builder.AddInlineField("My Senpai", Information.Senpai);
+                builder.AddInlineField("My Senpai", Information.Owner);
                 //builder.AddField("Username", uname);
                 //builder.AddField("Machine", mname);
                 //builder.AddField("Core #", cores + " cores");

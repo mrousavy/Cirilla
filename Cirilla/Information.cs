@@ -22,7 +22,7 @@ namespace Cirilla {
         internal static char Prefix => Config.Prefix;
         internal static string SecondaryPrefix => Config.SecondaryPrefix;
         internal static string RepoUrl => Config.RepoUrl;
-        internal static string Senpai => Config.Senpai;
+        internal static string Owner => Config.Owner;
         internal static string IconUrl => Config.IconUrl;
 
         internal static int XpGiveInterval => Config.XpGiveInterval;
@@ -110,8 +110,8 @@ namespace Cirilla {
         //Bot Source Code Repository URL
         public string RepoUrl = "http://github.com/mrousavy/Cirilla";
 
-        //Bot Creator (me)
-        public string Senpai = "<@266162606161526784>";
+        //Bot Creator/Owner (me)
+        public string Owner = "<@266162606161526784>";
 
         //URL for Bot Profile Pic
         public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";

@@ -131,8 +131,8 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
-                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                if ($"<@{user.Username}>" != Information.Owner) {
+                    await ReplyAsync("Sorry, only the owner can shutdown the bot!");
                     return;
                 }
 
@@ -143,6 +143,28 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't reboot.. :confused:");
                 await ConsoleHelper.Log($"Error rebooting, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        [Command("leave"), Summary("Leave this Guild")]
+        public async Task LeaveGuild() {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Administrator) {
+                    await ReplyAsync("Sorry, only admins can use this command!");
+                    return;
+                }
+
+                await ReplyAsync($"Bye guys, {Helper.GetName(user)} wanted me to leave! :disappointed_relieved:");
+                await ConsoleHelper.Log($"{Context.User} requested the bot to leave \"{Context.Guild.Name}\"!", LogSeverity.Info);
+
+                await Context.Guild.LeaveAsync();
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't leave this guild.. :confused:");
+                await ConsoleHelper.Log($"Error leaving guild, {ex.Message}!", LogSeverity.Error);
             }
         }
 

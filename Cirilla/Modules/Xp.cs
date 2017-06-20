@@ -35,16 +35,16 @@ namespace Cirilla.Modules {
 
                 int ownXp = xp / Information.OwnXp;
 
-                UserXp userxp = XpManager.Get(Context.User);
+                UserXp userxp = XpManager.Get(Context.Guild, Context.User);
 
                 if (userxp.Xp >= xp) {
-                    int lvlBefore = XpManager.Get(user).Level;
-                    XpManager.Update(user, xp);
-                    int lvlAfter = XpManager.Get(user).Level;
+                    int lvlBefore = XpManager.Get(Context.Guild, user).Level;
+                    XpManager.Update(Context.Guild, user, xp);
+                    int lvlAfter = XpManager.Get(Context.Guild, user).Level;
 
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
                     if (drainOwn) {
-                        XpManager.Update(Context.User, -xp + ownXp);
+                        XpManager.Update(Context.Guild, Context.User, -xp + ownXp);
                     }
 
                     if (xp < 1) {
@@ -80,8 +80,8 @@ namespace Cirilla.Modules {
                         return;
                     }
 
-                    UserXp userxp = XpManager.Get(user);
-                    XpManager.Update(user, xp - userxp.Xp);
+                    UserXp userxp = XpManager.Get(Context.Guild, user);
+                    XpManager.Update(Context.Guild, user, xp - userxp.Xp);
                     await ReplyAsync($"{Helper.GetName(user)} set {user.Mention}'s XP to {xp}!");
                 } else {
                     await ReplyAsync("You can't use that command in DM!");
@@ -98,7 +98,7 @@ namespace Cirilla.Modules {
         [Command("xp"), Summary("Show own XP")]
         public async Task Info() {
             try {
-                UserXp xp = XpManager.Get(Context.User);
+                UserXp xp = XpManager.Get(Context.Guild, Context.User);
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
@@ -122,7 +122,7 @@ namespace Cirilla.Modules {
         [Command("xp"), Summary("Show XP of given User")]
         public async Task Info([Summary("The user you want to display XP")] IGuildUser user) {
             try {
-                UserXp xp = XpManager.Get(user);
+                UserXp xp = XpManager.Get(Context.Guild, user);
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {

@@ -1,17 +1,17 @@
 ﻿using System.IO;
 using Discord;
 using System.Collections.Generic;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace Cirilla.Services.Permissions {
     public static class PermissionValidator {
-        public static async void ValidatePermission(IGuild guild) {
+        public static async void ValidatePermission(SocketGuild guild) {
             ulong id = guild.Id;
             if (IsAlreadyValidated(id)) {
                 return;
             }
-
-            IGuildUser user = await guild.GetCurrentUserAsync();
+            SocketGuildUser user = guild.CurrentUser;
             GuildPermissions permissions = user.GuildPermissions;
 
             if (permissions.AddReactions &&
@@ -19,7 +19,8 @@ namespace Cirilla.Services.Permissions {
                 permissions.KickMembers && //TODO
                 permissions.ManageMessages && //TODO
                 permissions.ReadMessageHistory &&
-                permissions.SendMessages
+                permissions.SendMessages &&
+                permissions.ChangeNickname
             ) {
                 // has permissions
                 SetValidated(id);

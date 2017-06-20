@@ -83,6 +83,45 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("nick"), Summary("Change Bot's nickname")]
+        public async Task SetNickname([Summary("The new nickname")] string nickname) {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                IGuildUser bot = await Context.Guild.GetCurrentUserAsync();
+                await bot.ModifyAsync(p => p.Nickname = nickname);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't set the nickname.. :confused:");
+                await ConsoleHelper.Log($"Error setting nickname, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        [Command("game"), Summary("Change Bot's \"playing ..\" status")]
+        public async Task SetGame([Summary("The new game")] string game) {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                await Cirilla.Client.SetGameAsync(game);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't set the new game.. :confused:");
+                await ConsoleHelper.Log($"Error setting game, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
 
 
         [Command("shutdown"), Summary("Shutdown the Bot")]

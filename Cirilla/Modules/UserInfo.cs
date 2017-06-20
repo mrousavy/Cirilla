@@ -18,7 +18,7 @@ namespace Cirilla.Modules {
                 string status = user.Status.ToString() ?? "/";
                 Game? nullableGame = user.Game;
                 string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
-                string xp = XpManager.Get(user).Xp.ToString();
+                string xp = XpManager.Get(Context.Guild, user).Xp.ToString();
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
@@ -55,7 +55,7 @@ namespace Cirilla.Modules {
                     string status = user.Status.ToString() ?? "/";
                     Game? nullableGame = user.Game;
                     string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
-                    string xp = XpManager.Get(user).Xp.ToString();
+                    string xp = XpManager.Get(Context.Guild, user).Xp.ToString();
 
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {

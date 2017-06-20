@@ -6,6 +6,11 @@ namespace Cirilla.Modules {
     internal class RandomEmote {
         internal static IEmote GetRandomEmote(IGuild guild) {
             List<GuildEmote> emotes = new List<GuildEmote>(guild.Emotes);
+
+            //No emojis on that server
+            if (emotes.Count < 1)
+                return null;
+
             Random random = new Random();
             int emote = random.Next(0, emotes.Count - 1);
 

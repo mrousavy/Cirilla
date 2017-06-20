@@ -2,6 +2,7 @@
 using Cirilla.Services.Xp;
 using Discord;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace Cirilla {
@@ -13,6 +14,9 @@ namespace Cirilla {
 
         public static void Main(string[] args) {
             Random = new Random();
+            if (!Directory.Exists(Information.Directory)) {
+                Directory.CreateDirectory(Information.Directory);
+            }
 
             Information.LoadInfo();
             ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);

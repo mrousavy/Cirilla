@@ -9,7 +9,7 @@ namespace Cirilla.Modules {
         [Command("hw"), Summary("Show a user's Hardware")]
         public async Task ShowHardware([Summary("The user you want to show the Hardware of")] IGuildUser user) {
             try {
-                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(user.Id);
+                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
 
                 if (hwProfile == null) {
                     await ReplyAsync($"{Helper.GetName(user)} does not have his hardware set! " +
@@ -42,7 +42,7 @@ namespace Cirilla.Modules {
                 if (user == null)
                     return;
 
-                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(user.Id);
+                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
 
                 if (hwProfile == null) {
                     await ReplyAsync("You don't have any hardware info set! " +
@@ -77,7 +77,7 @@ namespace Cirilla.Modules {
 
             HardwareListener listener = new HardwareListener(Context.Channel as ITextChannel, Context.User);
             Cirilla.Client.MessageReceived += listener.HardwareReceived;
-            HardwareManager.UpdateHardware(Context.User.Id, title, null);
+            HardwareManager.UpdateHardware(Context.Guild, Context.User.Id, title, null);
 
             await ConsoleHelper.Log($"{Context.User} is creating a new hardware profile (\"{title}\")",
                 LogSeverity.Info);

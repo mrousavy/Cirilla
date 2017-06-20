@@ -164,6 +164,11 @@ namespace Cirilla.Services.Xp {
     }
 
     public class XpFile {
+        //public List<GuildXp> Guilds { get; set; } = new List<GuildXp>();
+        public List<UserXp> Users { get; set; } = new List<UserXp>();
+    }
+
+    public class GuildXp {
         public List<UserXp> Users { get; set; } = new List<UserXp>();
     }
 }

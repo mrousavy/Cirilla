@@ -3,26 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
 
 namespace Cirilla.Services.Hardware {
     public class HardwareManager {
-        public static Tuple<string, string> ReadHardware(ulong userId) {
-            string hwfile = Path.Combine(Information.Directory, "hardware.json");
+        public static Tuple<string, string> ReadHardware(IGuild guild, ulong userId) {
+            string hwfile = Helper.GetPath(guild, "hardware.json");
             if (File.Exists(hwfile)) {
                 UserHardwares = JsonConvert.DeserializeObject<UserHardwareFile>(File.ReadAllText(hwfile));
 
                 UserHardware hw = UserHardwares.Hardwares.FirstOrDefault(h => h.UserId == userId);
-                if (hw == null) {
-                    return null;
-                }
-                return new Tuple<string, string>(hw.Title, hw.Hardware);
+                return hw == null ? null : new Tuple<string, string>(hw.Title, hw.Hardware);
             } else {
                 return null;
             }
         }
 
-        public static void UpdateHardware(ulong userId, string title, string hardware) {
-            string hwfile = Path.Combine(Information.Directory, "hardware.json");
+        public static void UpdateHardware(IGuild guild, ulong userId, string title, string hardware) {
+            string hwfile = Helper.GetPath(guild, "hardware.json");
 
             if (UserHardwares == null)
                 UserHardwares = new UserHardwareFile();

@@ -9,7 +9,7 @@ namespace Cirilla.Modules {
         [Command("links"), Summary("Displays all saved links")]
         public async Task Command() {
             try {
-                string file = Path.Combine(Information.Directory, "links.txt");
+                string file = Helper.GetPath(Context.Guild, "links.txt");
                 if (File.Exists(file)) {
                     string links = File.ReadAllText(file);
                     EmbedBuilder builder = new EmbedBuilder {
@@ -31,17 +31,13 @@ namespace Cirilla.Modules {
         [Command("addlink"), Summary("Saves a new link")]
         public async Task AddLink([Summary("The link to store")] string link) {
             try {
-                if (!((IGuildUser) Context.User).GuildPermissions.Administrator) {
+                if (!((IGuildUser)Context.User).GuildPermissions.Administrator) {
                     await ReplyAsync($"You're not allowed to add links! Ask {Information.Senpai}!");
                     return;
                 }
 
-                string file = Path.Combine(Information.Directory, "links.txt");
-                if (File.Exists(file)) {
-                    File.AppendAllLines(file, new[] {link});
-                } else {
-                    File.WriteAllLines(file, new[] {link});
-                }
+                string file = Helper.GetPath(Context.Guild, "links.txt");
+                File.AppendAllLines(file, new[] { link });
                 await ConsoleHelper.Log($"{Context.User} added a new link (\"{link}\")", LogSeverity.Info);
                 await ReplyAsync("Link added! :link:");
             } catch (Exception ex) {

@@ -25,7 +25,7 @@ namespace Cirilla.Services.Hardware {
                 if (message.Channel is ITextChannel channel && (user.Id == _user.Id && channel.Id == _channel.Id)) {
                     Cirilla.Client.MessageReceived -= HardwareReceived;
 
-                    HardwareManager.UpdateHardware(user.Id, null, message.Content);
+                    HardwareManager.UpdateHardware(channel.Guild, user.Id, null, message.Content);
                     _done = true;
                     await ConsoleHelper.Log($"Created hardware profile for {_user}!", LogSeverity.Info);
                     await arg.Channel.SendMessageAsync("Hardware successfully set!");

@@ -7,7 +7,7 @@ using System.IO;
 namespace Cirilla {
     internal static class Information {
         //Directory to store configs in
-        internal static string Directory { get; set; } = AppContext.BaseDirectory;
+        internal static string Directory { get; } = Path.Combine(AppContext.BaseDirectory, "_data");
 
         internal static Configuration Config { get; set; }
 

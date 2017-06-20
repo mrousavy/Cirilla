@@ -8,7 +8,7 @@ namespace Cirilla.Modules {
     public class Profile : ModuleBase {
         [Command("profile"), Summary("Show a user's Profile")]
         public async Task ShowProfile([Summary("The user you want to show the Profile of")] IGuildUser user) {
-            string text = ProfileManager.ReadProfile(user.Id);
+            string text = ProfileManager.ReadProfile(Context.Guild, user.Id);
 
             if (text == null) {
                 await ReplyAsync($"{Helper.GetName(user)} does not have a custom profile set up!" +
@@ -38,7 +38,7 @@ namespace Cirilla.Modules {
             if (user == null)
                 return;
 
-            string text = ProfileManager.ReadProfile(user.Id);
+            string text = ProfileManager.ReadProfile(Context.Guild, user.Id);
 
             if (text == null) {
                 await ReplyAsync("You don't have a custom profile set up!" + Environment.NewLine +

@@ -16,10 +16,9 @@ namespace Cirilla.Services.Permissions {
 
             if (permissions.AddReactions &&
                 permissions.CreateInstantInvite &&
-                permissions.KickMembers &&
-                permissions.ManageMessages &&
-                permissions.ReadMessageHistory && //needed?
-                permissions.ReadMessages && //needed?
+                permissions.KickMembers && //TODO
+                permissions.ManageMessages && //TODO
+                permissions.ReadMessageHistory &&
                 permissions.SendMessages
             ) {
                 // has permissions

@@ -25,7 +25,7 @@ namespace Cirilla.Services.Profiles {
                 if (message.Channel is ITextChannel channel && user.Id == _user.Id && channel.Id == _channel.Id) {
                     Cirilla.Client.MessageReceived -= ProfileTextReceived;
 
-                    ProfileManager.UpdateProfile(user.Id, message.Content);
+                    ProfileManager.UpdateProfile(channel.Guild, user.Id, message.Content);
                     _done = true;
                     await arg.Channel.SendMessageAsync("Profile set successfully!");
                     await ConsoleHelper.Log($"{Helper.GetName(_user)} created a new profile!", LogSeverity.Info);

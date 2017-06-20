@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace Cirilla {
@@ -54,6 +55,32 @@ namespace Cirilla {
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Get the path to the file specified so it's guild specific
+        /// </summary>
+        public static string GetPath(IGuild guild, params string[] paths) {
+            string[] fullpaths = new string[paths.Length + 2];
+            fullpaths[0] = Information.Directory;
+            fullpaths[1] = guild.Id.ToString();
+            string directory = Path.Combine(fullpaths[0], fullpaths[1]);
+
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+                File.WriteAllText(Path.Combine(directory, "guildname.txt"),
+                    $"\"{guild.Name}\" by <@{guild.OwnerId}> (created at {guild.CreatedAt}");
+            }
+
+            paths.CopyTo(fullpaths, 2);
+            string path = Path.Combine(fullpaths);
+
+
+            if (!File.Exists(path)) {
+                File.Create(path).Dispose();
+            }
+
+            return path;
         }
     }
 }

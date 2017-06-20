@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
 
 namespace Cirilla.Services.Profiles {
     public static class ProfileManager {
-        public static string ReadProfile(ulong userId) {
-            string profiles = Path.Combine(Information.Directory, "profiles.json");
+        public static string ReadProfile(IGuild guild, ulong userId) {
+            string profiles = Helper.GetPath(guild, "profiles.json");
             if (File.Exists(profiles)) {
                 Profiles = JsonConvert.DeserializeObject<UserProfiles>(File.ReadAllText(profiles));
 
@@ -17,8 +18,8 @@ namespace Cirilla.Services.Profiles {
             }
         }
 
-        public static void UpdateProfile(ulong userId, string text) {
-            string profiles = Path.Combine(Information.Directory, "profiles.json");
+        public static void UpdateProfile(IGuild guild, ulong userId, string text) {
+            string profiles = Helper.GetPath(guild, "profiles.json");
 
             if (Profiles == null)
                 Profiles = new UserProfiles();

@@ -14,6 +14,11 @@ namespace Cirilla.Modules {
             }
 
             try {
+                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.KickMembers) {
+                    await ReplyAsync($"I can't kick people here, talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
+                    return;
+                }
+
                 if (user.Status != UserStatus.Online && user.Status != UserStatus.DoNotDisturb &&
                     user.Status != UserStatus.Invisible) {
                     await Context.Channel.SendMessageAsync("You can't kick offline/afk users.. That's mean!");

@@ -13,8 +13,12 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                if (!user.GuildPermissions.ManageMessages) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.ManageMessages) {
+                    await ReplyAsync($"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
                     return;
                 }
 
@@ -36,6 +40,10 @@ namespace Cirilla.Modules {
                 }
                 if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.ManageMessages) {
+                    await ReplyAsync($"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
                     return;
                 }
 

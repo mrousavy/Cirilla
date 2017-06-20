@@ -44,10 +44,10 @@ namespace Cirilla.Modules {
                     await dm.SendMessageAsync("", false, builder.Build());
                 } catch {
                     //could not send private
-                    await ReplyAsync("", false, builder.Build());
+                    await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..", embed: builder.Build());
                 }
             } else {
-                await ReplyAsync("", false, builder.Build());
+                await ReplyAsync("", embed: builder.Build());
             }
         }
 

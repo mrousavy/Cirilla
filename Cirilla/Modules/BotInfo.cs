@@ -35,6 +35,11 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("invite"), Summary("Show Guild join link for bot")]
+        public async Task Invite() {
+            await ReplyAsync(Information.InviteLink);
+        }
+
         [Command("uptime"), Summary("Shows bot uptime")]
         public async Task Uptime() {
             try {

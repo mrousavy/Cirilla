@@ -16,6 +16,10 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
+                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.ChangeNickname) {
+                    await ReplyAsync("I can't change my nickname here.. :confused:");
+                    return;
+                }
 
                 IGuildUser bot = await Context.Guild.GetCurrentUserAsync();
                 await bot.ModifyAsync(p => p.Nickname = nickname);

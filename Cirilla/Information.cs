@@ -39,6 +39,7 @@ namespace Cirilla {
 
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
+        internal static string InviteLink = "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
 
         internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;

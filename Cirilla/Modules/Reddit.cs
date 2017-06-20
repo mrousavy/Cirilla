@@ -23,18 +23,6 @@ namespace Cirilla.Modules {
             }
         }
 
-        //[Command("reddit"), Summary("Get random post from r/all")]
-        //public async Task All() {
-        //    try {
-        //        RedditApi redditService = new RedditApi();
-        //        Subreddit subreddit = await redditService.GetSubredditAsync("all");
-        //        RedditNet.Things.Link link = await subreddit.GetRandomLinkAsync();
-        //        await ReplyAsync(link.Url);
-        //    } catch {
-        //        await ReplyAsync("Sorry, I couldn't find a random post!");
-        //    }
-        //}
-
         [Command("reddit"), Summary("Get random post from a custom subreddit")]
         public async Task RandomPost([Summary("The subreddit to look for a random post")] string rsubreddit) {
             try {

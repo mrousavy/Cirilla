@@ -1,11 +1,10 @@
-﻿using System;
-using Discord.Rest;
+﻿using Discord.Rest;
 using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Cirilla.Services.Permissions;
 
 namespace Cirilla {
     public static class EventHelper {
@@ -40,9 +39,8 @@ namespace Cirilla {
                 if (Directory.Exists(guildDir)) {
                     Directory.Delete(guildDir, true);
                 }
-                PermissionValidator.RemoveGuild(arg.Id);
             } catch (Exception ex) {
-                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\"! ({ex.Message})", Discord.LogSeverity.Error);
+                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\" guild! ({ex.Message})", Discord.LogSeverity.Error);
             }
             ConsoleHelper.Log($"Left \"{arg.Name}\" guild!", Discord.LogSeverity.Info);
 

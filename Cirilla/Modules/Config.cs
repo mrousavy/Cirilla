@@ -39,7 +39,7 @@ namespace Cirilla.Modules {
         [Command("reload"), Summary("Reload bot configuration")]
         public async Task ReloadConfig() {
             if (Context.User is IGuildUser user) {
-                if (user.GuildPermissions.Administrator) {
+                if (Helper.IsOwner(user)) {
                     Information.LoadInfo();
                     await ReplyAsync($"Config reloaded! Type `{Information.Prefix}config` to see the config");
                 } else {

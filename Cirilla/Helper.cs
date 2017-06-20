@@ -82,5 +82,8 @@ namespace Cirilla {
 
             return path;
         }
+
+
+        public static bool IsOwner(IUser user) => $"<@{user.Id}>" == Information.Owner;
     }
 }

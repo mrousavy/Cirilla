@@ -26,11 +26,6 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);
-                //builder.AddField("Username", uname);
-                //builder.AddField("Machine", mname);
-                //builder.AddField("Core #", cores + " cores");
-                //builder.AddField("Prefix", pre);
-                //builder.AddField("Source Code", $"[GitHub]({Information.RepoUrl})");
 
                 await ReplyAsync("", embed: builder.Build());
                 await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);
@@ -73,7 +68,7 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("run"), Summary("Shows how to run bot")]
+        [Command("run"), Summary("Shows how to run this bot")]
         public async Task Run() {
             try {
                 EmbedBuilder builder = new EmbedBuilder {

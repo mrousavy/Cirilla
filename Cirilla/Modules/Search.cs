@@ -57,7 +57,7 @@ namespace Cirilla.Modules {
                     for (int i = 0; i < batchCount; i++) {
                         EmbedBuilder builder = new EmbedBuilder {
                             Author = new EmbedAuthorBuilder {
-                                Name = $"Wikipedia results for \"{query}\" (pt {i + 1})",
+                                Name = $"Wikipedia results for \"{query}\" (part {i + 1})",
                                 IconUrl =
                                     "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
                             },

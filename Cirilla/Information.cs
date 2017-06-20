@@ -155,7 +155,7 @@ namespace Cirilla {
         public long MaxLogSize = 1024 * 1024 * 10;
 
         //Enable Roslyn Scripting using the $exec Command
-        public bool AllowScripts = false;
+        public bool AllowScripts = true;
 
         //Time in milliseconds until the compilation of $execute scipts cancels
         public int CompileTimeout = 15000;

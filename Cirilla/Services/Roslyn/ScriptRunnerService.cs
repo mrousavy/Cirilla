@@ -59,6 +59,7 @@ namespace Cirilla.Services.Roslyn {
         /// </summary>
         /// <param name="code">The C# script to run</param>
         /// <param name="user">The user for referencing in the Embed</param>
+        /// <param name="contextChannel">The channel for referencing in the Code</param>
         /// <returns>The Embed with detailed information of the results</returns>
         public static async Task<Embed> ScriptEmbed(string code, IUser user, IMessageChannel contextChannel) {
             string nl = Environment.NewLine;
@@ -94,9 +95,7 @@ namespace Cirilla.Services.Roslyn {
                 Console = textWriter,
                 Random = Random,
                 Client = Cirilla.Client,
-                ReplyAsync = async m => {
-                    await contextChannel.SendMessageAsync(m);
-                }
+                ReplyAsync = async m => await contextChannel.SendMessageAsync(m)
             };
 
             Stopwatch execSw = Stopwatch.StartNew();

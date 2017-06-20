@@ -51,11 +51,7 @@ $addmodule
 **Greetings**
 ```
 $hi 
-$hello 
-$hallo 
-$seas 
-$servas 
-$sup
+$hello
 ```
 **Hardware**
 ```

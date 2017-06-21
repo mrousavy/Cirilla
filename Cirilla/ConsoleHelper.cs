@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla {
     public class ConsoleHelper {
-        public static bool ShuttingDown { get; set; } = false;
+        public static bool ShuttingDown { get; set; }
 
         public static Task Log(LogMessage message) {
             if (ShuttingDown)

@@ -88,11 +88,47 @@ namespace Cirilla.Modules {
                 }
 
                 await Cirilla.Client.SetGameAsync(game);
+                await ReplyAsync($"Now playing: _{game}_");
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't set the new game.. :confused:");
                 await ConsoleHelper.Log($"Error setting game, {ex.Message}!", LogSeverity.Error);
             }
         }
+
+        [Command("reboot"), Summary("Reboot the Bot")]
+        public async Task Reboot() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, only the owner can reboot the bot!");
+                    return;
+                }
+
+                await ReplyAsync("Rebooting.. :arrows_counterclockwise:");
+                await ConsoleHelper.Log($"{Context.User} requested a bot reboot!", LogSeverity.Info);
+
+                RebootBot();
+            } catch (Exception ex) {
+                //process not found? could not start/kill?
+                await ReplyAsync("Whoops, unfortunately I couldn't reboot.. :confused:");
+                await ConsoleHelper.Log($"Error rebooting, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        private static async void RebootBot() {
+            await Task.Delay(1000);
+            await ConsoleHelper.Log("Handler done, stopping Bot..", LogSeverity.Debug);
+            await Cirilla.Client.StopAsync();
+            await Task.Delay(1000);
+            Process current = Process.GetCurrentProcess();
+
+            Process.Start(current.MainModule.FileName);
+
+            await Task.Delay(1000);
+
+            current.Kill();
+        }
+
 
         [Command("shutdown"), Summary("Shutdown the Bot")]
         public async Task Shutdown() {
@@ -108,8 +144,8 @@ namespace Cirilla.Modules {
 
                 StopBot();
             } catch (Exception ex) {
-                await ReplyAsync("Whoops, unfortunately I couldn't reboot.. :confused:");
-                await ConsoleHelper.Log($"Error rebooting, {ex.Message}!", LogSeverity.Error);
+                await ReplyAsync("Whoops, unfortunately I couldn't shutdown.. :confused:");
+                await ConsoleHelper.Log($"Error shutting down, {ex.Message}!", LogSeverity.Error);
             }
         }
 

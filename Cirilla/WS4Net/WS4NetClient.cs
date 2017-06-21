@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocket4Net;
 using WS4NetSocket = WebSocket4Net.WebSocket;
+// ReSharper disable All
 
 namespace Discord.Net.Providers.WS4Net {
     internal class WS4NetClient : IWebSocketClient, IDisposable {
@@ -19,7 +20,7 @@ namespace Discord.Net.Providers.WS4Net {
         private WS4NetSocket _client;
         private CancellationTokenSource _cancelTokenSource;
         private CancellationToken _cancelToken, _parentToken;
-        private ManualResetEventSlim _waitUntilConnect;
+        private readonly ManualResetEventSlim _waitUntilConnect;
         private bool _isDisposed;
 
         public WS4NetClient() {

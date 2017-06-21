@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -12,6 +13,7 @@ namespace Cirilla.Modules {
                 string pre =
                     $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
                 int cores = Environment.ProcessorCount;
+                Process current = Process.GetCurrentProcess();
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
@@ -22,7 +24,8 @@ namespace Cirilla.Modules {
                 };
                 builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
-                builder.AddInlineField("Core #", cores + " cores");
+                builder.AddInlineField("Core #", $"{cores} cores");
+                builder.AddInlineField("Max RAM usage", $"{((double)current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);
@@ -92,6 +95,11 @@ namespace Cirilla.Modules {
             } catch {
                 // channel not available anymore? any unexpected error
             }
+        }
+
+        [Command("source"), Summary("Shows source code of Cirilla")]
+        public async Task Source() {
+            await ReplyAsync($"I'm written in C#.NET Core, my source code is on GitHub; {Information.RepoUrl}");
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Cirilla {
         public static async Task JoinedGuild(SocketGuild arg) {
             try {
                 if (arg.CurrentUser.GuildPermissions.SendMessages) {
-                    await arg.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :smile: :wave:");
+                    await arg.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :wave: :smile:");
 
                     string dataPath = Path.Combine(Information.Directory, arg.Id.ToString());
                     if (!Directory.Exists(dataPath)) {

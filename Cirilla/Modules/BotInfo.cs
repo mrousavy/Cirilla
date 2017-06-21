@@ -25,10 +25,12 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", $"{cores} cores");
-                builder.AddInlineField("Max RAM usage", $"{((double)current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
+                builder.AddInlineField("RAM usage", $"{((double)current.WorkingSet64 / 1024 / 1024):#.#} MB");
+                builder.AddInlineField("Peak RAM usage", $"{((double)current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);
+                builder.AddInlineField("Help Command", $"`{Information.Prefix}help`");
 
                 await ReplyAsync("", embed: builder.Build());
                 await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);

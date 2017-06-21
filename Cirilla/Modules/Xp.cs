@@ -157,12 +157,12 @@ namespace Cirilla.Modules {
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = $"XP Ranking for {Context.Guild.Name}",
-                        IconUrl = Context.Guild.IconUrl
+                        Name = $"XP Ranking for {Context.Guild.Name} :trophy:"
                     },
+                    ThumbnailUrl = Context.Guild.IconUrl,
                     Color = new Color(255, 163, 50),
                     Footer = new EmbedFooterBuilder {
-                        Text = $"of {XpManager.Get(Context.Guild).Count} total XP users"
+                        Text = $"..out of {XpManager.Get(Context.Guild).Count} total XP users"
                     }
                 };
 
@@ -170,10 +170,31 @@ namespace Cirilla.Modules {
                 for (int i = 0; i < max; i++) {
                     UserXp xp = xps[i];
                     IUser user = await Context.Guild.GetUserAsync(xp.UserId);
-                    builder.AddField($"{i + 1}. {Helper.GetName(user)}", $"XP: **{xp.Xp}** | Level: **{xp.Level}**");
+                    string place;
+                    switch (i) {
+                        case 0:
+                            place = $":first_place: 1";
+                            break;
+                        case 1:
+                            place = $":second_place: 2";
+                            break;
+                        case 2:
+                            place = $":third_place: 3";
+                            break;
+                        default:
+                            place = $"{i + 1}";
+                            break;
+                    }
+                    builder.AddField($"{place}. {Helper.GetName(user)}", $"XP: **{xp.Xp}** | Level: **{xp.Level}**");
                 }
 
-                await ReplyAsync("", embed: builder.Build());
+                try {
+                    UserXp firstXp = xps[0];
+                    IUser firstUser = await Context.Guild.GetUserAsync(firstXp.UserId);
+                    await ReplyAsync($"Good job **{Helper.GetName(firstUser)}** on being first place with **{firstXp.Xp}** XP!", embed: builder.Build());
+                } catch {
+                    await ReplyAsync("", embed: builder.Build());
+                }
             } catch {
                 await ReplyAsync("I couldn't do a full ranking for that guild, sorry.. :confused:");
             }

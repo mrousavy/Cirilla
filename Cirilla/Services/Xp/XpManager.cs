@@ -234,6 +234,8 @@ namespace Cirilla.Services.Xp {
             if (obj is UserXp xp2) {
                 if (Xp > xp2.Xp)
                     return 1;
+                if (Xp == xp2.Xp)
+                    return 0;
             }
             return -1;
         }

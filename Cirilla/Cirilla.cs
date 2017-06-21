@@ -29,7 +29,6 @@ namespace Cirilla {
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
             Client.MessageReceived += MessageReceived;
-            Client.MessageReceived += EventHelper.BotchatMessageReceived;
             Client.UserJoined += EventHelper.UserJoined;
             Client.UserLeft += EventHelper.UserLeft;
             Client.LeftGuild += EventHelper.LeftGuild;

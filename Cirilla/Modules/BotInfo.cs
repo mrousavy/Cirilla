@@ -49,13 +49,16 @@ namespace Cirilla.Modules {
         public async Task Uptime() {
             try {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
-                if (tspan.TotalHours >= 1) {
+                if (tspan.TotalDays >= 1) {
                     await ReplyAsync(
-                        "I'm already running for " + tspan.ToString("h'h m'm 's's'") + ", I'm tired :confused:");
+                        $"I'm already running for {tspan.ToString("d'd h'h m'm 's's'")}, I'm tired :confused:");
+                } else if (tspan.TotalHours >= 1) {
+                    await ReplyAsync(
+                        $"I'm already running for {tspan.ToString("h'h m'm 's's'}")}");
                 } else if (tspan.TotalMinutes >= 1) {
-                    await ReplyAsync("I'm running for " + tspan.ToString("m'm 's's'"));
+                    await ReplyAsync($"I'm running for {tspan.ToString("m'm 's's'")}");
                 } else {
-                    await ReplyAsync("I'm running for " + tspan.ToString("s's'"));
+                    await ReplyAsync($"I'm running for {tspan.ToString("s's'")}");
                 }
                 await ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
             } catch (Exception ex) {
@@ -67,7 +70,9 @@ namespace Cirilla.Modules {
         private static string GetUptime() {
             TimeSpan tspan = (DateTime.Now - Program.StartTime);
             string uptime;
-            if (tspan.TotalHours >= 1) {
+            if (tspan.TotalDays >= 1) {
+                uptime = tspan.ToString("d'd h'h 'm'm 's's'");
+            } else if (tspan.TotalHours >= 1) {
                 uptime = tspan.ToString("h'h 'm'm 's's'");
             } else if (tspan.TotalMinutes >= 1) {
                 uptime = tspan.ToString("m'm 's's'");

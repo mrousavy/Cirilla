@@ -33,6 +33,7 @@ namespace Cirilla {
             Client.UserLeft += EventHelper.UserLeft;
             Client.LeftGuild += EventHelper.LeftGuild;
             Client.JoinedGuild += EventHelper.JoinedGuild;
+            Client.GuildAvailable += EventHelper.GuildAvailable;
 
             CommandServiceConfig serviceConfig = new CommandServiceConfig {
                 CaseSensitiveCommands = false,

@@ -1,42 +1,37 @@
-﻿using Discord.Rest;
+﻿using Cirilla.Services.Reminder;
+using Discord.Rest;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Cirilla {
     public static class EventHelper {
-        public static async Task UserJoined(SocketGuildUser arg) {
-            await ConsoleHelper.Log($"{Helper.GetName(arg)} joined the \"{arg.Guild.Name}\" server!",
+        public static async Task UserJoined(SocketGuildUser user) {
+            await ConsoleHelper.Log($"{Helper.GetName(user)} joined the \"{user.Guild.Name}\" server!",
                 Discord.LogSeverity.Info);
-            SocketTextChannel channel =
-                (new List<SocketTextChannel>(arg.Guild.TextChannels)).FirstOrDefault(
-                    c => c.Name == Information.TextChannel);
+            SocketTextChannel channel = user.Guild.DefaultChannel;
             if (channel != null)
-                await channel.SendMessageAsync($"Hi {arg.Mention}!", true);
+                await channel.SendMessageAsync($"Hi {user.Mention}!", true);
         }
 
-        public static async Task UserLeft(SocketGuildUser arg) {
-            await ConsoleHelper.Log($"{arg.Username} left the \"{arg.Guild.Name}\" server!", Discord.LogSeverity.Info);
-            SocketTextChannel channel =
-                (new List<SocketTextChannel>(arg.Guild.TextChannels)).FirstOrDefault(
-                    c => c.Name == Information.TextChannel);
+        public static async Task UserLeft(SocketGuildUser user) {
+            await ConsoleHelper.Log($"{user.Username} left the \"{user.Guild.Name}\" server!", Discord.LogSeverity.Info);
+            SocketTextChannel channel = user.Guild.DefaultChannel;
             if (channel != null)
-                await channel.SendMessageAsync($"{Helper.GetName(arg)} left the server!", true);
+                await channel.SendMessageAsync($"{Helper.GetName(user)} left the server!", true);
 
-            RestDMChannel dm = await arg.CreateDMChannelAsync();
+            RestDMChannel dm = await user.CreateDMChannelAsync();
             await dm.SendMessageAsync("Why did you leave man?", true);
         }
 
 
-        public static async Task JoinedGuild(SocketGuild arg) {
+        public static async Task JoinedGuild(SocketGuild guild) {
             try {
-                if (arg.CurrentUser.GuildPermissions.SendMessages) {
-                    await arg.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :wave: :smile:");
+                if (guild.CurrentUser.GuildPermissions.SendMessages) {
+                    await guild.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :wave: :smile:");
 
-                    string dataPath = Path.Combine(Information.Directory, arg.Id.ToString());
+                    string dataPath = Path.Combine(Information.Directory, guild.Id.ToString());
                     if (!Directory.Exists(dataPath)) {
                         Directory.CreateDirectory(dataPath);
                     }
@@ -47,19 +42,29 @@ namespace Cirilla {
             }
         }
 
-        public static Task LeftGuild(SocketGuild arg) {
+        public static Task LeftGuild(SocketGuild guild) {
             try {
-                string guildDir = Path.Combine(Information.Directory, arg.Id.ToString());
+                string guildDir = Path.Combine(Information.Directory, guild.Id.ToString());
                 //cleanup
                 if (Directory.Exists(guildDir)) {
                     Directory.Delete(guildDir, true);
                 }
             } catch (Exception ex) {
-                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\" guild! ({ex.Message})",
+                ConsoleHelper.Log($"Could not cleanup for \"{guild.Name}\" guild! ({ex.Message})",
                     Discord.LogSeverity.Error);
             }
-            ConsoleHelper.Log($"Left \"{arg.Name}\" guild!", Discord.LogSeverity.Info);
+            ConsoleHelper.Log($"Left \"{guild.Name}\" guild!", Discord.LogSeverity.Info);
 
+            return Task.CompletedTask;
+        }
+
+
+        public static Task GuildAvailable(SocketGuild guild) {
+            try {
+                ReminderService.Init(guild);
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", Discord.LogSeverity.Error);
+            }
             return Task.CompletedTask;
         }
     }

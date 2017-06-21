@@ -29,6 +29,32 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("setup"), Summary("Setup the bot!")]
+        public async Task SetupBot() {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Administrator) {
+                    await ReplyAsync("Sorry, only admins can use this command!");
+                    return;
+                }
+
+                IGuildUser me = await Context.Guild.GetCurrentUserAsync();
+                if (me.GuildPermissions.ManageChannels) {
+                    ITextChannel botchat = await Context.Guild.CreateTextChannelAsync(Information.Botchat);
+                    await botchat.SendMessageAsync("Hi guys! You can chat with me here! :smile:");
+                } else {
+                    await ReplyAsync($"If you guys want to talk to me, you gotta create #{Information.Botchat}.. Couldn't do it myself!");
+                }
+
+                await ReplyAsync("I'm ready to go! :smile:");
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't setup myself.. :confused:");
+                await ConsoleHelper.Log($"Error setting up bot on \"{Context.Guild.Name}\", {ex.Message}!", LogSeverity.Error);
+            }
+        }
 
         [Command("leave"), Summary("Leave this Guild")]
         public async Task LeaveGuild() {

@@ -19,6 +19,7 @@ namespace Cirilla {
 
         internal static string Token => Config.Token;
         internal static string TextChannel => Config.TextChannel;
+        internal static string Botchat => Config.Botchat;
         internal static char Prefix => Config.Prefix;
         internal static string SecondaryPrefix => Config.SecondaryPrefix;
         internal static string RepoUrl => Config.RepoUrl;
@@ -103,6 +104,9 @@ namespace Cirilla {
 
         //Default Text Channel
         public string TextChannel = "general";
+
+        //Default Botchat Text Channel
+        public string Botchat = "botchat";
 
         //Bot prefix ($help)
         public char Prefix = '$';

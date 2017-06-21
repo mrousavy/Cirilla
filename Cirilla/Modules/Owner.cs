@@ -79,7 +79,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("game"), Summary("Change Bot's \"playing ..\" status")]
-        public async Task SetGame([Summary("The new game")] string game) {
+        public async Task SetGame([Summary("The new game")] [Remainder]string game) {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {

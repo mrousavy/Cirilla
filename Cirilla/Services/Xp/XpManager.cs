@@ -51,8 +51,6 @@ namespace Cirilla.Services.Xp {
         }
 
 
-        //Xp Users = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users
-
         //add new user
         public static UserXp Add(IGuild guild, IUser user, int xp) {
             //contains Guild?
@@ -97,6 +95,18 @@ namespace Cirilla.Services.Xp {
             return Add(guild, user, 0);
         }
 
+        public static List<UserXp> Get(IGuild guild) {
+            return XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users;
+        }
+
+        public static List<UserXp> Top10(IGuild guild) {
+            //LINQ is love <3
+            GuildXp gxp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
+            List<UserXp> userxp = gxp.Users.OrderByDescending(uxp => uxp).ToList();
+
+            return userxp;
+        }
+
         public static void WriteOut() {
             try {
                 foreach (KeyValuePair<ulong, GuildXp> pairs in XpInfo.Guilds) {
@@ -112,6 +122,16 @@ namespace Cirilla.Services.Xp {
                 }
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not save XP info to XP File! ({ex.Message})", LogSeverity.Error);
+            }
+        }
+
+        public static void RemoveUser(IGuild guild, IUser user) {
+            try {
+                GuildXp guildXp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
+                guildXp.Users.RemoveAll(p => p.UserId == user.Id);
+                WriteOut();
+            } catch (Exception ex) {
+                ConsoleHelper.Log($"Could not remove User from XP File! ({ex.Message})", LogSeverity.Error);
             }
         }
 
@@ -134,7 +154,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int) (previousLevel * Information.XpFactor);
+                    return (int)(previousLevel * Information.XpFactor);
             }
         }
 
@@ -198,7 +218,7 @@ namespace Cirilla.Services.Xp {
     }
 
 
-    public class UserXp {
+    public class UserXp : IComparable {
         public UserXp(ulong userId, int xp) {
             UserId = userId;
             Xp = xp;
@@ -209,6 +229,14 @@ namespace Cirilla.Services.Xp {
 
         [JsonIgnore]
         public int Level => XpManager.GetLevel(Xp);
+
+        public int CompareTo(object obj) {
+            if (obj is UserXp xp2) {
+                if (Xp > xp2.Xp)
+                    return 1;
+            }
+            return -1;
+        }
     }
 
     public class XpFile {

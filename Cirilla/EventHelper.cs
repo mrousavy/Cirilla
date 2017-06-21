@@ -1,4 +1,5 @@
 ﻿using Cirilla.Services.Reminder;
+using Cirilla.Services.Xp;
 using Discord.Rest;
 using Discord.WebSocket;
 using System;
@@ -20,6 +21,8 @@ namespace Cirilla {
             SocketTextChannel channel = user.Guild.DefaultChannel;
             if (channel != null)
                 await channel.SendMessageAsync($"{Helper.GetName(user)} left the server!", true);
+
+            XpManager.RemoveUser(user.Guild, user);
 
             RestDMChannel dm = await user.CreateDMChannelAsync();
             await dm.SendMessageAsync("Why did you leave man?", true);

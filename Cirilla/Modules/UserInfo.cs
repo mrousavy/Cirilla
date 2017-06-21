@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class UserInfo : ModuleBase {
-        [Command("stats"), Summary("Shows statistics for a specific user")]
-        public async Task Stats(IGuildUser user) {
+        [Command("info"), Summary("Shows Information for a specific user")]
+        public async Task Info(IGuildUser user) {
             try {
                 string uname = user.Username ?? "?";
                 string nick = user.Nickname ?? "/";
@@ -42,8 +42,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("stats"), Summary("Shows statistics for user")]
-        public async Task Stats() {
+        [Command("info"), Summary("Shows information for user")]
+        public async Task Info() {
             try {
                 if (Context.User is IGuildUser user) {
                     string uname = user.Username ?? "?";

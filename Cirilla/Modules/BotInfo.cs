@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class BotInfo : ModuleBase {
-        [Command("info"), Summary("Shows host information")]
-        public async Task Info() {
+        [Command("host"), Summary("Shows host information")]
+        public async Task Host() {
             try {
                 string mname = Environment.MachineName;
                 string pre =
@@ -25,7 +25,7 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", $"{cores} cores");
-                builder.AddInlineField("Max RAM usage", $"{((double) current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
+                builder.AddInlineField("Max RAM usage", $"{((double)current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);

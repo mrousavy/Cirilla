@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
@@ -144,9 +145,44 @@ namespace Cirilla.Modules {
         }
 
 
+        [Command("stats"), Summary("Show XP Statistics/Ranking for Guild")]
+        public async Task Stats() {
+            try {
+                List<UserXp> xps = XpManager.Top10(Context.Guild);
+
+                if (xps.Count < 1) {
+                    await ReplyAsync("I couldn't find any users..");
+                    return;
+                }
+
+                EmbedBuilder builder = new EmbedBuilder {
+                    Author = new EmbedAuthorBuilder {
+                        Name = $"XP Ranking for {Context.Guild.Name}",
+                        IconUrl = Context.Guild.IconUrl
+                    },
+                    Color = new Color(255, 163, 50),
+                    Footer = new EmbedFooterBuilder {
+                        Text = $"of {XpManager.Get(Context.Guild).Count} total XP users"
+                    }
+                };
+
+                int max = xps.Count > 10 ? 10 : xps.Count;
+                for (int i = 0; i < max; i++) {
+                    UserXp xp = xps[i];
+                    IUser user = await Context.Guild.GetUserAsync(xp.UserId);
+                    builder.AddField($"{i + 1}. {Helper.GetName(user)}", $"XP: **{xp.Xp}** | Level: **{xp.Level}**");
+                }
+
+                await ReplyAsync("", embed: builder.Build());
+            } catch {
+                await ReplyAsync("I couldn't do a full ranking for that guild, sorry.. :confused:");
+            }
+        }
+
+
         public static string GetNameForXp() {
             //7 times XP (so "XP" is more common) and 4 times other units
-            string[] names = {"XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins"};
+            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

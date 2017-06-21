@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocket4Net;
 using WS4NetSocket = WebSocket4Net.WebSocket;
+
 // ReSharper disable All
 
 namespace Discord.Net.Providers.WS4Net {
@@ -31,6 +32,7 @@ namespace Discord.Net.Providers.WS4Net {
             _parentToken = CancellationToken.None;
             _waitUntilConnect = new ManualResetEventSlim();
         }
+
         private void Dispose(bool disposing) {
             if (!_isDisposed) {
                 if (disposing)
@@ -38,9 +40,8 @@ namespace Discord.Net.Providers.WS4Net {
                 _isDisposed = true;
             }
         }
-        public void Dispose() {
-            Dispose(true);
-        }
+
+        public void Dispose() { Dispose(true); }
 
         public async Task ConnectAsync(string host) {
             await _lock.WaitAsync().ConfigureAwait(false);
@@ -50,11 +51,13 @@ namespace Discord.Net.Providers.WS4Net {
                 _lock.Release();
             }
         }
+
         private async Task ConnectInternalAsync(string host) {
             await DisconnectInternalAsync().ConfigureAwait(false);
 
             _cancelTokenSource = new CancellationTokenSource();
-            _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token).Token;
+            _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token)
+                .Token;
 
             _client = new WS4NetSocket(host, customHeaderItems: _headers.ToList()) {
                 EnableAutoSendPing = false,
@@ -79,13 +82,17 @@ namespace Discord.Net.Providers.WS4Net {
                 _lock.Release();
             }
         }
+
         private Task DisconnectInternalAsync(bool isDisposing = false) {
             _cancelTokenSource.Cancel();
             if (_client == null)
                 return Task.Delay(0);
 
             if (_client.State == WebSocketState.Open) {
-                try { _client.Close(1000, ""); } catch { }
+                try {
+                    _client.Close(1000, "");
+                } catch {
+                }
             }
 
             _client.MessageReceived -= OnTextMessage;
@@ -93,19 +100,22 @@ namespace Discord.Net.Providers.WS4Net {
             _client.Opened -= OnConnected;
             _client.Closed -= OnClosed;
 
-            try { _client.Dispose(); } catch { }
+            try {
+                _client.Dispose();
+            } catch {
+            }
             _client = null;
 
             _waitUntilConnect.Reset();
             return Task.Delay(0);
         }
 
-        public void SetHeader(string key, string value) {
-            _headers[key] = value;
-        }
+        public void SetHeader(string key, string value) { _headers[key] = value; }
+
         public void SetCancelToken(CancellationToken cancelToken) {
             _parentToken = cancelToken;
-            _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token).Token;
+            _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token)
+                .Token;
         }
 
         public async Task SendAsync(byte[] data, int index, int count, bool isText) {
@@ -123,12 +133,13 @@ namespace Discord.Net.Providers.WS4Net {
         private void OnTextMessage(object sender, MessageReceivedEventArgs e) {
             TextMessage(e.Message).GetAwaiter().GetResult();
         }
+
         private void OnBinaryMessage(object sender, DataReceivedEventArgs e) {
             BinaryMessage(e.Data, 0, e.Data.Count()).GetAwaiter().GetResult();
         }
-        private void OnConnected(object sender, object e) {
-            _waitUntilConnect.Set();
-        }
+
+        private void OnConnected(object sender, object e) { _waitUntilConnect.Set(); }
+
         private void OnClosed(object sender, object e) {
             var ex = (e as SuperSocket.ClientEngine.ErrorEventArgs)?.Exception ?? new Exception("Unexpected close");
             Closed(ex).GetAwaiter().GetResult();

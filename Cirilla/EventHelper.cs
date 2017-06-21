@@ -31,7 +31,6 @@ namespace Cirilla {
         }
 
 
-
         public static async Task JoinedGuild(SocketGuild arg) {
             try {
                 if (arg.CurrentUser.GuildPermissions.SendMessages) {
@@ -47,6 +46,7 @@ namespace Cirilla {
                     Discord.LogSeverity.Error);
             }
         }
+
         public static Task LeftGuild(SocketGuild arg) {
             try {
                 string guildDir = Path.Combine(Information.Directory, arg.Id.ToString());
@@ -55,7 +55,8 @@ namespace Cirilla {
                     Directory.Delete(guildDir, true);
                 }
             } catch (Exception ex) {
-                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\" guild! ({ex.Message})", Discord.LogSeverity.Error);
+                ConsoleHelper.Log($"Could not cleanup for \"{arg.Name}\" guild! ({ex.Message})",
+                    Discord.LogSeverity.Error);
             }
             ConsoleHelper.Log($"Left \"{arg.Name}\" guild!", Discord.LogSeverity.Info);
 

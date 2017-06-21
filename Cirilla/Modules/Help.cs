@@ -44,7 +44,8 @@ namespace Cirilla.Modules {
                     await dm.SendMessageAsync("", false, builder.Build());
                 } catch {
                     //could not send private
-                    await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..", embed: builder.Build());
+                    await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..",
+                        embed: builder.Build());
                 }
             } else {
                 await ReplyAsync("", embed: builder.Build());

@@ -19,9 +19,7 @@ namespace Cirilla.Services.Roslyn {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(Rule);
 
-        public override void Initialize(AnalysisContext context) {
-            context.RegisterSemanticModelAction(AnalyzeSymbol);
-        }
+        public override void Initialize(AnalysisContext context) { context.RegisterSemanticModelAction(AnalyzeSymbol); }
 
         private static void AnalyzeSymbol(SemanticModelAnalysisContext context) {
             var model = context.SemanticModel;

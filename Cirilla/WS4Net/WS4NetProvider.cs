@@ -1,4 +1,5 @@
 ﻿using Discord.Net.WebSockets;
+
 // ReSharper disable All
 
 namespace Discord.Net.Providers.WS4Net {

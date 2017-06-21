@@ -48,9 +48,11 @@ namespace Cirilla.Modules {
                     }
 
                     if (xp < 1) {
-                        await ReplyAsync($"{Helper.GetName(Context.User)} drained {Helper.GetName(user)} {-xp} {GetNameForXp()}! :money_with_wings:");
+                        await ReplyAsync(
+                            $"{Helper.GetName(Context.User)} drained {Helper.GetName(user)} {-xp} {GetNameForXp()}! :money_with_wings:");
                     } else {
-                        await ReplyAsync($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
+                        await ReplyAsync(
+                            $"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
                     }
 
                     if (lvlAfter > lvlBefore) {
@@ -144,7 +146,7 @@ namespace Cirilla.Modules {
 
         public static string GetNameForXp() {
             //7 times XP (so "XP" is more common) and 4 times other units
-            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
+            string[] names = {"XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins"};
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

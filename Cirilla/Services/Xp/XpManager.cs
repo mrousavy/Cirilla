@@ -40,7 +40,9 @@ namespace Cirilla.Services.Xp {
                 }
 
                 sw.Stop();
-                ConsoleHelper.Log($"Done loading {directories.Length} Guild XP Files! (took {sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
+                ConsoleHelper.Log(
+                    $"Done loading {directories.Length} Guild XP Files! (took {sw.ElapsedMilliseconds}ms)",
+                    LogSeverity.Info);
             } else {
                 ConsoleHelper.Log("No XP Files stored yet.", LogSeverity.Info);
             }
@@ -80,7 +82,8 @@ namespace Cirilla.Services.Xp {
 
         public static UserXp Get(IGuild guild, IUser user) {
             //LINQ is love <3
-            bool contains = XpInfo.Guilds.Where(kvp => kvp.Key == guild.Id).Any(kvp => kvp.Value.Users.Any(userxp => userxp.UserId == user.Id));
+            bool contains = XpInfo.Guilds.Where(kvp => kvp.Key == guild.Id)
+                .Any(kvp => kvp.Value.Users.Any(userxp => userxp.UserId == user.Id));
 
             if (contains) {
                 foreach (UserXp uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users) {
@@ -131,7 +134,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int)(previousLevel * Information.XpFactor);
+                    return (int) (previousLevel * Information.XpFactor);
             }
         }
 

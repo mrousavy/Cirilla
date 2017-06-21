@@ -18,7 +18,8 @@ namespace Cirilla.Modules {
                     return;
                 }
                 if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.ManageMessages) {
-                    await ReplyAsync($"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
+                    await ReplyAsync(
+                        $"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
                     return;
                 }
 
@@ -43,7 +44,8 @@ namespace Cirilla.Modules {
                     return;
                 }
                 if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.ManageMessages) {
-                    await ReplyAsync($"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
+                    await ReplyAsync(
+                        $"I can't delete messages here, go talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
                     return;
                 }
 

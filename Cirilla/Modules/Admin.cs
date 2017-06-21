@@ -43,7 +43,8 @@ namespace Cirilla.Modules {
                 }
 
                 await ReplyAsync($"Bye guys, {Helper.GetName(user)} wanted me to leave! :disappointed_relieved:");
-                await ConsoleHelper.Log($"{Context.User} requested the bot to leave \"{Context.Guild.Name}\"!", LogSeverity.Info);
+                await ConsoleHelper.Log($"{Context.User} requested the bot to leave \"{Context.Guild.Name}\"!",
+                    LogSeverity.Info);
 
                 await Context.Guild.LeaveAsync();
             } catch (Exception ex) {

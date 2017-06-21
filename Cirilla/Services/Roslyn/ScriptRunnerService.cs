@@ -17,9 +17,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Services.Roslyn {
     public static class ScriptRunnerService {
-
-        private static readonly string[] DefaultImports =
-        {
+        private static readonly string[] DefaultImports = {
             "System",
             "System.IO",
             "System.Linq",
@@ -32,8 +30,7 @@ namespace Cirilla.Services.Roslyn {
             "System.Net.Http"
         };
 
-        private static readonly Assembly[] DefaultReferences =
-        {
+        private static readonly Assembly[] DefaultReferences = {
             typeof(Enumerable).GetTypeInfo().Assembly,
             typeof(List<string>).GetTypeInfo().Assembly,
             typeof(JsonConvert).GetTypeInfo().Assembly,
@@ -51,7 +48,6 @@ namespace Cirilla.Services.Roslyn {
             ImmutableArray.Create<DiagnosticAnalyzer>(new BlacklistedTypesAnalyzer());
 
         private static readonly Random Random = new Random();
-
 
 
         /// <summary>
@@ -82,13 +78,17 @@ namespace Cirilla.Services.Roslyn {
             Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
             CompilationWithAnalyzers compilation = script.GetCompilation().WithAnalyzers(Analyzers);
             ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync();
-            ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error).ToImmutableArray();
+            ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error)
+                .ToImmutableArray();
             compileSw.Stop();
             compileTime = compileSw.ElapsedMilliseconds;
-            string diagnostics = Enumerable.Aggregate(compileResult, string.Empty, (current, diagnostic) => current + diagnostic.ToString());
+            string diagnostics = Enumerable.Aggregate(compileResult, string.Empty,
+                (current, diagnostic) => current + diagnostic.ToString());
 
             if (compileErrors.Length > 0) {
-                compileException = new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())), compileErrors);
+                compileException =
+                    new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())),
+                        compileErrors);
             }
 
             Globals globals = new Globals {
@@ -131,7 +131,8 @@ namespace Cirilla.Services.Roslyn {
                         builder.AddField("Console Output:", $"```accesslog{nl}{stringBuilder}{nl}```");
                     }
                 } else {
-                    builder.AddField($"Result: {result.ReturnValue.GetType()}", $"```cs{nl}{result.ReturnValue}{nl}```");
+                    builder.AddField($"Result: {result.ReturnValue.GetType()}",
+                        $"```cs{nl}{result.ReturnValue}{nl}```");
                 }
                 if (!string.IsNullOrWhiteSpace(diagnostics)) {
                     builder.AddField("Diagnostics",
@@ -140,7 +141,8 @@ namespace Cirilla.Services.Roslyn {
                             : $"```{nl}{diagnostics.Substring(0, 255)} [...]{nl}```");
                 }
             } else {
-                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({compileException?.Message})",
+                await ConsoleHelper.Log(
+                    $"Error compiling C# script from {Helper.GetName(user)}! ({compileException?.Message})",
                     LogSeverity.Info);
 
                 builder.Color = new Color(180, 8, 8);
@@ -149,7 +151,9 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
 
                 string exceptionTitle = compileException == null ? $"Exception: {runEx.GetType()}" : "Compiler Error:";
-                string exceptionContent = compileException == null ? $"```accesslog{nl}{runEx.Message}{nl}```" : $"```accesslog{nl}{compileException.Message}{nl}```";
+                string exceptionContent = compileException == null
+                    ? $"```accesslog{nl}{runEx.Message}{nl}```"
+                    : $"```accesslog{nl}{compileException.Message}{nl}```";
                 builder.AddField(exceptionTitle, exceptionContent);
             }
 

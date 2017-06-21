@@ -15,7 +15,8 @@ namespace Cirilla.Modules {
 
             try {
                 if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.KickMembers) {
-                    await ReplyAsync($"I can't kick people here, talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
+                    await ReplyAsync(
+                        $"I can't kick people here, talk to {(await Context.Guild.GetOwnerAsync()).Mention}!");
                     return;
                 }
 

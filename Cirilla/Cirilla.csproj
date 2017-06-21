@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ChatterBotApi" Version="1.0.0" />
     <PackageReference Include="Discord.Net" Version="1.0.0-rc2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2" />

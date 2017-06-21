@@ -1,4 +1,6 @@
-﻿using Cirilla.Services.Reminder;
+﻿using Cirilla.Services.Botchat;
+using Cirilla.Services.Reminder;
+using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using System;
@@ -66,6 +68,30 @@ namespace Cirilla {
                 ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", Discord.LogSeverity.Error);
             }
             return Task.CompletedTask;
+        }
+
+        public static async Task BotchatMessageReceived(SocketMessage arg) {
+            SocketUserMessage message = arg as SocketUserMessage;
+            if (message == null) {
+                return; //system message
+            }
+            if (message.Author.Id == Cirilla.Client.CurrentUser.Id) {
+                return; //own message
+            }
+            int foo = 0;
+            if (message.HasCharPrefix(Information.Prefix, ref foo) ||
+                      message.HasStringPrefix(Information.SecondaryPrefix, ref foo) ||
+                      message.HasMentionPrefix(Cirilla.Client.CurrentUser, ref foo)) {
+                return; //is a command
+            }
+
+            //TODO: not yet implemented
+            return;
+
+            if (message.Channel.Name == Information.Botchat) {
+                string answer = Botchat.Send(message.Content);
+                await message.Channel.SendMessageAsync(answer);
+            }
         }
     }
 }

@@ -38,6 +38,8 @@ namespace Cirilla {
         internal static bool AllowVotekick => Config.AllowVotekick;
         internal static double XpFactor => Config.XpFactor;
 
+        internal static int MaximumReminders => Config.MaximumReminders;
+        internal static int MaximumRemindDays => Config.MaximumRemindDays;
 
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
@@ -145,6 +147,11 @@ namespace Cirilla {
         public string VotekickYes = "👍";
         public string VotekickNo = "👎";
         public bool AllowVotekick = false;
+
+        //Maximum simultaneous reminders for a user
+        public int MaximumReminders = 3;
+        //Maximum days for reminders
+        public int MaximumRemindDays = 5;
 
         //Last time news got posted
         public DateTime LastPost = DateTime.Now;

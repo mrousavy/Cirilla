@@ -157,7 +157,7 @@ namespace Cirilla.Modules {
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = $"XP Ranking for {Context.Guild.Name} :trophy:"
+                        Name = $"XP Ranking for {Context.Guild.Name} 🏆"
                     },
                     ThumbnailUrl = Context.Guild.IconUrl,
                     Color = new Color(255, 163, 50),

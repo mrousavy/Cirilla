@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -71,6 +72,33 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't set the new game.. :confused:");
                 await ConsoleHelper.Log($"Error setting game, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        [Command("announce"), Summary("Announce something in all guilds")]
+        public async Task Announce([Summary("The text to send")] [Remainder]string text) {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                int sent = 0;
+                foreach (SocketGuild guild in Cirilla.Client.Guilds) {
+                    try {
+                        await guild.DefaultChannel.SendMessageAsync($"{text} ~{Context.User.Username}");
+                        sent++;
+                    } catch {
+                        // could not send
+                    }
+                }
+                await ReplyAsync($"Sent the announcement to {sent}/{Cirilla.Client.Guilds.Count} guilds!");
+                await ConsoleHelper.Log($"{Context.User} announced \"{text}\" on {sent}/{Cirilla.Client.Guilds.Count} guilds!",
+                    LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't announce that.. :confused:");
+                await ConsoleHelper.Log($"Error announcing, {ex.Message}!", LogSeverity.Error);
             }
         }
 

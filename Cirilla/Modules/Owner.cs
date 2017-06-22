@@ -16,14 +16,10 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
-                if (!(await Context.Guild.GetCurrentUserAsync()).GuildPermissions.AttachFiles) {
-                    await ReplyAsync("Sorry, I can't upload files here..");
-                    return;
-                }
 
                 IDMChannel dm = await user.CreateDMChannelAsync();
 
-                string file = Path.Combine(Information.Directory, "botlog.txt");
+                string file = Path.Combine(Information.Directory, "log_copy.txt");
                 lock (Helper.Lock)
                     File.Copy(Path.Combine(Information.Directory, "log.txt"), file);
                 await dm.SendFileAsync(file, "Here you go");
@@ -55,6 +51,25 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't clear the log.. :confused:");
                 await ConsoleHelper.Log($"Error clear log, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+
+        [Command("cmdlog"), Summary("Upload the Bot's command log")]
+        public async Task GetCommandLog() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                IDMChannel dm = await user.CreateDMChannelAsync();
+                await CommandLogger.Upload(dm);
+                await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. :confused:");
+                await ConsoleHelper.Log($"Error sending log, {ex.Message}!", LogSeverity.Error);
             }
         }
 

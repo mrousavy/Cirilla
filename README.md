@@ -96,6 +96,7 @@ $news limit
 ```
 **Owner**
 ```
+$cmdlog
 $log 
 $clearlog 
 $game game

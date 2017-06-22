@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Discord;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cirilla {
     public static class CommandLogger {
@@ -30,6 +32,20 @@ namespace Cirilla {
                     }
                 }
             }).Start();
+        }
+
+
+        public static async Task Upload(IDMChannel dm) {
+            string file = Path.Combine(Information.Directory, "commandlog.txt");
+            string filecopy = Path.Combine(Information.Directory, "commandlog_copy.txt");
+
+            lock (Lock) {
+                File.Copy(file, filecopy);
+            }
+            await dm.SendFileAsync(filecopy, "Here you go");
+            lock (Lock) {
+                File.Delete(filecopy);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Admin : ModuleBase {
@@ -76,6 +77,33 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't leave this guild.. :confused:");
                 await ConsoleHelper.Log($"Error leaving guild, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+
+        [Command("prefix"), Summary("Change prefix")]
+        public async Task ChangePrefix([Summary("New prefix")] [Remainder] string prefix) {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                string before = Information.SecondaryPrefix;
+                bool disablePrimary = false;
+                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                if (config != null) {
+                    before = config.Prefix;
+                    disablePrimary = config.DisablePrimaryPrefix;
+                }
+                GuildConfigManager.Set(Context.Guild.Id, prefix, disablePrimary);
+                await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");
+                await ConsoleHelper.Log($"{Context.User} changed the prefix on \"{Context.Guild.Name}\" from {before} to {prefix}!",
+                    LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
+                await ConsoleHelper.Log($"Error chaning prefix, {ex.Message}!", LogSeverity.Error);
             }
         }
     }

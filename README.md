@@ -7,22 +7,32 @@
   </p>
 </p>
 
+# Setup
+1. [Add Cirilla to your guild](https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707) (for 100% functionality you want to keep all the checkboxes checked on the auth-page)
+2. Change the prefix you want to use (e.g.: `$prefix ?` will change the prefix to `?`)
+3. If you don't want the primary/default prefix (`$`) at all, disable it with: `$toggleprimary`
+4. View the current config (`$config` or `$host`) to be sure it's setup correctly
+5. XP Files can be added manually when you run `$xp` (for yourself) or `$xp USERNAME` (for a specific user) once.
+6. Try out some [Commands](#Commands)!
 
 # Commands
 These are the commands you can use:
 
 **Admin**
 ```
+$nick nickname
+$setup 
+$leave 
 $prefix prefix
-$log 
-$clearlog 
-$shutdown
+$toggleprimary
 ```
 **BotInfo**
 ```
-$info 
+$host 
+$invite 
 $uptime 
-$run
+$run 
+$source
 ```
 **Clean**
 ```
@@ -81,6 +91,14 @@ $pi
 $news 
 $news limit
 ```
+**Owner**
+```
+$log 
+$clearlog 
+$game game
+$reboot 
+$shutdown
+```
 **Profile**
 ```
 $profile user
@@ -96,6 +114,10 @@ $random maximum
 ```
 $dankmeme 
 $reddit rsubreddit
+```
+**Reminder**
+```
+$remindme time, text
 ```
 **Search**
 ```
@@ -117,4 +139,5 @@ $xp user, xp
 $setxp user, xp
 $xp 
 $xp user
+$stats
 ```

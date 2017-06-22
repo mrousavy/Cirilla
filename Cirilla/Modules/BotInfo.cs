@@ -47,6 +47,11 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("owner"), Summary("Show Cirilla bot owner")]
+        public async Task Owner() {
+            await ReplyAsync($"My owner is \"mrousavy#6472\"; ({Information.Owner}) - http://github.com/mrousavy");
+        }
+
         [Command("invite"), Summary("Show Guild join link for bot")]
         public async Task Invite() {
             await ReplyAsync(Information.InviteLink);

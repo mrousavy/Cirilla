@@ -109,7 +109,8 @@ namespace Cirilla {
                     Embed embed = Helper.WrongCommand(message, Service, context);
                     if (embed == null) {
                         //unknown command/overloads
-                        await context.Channel.SendMessageAsync("Pardon?");
+	    //TODO: commented -> Bot is saying nothing on wrong command
+                        // await context.Channel.SendMessageAsync("Pardon?");
                     } else {
                         //Send "did you mean this?:" message
                         await context.Channel.SendMessageAsync("", embed: embed);

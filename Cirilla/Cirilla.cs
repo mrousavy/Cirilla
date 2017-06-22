@@ -66,8 +66,11 @@ namespace Cirilla {
 
                 string secondaryPrefix;
                 bool enablePrimary = true;
+                string guildname = "private";
 
                 if (messageArg.Channel is IGuildChannel guildchannel) {
+                    guildname = guildchannel.Guild.Name;
+
                     GuildConfiguration config = GuildConfigManager.Get(guildchannel.Guild.Id);
                     secondaryPrefix = config.Prefix;
                     enablePrimary = config.EnablePrimaryPrefix;
@@ -91,6 +94,8 @@ namespace Cirilla {
                 bool mentionMatch = message.HasMentionPrefix(Client.CurrentUser, ref argPos);
                 if (!(primaryMatch || secondaryMatch || mentionMatch))
                     return;
+
+                CommandLogger.Log(message.Author.ToString(), guildname, message.Content);
 
                 CommandContext context = new CommandContext(Client, message);
                 IResult result = await Service.ExecuteAsync(context, argPos);

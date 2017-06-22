@@ -65,7 +65,7 @@ namespace Cirilla {
                             File.WriteAllBytes(logfile, new byte[0]);
                         }
 
-                        File.AppendAllLines(logfile, new List<string> {text});
+                        File.AppendAllLines(logfile, new List<string> { text });
                     } catch (Exception ex) {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
@@ -74,7 +74,6 @@ namespace Cirilla {
                 }
             }).Start();
         }
-
 
         public static void Set() {
             //Disable Cursor Visibility

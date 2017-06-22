@@ -77,5 +77,42 @@ namespace Cirilla.Modules {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
         }
+
+
+        [Command("details"), Summary("Shows detailed developer information for user")]
+        public async Task Details() {
+            try {
+                IUser user = Context.User;
+                string uname = user.Username ?? "?";
+                string createdAt = user.CreatedAt.ToString("d") ?? "/";
+
+                string status = user.Status.ToString() ?? "/";
+                Game? nullableGame = user.Game;
+                string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
+
+                string avatarUrl = user.GetAvatarUrl();
+                string mention = user.Mention;
+                string id = user.Id.ToString();
+
+                EmbedBuilder builder = new EmbedBuilder {
+                    Author = new EmbedAuthorBuilder {
+                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
+                        IconUrl = user.GetAvatarUrl()
+                    },
+                    Color = new Color(50, 125, 0)
+                };
+                builder.AddInlineField("Name", uname);
+                builder.AddInlineField("Created At", createdAt);
+                builder.AddInlineField("Status", status);
+                builder.AddInlineField("Game", game);
+                builder.AddInlineField("Avatar URL", avatarUrl);
+                builder.AddInlineField("Mention", mention);
+                builder.AddInlineField("ID", id);
+
+                await ReplyAsync("", embed: builder.Build());
+            } catch (Exception ex) {
+                await ReplyAsync($"Error! ({ex.Message})");
+            }
+        }
     }
 }

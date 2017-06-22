@@ -35,6 +35,7 @@ $invite
 $uptime 
 $run 
 $source
+$owner
 ```
 **Clean**
 ```
@@ -129,6 +130,7 @@ $wiki query
 ```
 **UserInfo**
 ```
+$details
 $stats user
 $stats
 ```

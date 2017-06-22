@@ -99,7 +99,6 @@ namespace Cirilla.Services.Roslyn {
             Globals globals = new Globals {
                 Console = textWriter,
                 Random = Random,
-                Client = Cirilla.Client,
                 ReplyAsync = async m => await contextChannel.SendMessageAsync(m)
             };
 

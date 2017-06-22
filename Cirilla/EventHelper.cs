@@ -71,5 +71,9 @@ namespace Cirilla {
             }
             return Task.CompletedTask;
         }
+
+        public static async Task Ready() {
+            await Cirilla.Client.SetGameAsync($"{Information.Prefix}help");
+        }
     }
 }

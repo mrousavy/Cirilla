@@ -133,22 +133,25 @@ namespace Cirilla.Services.Roslyn {
                 builder.Color = new Color(50, 155, 0);
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Successful");
+                string codeTrim = code.Length > 1024 ? code.Substring(0, 1024) : code;
                 builder.AddField("Code", $"```cs{nl}{code}{nl}```");
                 if (result.ReturnValue == null) {
                     if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
                         builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                     } else {
-                        builder.AddField("Console Output:", $"```accesslog{nl}{stringBuilder}{nl}```");
+                        string resultTrim = stringBuilder.ToString().Length > 1024 ? stringBuilder.ToString().Substring(0, 1024) : stringBuilder.ToString();
+                        builder.AddField("Console Output:", $"```accesslog{nl}{resultTrim}{nl}```");
                     }
                 } else {
+                    string resultTrim = result.ReturnValue.ToString().Length > 1024 ? result.ReturnValue.ToString().Substring(0, 1024) : result.ReturnValue.ToString();
                     builder.AddField($"Result: {result.ReturnValue.GetType()}",
-                        $"```cs{nl}{result.ReturnValue}{nl}```");
+                        $"```cs{nl}{resultTrim}{nl}```");
                 }
                 if (!string.IsNullOrWhiteSpace(diagnostics)) {
                     builder.AddField("Diagnostics",
-                        diagnostics.Length < 255
-                            ? $"```{nl}{diagnostics}{nl}```"
-                            : $"```{nl}{diagnostics.Substring(0, 255)} [...]{nl}```");
+                        diagnostics.Length > 1024
+                            ? $"```{nl}{diagnostics.Substring(0, 1024)} [...]{nl}```"
+                            : $"```{nl}{diagnostics}{nl}```");
                 }
             } else {
                 await ConsoleHelper.Log(
@@ -158,13 +161,15 @@ namespace Cirilla.Services.Roslyn {
                 builder.Color = new Color(180, 8, 8);
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Failed");
-                builder.AddField("Code", $"```cs{nl}{code}{nl}```");
+                string codeTrim = code.Length > 1024 ? code.Substring(0, 1024) : code;
+                builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
 
                 string exceptionTitle = compileException == null ? $"Exception: {runEx.GetType()}" : "Compiler Error:";
                 string exceptionContent = compileException == null
                     ? $"```accesslog{nl}{runEx.Message}{nl}```"
                     : $"```accesslog{nl}{compileException.Message}{nl}```";
-                builder.AddField(exceptionTitle, exceptionContent);
+                string exceptionTrim = exceptionContent.Length > 1024 ? exceptionContent.Substring(0, 1024) : exceptionContent;
+                builder.AddField(exceptionTitle, exceptionTrim);
             }
 
             string compileTimeStr = compileTime == -1 ? "/" : compileTime + "ms";

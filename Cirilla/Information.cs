@@ -118,7 +118,7 @@ namespace Cirilla {
         public int GiveRandomXpChance = 400;
 
         //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
-        public int RandomReactionChance = 200;
+        public int RandomReactionChance = 100;
 
         //Time in ms until a votekick expires
         public int VotekickExpire = 30000;

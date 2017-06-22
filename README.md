@@ -13,16 +13,19 @@ These are the commands you can use:
 
 **Admin**
 ```
+$nick nickname
+$setup 
+$leave 
 $prefix prefix
-$log 
-$clearlog 
-$shutdown
+$toggleprimary
 ```
 **BotInfo**
 ```
-$info 
+$host 
+$invite 
 $uptime 
-$run
+$run 
+$source
 ```
 **Clean**
 ```
@@ -81,6 +84,14 @@ $pi
 $news 
 $news limit
 ```
+**Owner**
+```
+$log 
+$clearlog 
+$game game
+$reboot 
+$shutdown
+```
 **Profile**
 ```
 $profile user
@@ -96,6 +107,10 @@ $random maximum
 ```
 $dankmeme 
 $reddit rsubreddit
+```
+**Reminder**
+```
+$remindme time, text
 ```
 **Search**
 ```
@@ -117,4 +132,5 @@ $xp user, xp
 $setxp user, xp
 $xp 
 $xp user
+$stats
 ```

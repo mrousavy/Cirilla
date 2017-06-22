@@ -65,6 +65,7 @@ $addmodule
 ```
 $hi 
 $hello
+$poke user
 ```
 **Hardware**
 ```

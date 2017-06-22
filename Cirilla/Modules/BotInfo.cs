@@ -37,7 +37,7 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);
-                builder.AddInlineField("Help Command", $"`{Information.Prefix}help`");
+                builder.AddInlineField("Guilds", $"Online on {Cirilla.Client.Guilds.Count} guilds");
 
                 await ReplyAsync("", embed: builder.Build());
                 await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);

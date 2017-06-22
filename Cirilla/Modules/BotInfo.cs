@@ -15,9 +15,9 @@ namespace Cirilla.Modules {
                 string pre = string.Empty;
                 GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
                 if (config.EnablePrimaryPrefix) {
-                    pre += $"{Information.Prefix}, ";
+                    pre += $"`{Information.Prefix}`, ";
                 }
-                pre += $"{config.Prefix}, {Context.Client.CurrentUser.Mention}";
+                pre += $"`{config.Prefix}`, {Context.Client.CurrentUser.Mention}";
 
                 int cores = Environment.ProcessorCount;
                 Process current = Process.GetCurrentProcess();

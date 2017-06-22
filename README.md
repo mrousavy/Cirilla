@@ -98,6 +98,7 @@ $clearlog
 $game game
 $reboot 
 $shutdown
+$announce text
 ```
 **Profile**
 ```

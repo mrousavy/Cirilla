@@ -12,17 +12,23 @@ namespace Cirilla.Services.Reminder {
     public class ReminderService {
         public static object Lock { get; set; } = new object();
 
-        public static async Task AddReminder(string userMention, string text, DateTime time, IGuild guild) {
-            if (Reminders.Where(ur => ur.UserMention == userMention).Count() + 1 > Information.MaximumReminders) {
-                throw new MaximumRemindersException($"Maximum simultaneous reminders for {userMention} has been reached!");
+        public static async Task AddReminder(IUser user, string text, DateTime time, IGuild guild) {
+            if (Reminders.Count(ur => ur.UserId == user.Id) + 1 > Information.MaximumReminders) {
+                throw new MaximumRemindersException($"Maximum simultaneous reminders for {user.Username} has been reached!");
             }
 
-            UserReminder reminder = new UserReminder(userMention, text, time);
+            UserReminder reminder = new UserReminder(user.Mention, user.Id, text, time);
             Reminders.Add(reminder);
             WriteOut(guild);
 
-            ITextChannel channel = await guild.GetDefaultChannelAsync();
-            Task task = ReminderWaiter(reminder, channel, guild);
+            IMessageChannel channel;
+            try {
+                channel = await user.CreateDMChannelAsync();
+            } catch {
+                // not accepting dms
+                channel = await guild.GetDefaultChannelAsync();
+            }
+            Task unused = ReminderWaiter(reminder, channel, guild);
         }
 
 
@@ -54,15 +60,24 @@ namespace Cirilla.Services.Reminder {
             if (Reminders == null) {
                 ReminderListJson = new ReminderListJson();
             }
-            foreach (UserReminder reminder in Reminders) {
-                new Thread(() => {
-                    ITextChannel channel = guild.DefaultChannel;
-                    ReminderWaiter(reminder, channel, guild).Wait();
-                }).Start();
+            if (Reminders != null) {
+                foreach (UserReminder reminder in Reminders) {
+                    new Thread(() => {
+                        IMessageChannel channel;
+                        try {
+                            IUser user = guild.Users.FirstOrDefault(u => u.Id == reminder.UserId);
+                            channel = user.GetDMChannelAsync().GetAwaiter().GetResult();
+                        } catch {
+                            // not accepting dms
+                            channel = guild.DefaultChannel;
+                        }
+                        ReminderWaiter(reminder, channel, guild).Wait();
+                    }).Start();
+                }
             }
         }
 
-        private static async Task ReminderWaiter(UserReminder reminder, ITextChannel channel, IGuild guild) {
+        private static async Task ReminderWaiter(UserReminder reminder, IMessageChannel channel, IGuild guild) {
             TimeSpan offset = reminder.Time - DateTime.Now;
 
             //Remove if already passed
@@ -79,6 +94,7 @@ namespace Cirilla.Services.Reminder {
             await Task.Delay((int)offset.TotalMilliseconds);
 
             string message = $"{reminder.UserMention}, you told me to remind you to: \"_{reminder.Text}_\"!";
+
             await channel.SendMessageAsync(message);
 
             for (int i = 0; i < Reminders.Count; i++) {
@@ -90,14 +106,7 @@ namespace Cirilla.Services.Reminder {
             WriteOut(guild);
         }
 
-        public static List<UserReminder> Reminders {
-            get {
-                if (ReminderListJson == null) {
-                    return null;
-                }
-                return ReminderListJson.Reminders;
-            }
-        }
+        public static List<UserReminder> Reminders => ReminderListJson?.Reminders;
 
         public static ReminderListJson ReminderListJson = new ReminderListJson();
     }
@@ -107,13 +116,15 @@ namespace Cirilla.Services.Reminder {
     }
 
     public class UserReminder {
-        public UserReminder(string userMention, string text, DateTime time) {
+        public UserReminder(string userMention, ulong userId, string text, DateTime time) {
             UserMention = userMention;
             Text = text;
             Time = time;
+            UserId = userId;
         }
 
         public string UserMention { get; set; }
+        public ulong UserId { get; set; }
         public string Text { get; set; }
         public DateTime Time { get; set; }
 
@@ -127,6 +138,7 @@ namespace Cirilla.Services.Reminder {
             return false;
         }
 
+        // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
         public override int GetHashCode() => base.GetHashCode();
     }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Reminder : ModuleBase {
-        [Command("remindme"), Summary("Remind !")]
+        [Command("remindme"), Summary("Set yourself a reminder!")]
         public async Task RemindMe(
             [Summary("The time until I should remind you, format: yyyy:MM:dd:HH:mm:ss")] TimeSpan time,
             [Summary("The text you want to get reminded of")][Remainder]string text) {
@@ -21,7 +21,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                await ReminderService.AddReminder(Context.User.Mention, text, DateTime.Now + time, Context.Guild);
+                await ReminderService.AddReminder(Context.User, text, DateTime.Now + time, Context.Guild);
                 await ConsoleHelper.Log($"{Helper.GetName(Context.User)} set a reminder for {(DateTime.Now + time):dd.MM.yyyy HH:mm}!", LogSeverity.Info);
                 await ReplyAsync($"All set {Helper.GetName(Context.User)}, I'll remind you at {(DateTime.Now + time):dd.MM.yyyy HH:mm}!");
             } catch (MaximumRemindersException) {

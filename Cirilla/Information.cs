@@ -8,15 +8,8 @@ namespace Cirilla {
     internal static class Information {
         //Directory to store configs in
         internal static string Directory { get; } = Path.Combine(AppContext.BaseDirectory, "_data");
-
         internal static Configuration Config { get; set; }
-
-        internal static string ClientId => Config.ClientId;
-        internal static string ClientSecret => Config.ClientSecret;
-        internal static string Username => Config.Username;
-
         internal static LogSeverity LogSeverity => Config.LogSeverity;
-
         internal static string Token => Config.Token;
         internal static string TextChannel => Config.TextChannel;
         internal static string Botchat => Config.Botchat;
@@ -25,35 +18,25 @@ namespace Cirilla {
         internal static string RepoUrl => Config.RepoUrl;
         internal static string Owner => Config.Owner;
         internal static string IconUrl => Config.IconUrl;
-
         internal static int XpGiveInterval => Config.XpGiveInterval;
         internal static int OwnXp => Config.OwnXp;
         internal static int GiveRandomXpChance => Config.GiveRandomXpChance;
-
         internal static int RandomReactionChance => Config.RandomReactionChance;
-
         internal static int VotekickExpire => Config.VotekickExpire;
         internal static string VotekickYes => Config.VotekickYes;
         internal static string VotekickNo => Config.VotekickNo;
         internal static bool AllowVotekick => Config.AllowVotekick;
         internal static double XpFactor => Config.XpFactor;
-
         internal static int MaximumReminders => Config.MaximumReminders;
         internal static int MaximumRemindDays => Config.MaximumRemindDays;
-
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
-
         internal static string InviteLink =
             "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
-
         internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;
         internal static int NewsInterval => Config.NewsInterval;
-
-
         internal static bool PmHelp => Config.PmHelp;
         internal static long MaxLogSize => Config.MaxLogSize;
-
         internal static bool AllowScripts => Config.AllowScripts;
         internal static int CompileTimeout => Config.CompileTimeout;
         internal static int ExecutionTimeout => Config.ExecutionTimeout;
@@ -94,12 +77,8 @@ namespace Cirilla {
 
 
     public class Configuration {
-        //Discord API Infos
-        public string ClientId = "323123443136593920";
-
-        public string ClientSecret = "<YourDiscordApiClientSecret>";
-        public string Username = "Cirilla#2111";
-        public string Token = "<YourDiscordApiToken>";
+        //Discord API Info
+        public string Token = "DISCORD_API_TOKEN_GOES_HERE";
 
         //Minimum Log Severity to output/log
         public LogSeverity LogSeverity = LogSeverity.Info;

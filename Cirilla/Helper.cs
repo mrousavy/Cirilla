@@ -25,7 +25,7 @@ namespace Cirilla {
             string command = message.Content
                 .Replace(Information.Prefix.ToString(), "")
                 .Replace(Information.SecondaryPrefix, "")
-                .Replace(Information.Username, "");
+                .Replace(Cirilla.Client.CurrentUser.Mention, "");
             SearchResult searchResult = service.Search(context, command);
             if (searchResult.Commands != null && searchResult.Commands.Count > 0) {
                 string nl = Environment.NewLine;

@@ -150,10 +150,10 @@ namespace Cirilla {
         //Enable Roslyn Scripting using the $exec Command
         public bool AllowScripts = true;
 
-        //Time in milliseconds until the compilation of $execute scipts cancels
+        //Time in milliseconds until the compilation of $exec scipts cancels
         public int CompileTimeout = 15000;
 
-        //Time in milliseconds until the execution of $execute scripts cancels
+        //Time in milliseconds until the execution of $exec scripts cancels
         public int ExecutionTimeout = 5000;
     }
 }

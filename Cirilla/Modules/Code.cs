@@ -28,12 +28,18 @@ namespace Cirilla.Modules {
 
             IUserMessage message = await ReplyAsync("Compiling.. :inbox_tray:");
 
-            Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User, contextChannel);
+            try {
+                Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User, contextChannel);
 
-            await message.ModifyAsync(props => {
-                props.Content = string.Empty;
-                props.Embed = embed;
-            });
+                await message.ModifyAsync(props => {
+                    props.Content = string.Empty;
+                    props.Embed = embed;
+                });
+            } catch (TaskCanceledException) {
+                await message.ModifyAsync(props => {
+                    props.Content = $"Sorry, the compilation took longer than expected! ({Information.CompileTimeout}ms)";
+                });
+            }
         }
     }
 }

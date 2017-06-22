@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cirilla.Services.Roslyn {
@@ -75,11 +76,15 @@ namespace Cirilla.Services.Roslyn {
             Exception runEx = null;
 
             Stopwatch compileSw = Stopwatch.StartNew();
+
+            // compilation
+            CancellationTokenSource compileCts = new CancellationTokenSource(Information.CompileTimeout);
             Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
-            CompilationWithAnalyzers compilation = script.GetCompilation().WithAnalyzers(Analyzers);
-            ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync();
+            CompilationWithAnalyzers compilation = script.GetCompilation().WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
+            ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync(compileCts.Token);
             ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error)
                 .ToImmutableArray();
+
             compileSw.Stop();
             compileTime = compileSw.ElapsedMilliseconds;
             string diagnostics = Enumerable.Aggregate(compileResult, string.Empty,
@@ -100,8 +105,10 @@ namespace Cirilla.Services.Roslyn {
 
             Stopwatch execSw = Stopwatch.StartNew();
             ScriptState<object> result = null;
+            //execute
+            CancellationTokenSource execCts = new CancellationTokenSource(Information.ExecutionTimeout);
             try {
-                result = await script.RunAsync(globals, ex => true);
+                result = await script.RunAsync(globals, ex => true, execCts.Token);
 
                 if (result.Exception == null) {
                     successful = true;
@@ -109,6 +116,9 @@ namespace Cirilla.Services.Roslyn {
                     runEx = result.Exception;
                     successful = false;
                 }
+            } catch (TaskCanceledException) {
+                runEx = new TimeoutException($"The execution of the script took longer than expected! ({Information.ExecutionTimeout}ms)");
+                successful = false;
             } catch (Exception ex) {
                 runEx = ex;
                 successful = false;

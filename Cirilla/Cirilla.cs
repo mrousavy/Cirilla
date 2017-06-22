@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
@@ -63,21 +64,34 @@ namespace Cirilla {
                     message.Author.ToString(),
                     message.Content));
 
+                string secondaryPrefix;
+                bool enablePrimary = true;
+
                 if (messageArg.Channel is IGuildChannel guildchannel) {
+                    GuildConfiguration config = GuildConfigManager.Get(guildchannel.Guild.Id);
+                    secondaryPrefix = config.Prefix;
+                    enablePrimary = config.EnablePrimaryPrefix;
+
                     IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
                     if (emote != null) {
                         await message.AddReactionAsync(emote);
                         await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
                     }
+                } else {
+                    secondaryPrefix = Information.SecondaryPrefix;
                 }
+
 
                 // Command (after prefix) Begin
                 int argPos = 0;
+
                 // Determine if the message is a command by checking for all prefixes
-                if (!(message.HasCharPrefix(Information.Prefix, ref argPos) ||
-                      message.HasStringPrefix(Information.SecondaryPrefix, ref argPos) ||
-                      message.HasMentionPrefix(Client.CurrentUser, ref argPos)))
+                bool primaryMatch = enablePrimary && message.HasCharPrefix(Information.Prefix, ref argPos);
+                bool secondaryMatch = message.HasStringPrefix(secondaryPrefix, ref argPos);
+                bool mentionMatch = message.HasMentionPrefix(Client.CurrentUser, ref argPos);
+                if (!(primaryMatch || secondaryMatch || mentionMatch))
                     return;
+
                 CommandContext context = new CommandContext(Client, message);
                 IResult result = await Service.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess) {

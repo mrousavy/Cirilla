@@ -1,7 +1,9 @@
-﻿using Cirilla.Services.News;
+﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.News;
 using Cirilla.Services.Xp;
 using Discord;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -47,8 +49,13 @@ namespace Cirilla {
 
             Cirilla = new Cirilla(LogSeverity.Debug);
             StartTime = DateTime.Now;
+
+            ConsoleHelper.Log("Initializing services..", LogSeverity.Info);
+            Stopwatch sw = Stopwatch.StartNew();
             XpManager.Init();
             NewsService.Init();
+            GuildConfigManager.Init();
+            ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
 
             Thread.Sleep(-1);
         }

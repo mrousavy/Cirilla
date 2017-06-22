@@ -1,8 +1,8 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
-using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Admin : ModuleBase {
@@ -90,13 +90,10 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                string before = Information.SecondaryPrefix;
-                bool disablePrimary = false;
                 GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
-                if (config != null) {
-                    before = config.Prefix;
-                    disablePrimary = config.DisablePrimaryPrefix;
-                }
+                string before = config.Prefix;
+                bool disablePrimary = config.EnablePrimaryPrefix;
+
                 GuildConfigManager.Set(Context.Guild.Id, prefix, disablePrimary);
                 await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");
                 await ConsoleHelper.Log($"{Context.User} changed the prefix on \"{Context.Guild.Name}\" from {before} to {prefix}!",
@@ -104,6 +101,38 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
                 await ConsoleHelper.Log($"Error chaning prefix, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+
+        [Command("toggleprimary"), Summary("Enable or disable the primary Prefix ($)")]
+        public async Task TogglePrimaryPrefix() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                bool before = config.EnablePrimaryPrefix;
+                bool after = !config.EnablePrimaryPrefix;
+                config.EnablePrimaryPrefix = after;
+                GuildConfigManager.Set(config.GuildId, config.Prefix, config.EnablePrimaryPrefix);
+
+                if (after) {
+                    await ReplyAsync("Bot is now also listening to primary prefix (`$`)!");
+                } else {
+                    await ReplyAsync("Bot is not listening to primary prefix anymore (`$`)!" + Environment.NewLine +
+                        $"Current prefixes: `{config.Prefix}` and \"{ Cirilla.Client.CurrentUser.Mention}\"");
+                }
+
+                await ConsoleHelper.Log($"{Context.User} toggled the primary prefix on \"{Context.Guild.Name}\" from " +
+                    $"{before} to {after}!",
+                    LogSeverity.Info);
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't toggle the primary prefix.. :confused:");
+                await ConsoleHelper.Log($"Error toggling primary prefix, {ex.Message}!", LogSeverity.Error);
             }
         }
     }

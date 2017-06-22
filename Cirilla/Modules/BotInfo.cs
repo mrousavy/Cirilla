@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using System;
 using System.Diagnostics;
@@ -10,8 +11,14 @@ namespace Cirilla.Modules {
         public async Task Host() {
             try {
                 string mname = Environment.MachineName;
-                string pre =
-                    $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}";
+
+                string pre = string.Empty;
+                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                if (config.EnablePrimaryPrefix) {
+                    pre += $"{Information.Prefix}, ";
+                }
+                pre += $"{config.Prefix}, {Context.Client.CurrentUser.Mention}";
+
                 int cores = Environment.ProcessorCount;
                 Process current = Process.GetCurrentProcess();
 

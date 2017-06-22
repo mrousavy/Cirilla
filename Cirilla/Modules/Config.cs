@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace Cirilla.Modules {
             };
             builder.AddInlineField("Default Text Channel", Information.TextChannel);
             builder.AddInlineField("Prefixes",
-                $"{Information.Prefix}, {Information.SecondaryPrefix}, {Context.Client.CurrentUser.Mention}");
+                $"{Information.Prefix}, {GuildConfigManager.Get(Context.Guild.Id).Prefix}, {Context.Client.CurrentUser.Mention}");
             builder.AddInlineField("Repo URL", $"[GitHub]({Information.RepoUrl})");
             builder.AddInlineField("Senpai", Information.Owner);
             builder.AddInlineField("XP Drop Interval", $"Every {Information.XpGiveInterval / 1000} Seconds");

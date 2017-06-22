@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using System;
 using System.IO;
@@ -24,7 +25,7 @@ namespace Cirilla {
         public static Embed WrongCommand(IMessage message, CommandService service, ICommandContext context) {
             string command = message.Content
                 .Replace(Information.Prefix.ToString(), "")
-                .Replace(Information.SecondaryPrefix, "")
+                .Replace(GuildConfigManager.Get(context.Guild.Id).Prefix, "")
                 .Replace(Cirilla.Client.CurrentUser.Mention, "");
             SearchResult searchResult = service.Search(context, command);
             if (searchResult.Commands != null && searchResult.Commands.Count > 0) {

@@ -51,7 +51,10 @@ namespace Cirilla.Services.News {
             }
         }
 
-        public static void Init() { new Thread(TimerLoop).Start(); }
+        public static void Init() {
+            new Thread(TimerLoop).Start();
+            ConsoleHelper.Log("News Service started!", LogSeverity.Info);
+        }
 
 
         public static async void TimerLoop() {
@@ -74,7 +77,7 @@ namespace Cirilla.Services.News {
                 }
 
                 await ConsoleHelper.Log($"Next News in {diff}.. I'm going to sleep!", LogSeverity.Info);
-                Thread.Sleep((int) sleep);
+                Thread.Sleep((int)sleep);
                 await ConsoleHelper.Log("Fetching news..", LogSeverity.Info);
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
                     try {
@@ -94,9 +97,9 @@ namespace Cirilla.Services.News {
             RedditApi redditService = new RedditApi();
             Subreddit subreddit = await redditService.GetSubredditAsync("news");
             Listing listings =
-                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest {Limit = limit, After = after});
+                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest { Limit = limit, After = after });
 
-            return listings.Select((t, i) => (Link) listings.Children[i]).ToList();
+            return listings.Select((t, i) => (Link)listings.Children[i]).ToList();
         }
     }
 }

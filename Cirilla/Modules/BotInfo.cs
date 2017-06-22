@@ -61,12 +61,9 @@ namespace Cirilla.Modules {
         public async Task Uptime() {
             try {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
-                if (tspan.TotalDays >= 1) {
+                if (tspan.TotalHours >= 1) {
                     await ReplyAsync(
-                        $"I'm already running for {tspan.ToString("d'd h'h m'm 's's'")}, I'm tired :confused:");
-                } else if (tspan.TotalHours >= 1) {
-                    await ReplyAsync(
-                        $"I'm already running for {tspan.ToString("h'h m'm 's's'}")}");
+                        $"I'm already running for {tspan.ToString("h'h m'm 's's'}")}, I'm tired.. :confused:");
                 } else if (tspan.TotalMinutes >= 1) {
                     await ReplyAsync($"I'm running for {tspan.ToString("m'm 's's'")}");
                 } else {

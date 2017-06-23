@@ -155,7 +155,7 @@ namespace Cirilla.Modules {
             IGuildUser user = Context.User as IGuildUser;
             if (user == null) {
                 await ReplyAsync($"Those are my global prefixes: " +
-                                 $"`{Information.SecondaryPrefix}, {Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
+                                 $"`{Information.SecondaryPrefix}`, `{Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
                 return;
             }
             await ReplyAsync($"Those are my current prefixes: " +

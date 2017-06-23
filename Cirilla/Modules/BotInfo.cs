@@ -63,14 +63,14 @@ namespace Cirilla.Modules {
                 TimeSpan tspan = (DateTime.Now - Program.StartTime);
                 if (tspan.TotalDays >= 1) {
                     await ReplyAsync(
-                        $"I'm already running for {tspan.ToString("d'd 'h'h m'm 's's'")}, I'm tired.. :confused:");
+                        $"I'm already running for {tspan:d'd 'h'h m'm 's's'}, I'm tired.. :confused:");
                 } else if (tspan.TotalHours >= 1) {
                     await ReplyAsync(
-                        $"I'm already running for {tspan.ToString("h'h 'm'm 's's'")}.");
+                        $"I'm already running for {tspan:h'h 'm'm 's's'}.");
                 } else if (tspan.TotalMinutes >= 1) {
-                    await ReplyAsync($"I'm running for {tspan.ToString("m'm 's's'")}.");
+                    await ReplyAsync($"I'm running for {tspan:m'm 's's'}.");
                 } else {
-                    await ReplyAsync($"I'm running for {tspan.ToString("s's'")}.");
+                    await ReplyAsync($"I'm running for {tspan:s's'}.");
                 }
                 await ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
             } catch (Exception ex) {
@@ -95,7 +95,7 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("run"), Summary("Shows how to run this bot")]
+        [Command("run"), Summary("Shows how to run this bot on your own")]
         public async Task Run() {
             try {
                 EmbedBuilder builder = new EmbedBuilder {

@@ -114,13 +114,14 @@ $news limit
 ```
 **Owner**
 ```
+$announce text
 $cmdlog
 $log 
 $clearlog 
 $game game
 $reboot 
 $shutdown
-$announce text
+$togglescripts
 ```
 **Profile**
 ```
@@ -149,6 +150,7 @@ $wiki query
 ```
 **UserInfo**
 ```
+$avatar
 $details
 $stats user
 $stats

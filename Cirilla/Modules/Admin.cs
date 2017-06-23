@@ -24,6 +24,7 @@ namespace Cirilla.Modules {
 
                 IGuildUser bot = await Context.Guild.GetCurrentUserAsync();
                 await bot.ModifyAsync(p => p.Nickname = nickname);
+                await ReplyAsync("Nickname changed!");
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't set the nickname.. :confused:");
                 await ConsoleHelper.Log($"Error setting nickname, {ex.Message}!", LogSeverity.Error);
@@ -147,6 +148,18 @@ namespace Cirilla.Modules {
                 await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
                 await ConsoleHelper.Log($"Error chaning prefix, {ex.Message}!", LogSeverity.Error);
             }
+        }
+
+        [Command("prefix"), Summary("Change prefix")]
+        public async Task GetPrefix() {
+            IGuildUser user = Context.User as IGuildUser;
+            if (user == null) {
+                await ReplyAsync($"Those are my global prefixes: " +
+                                 $"`{Information.SecondaryPrefix}, {Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
+                return;
+            }
+            await ReplyAsync($"Those are my current prefixes: " +
+                             $"`{GuildConfigManager.Get(Context.Guild.Id).Prefix}, {Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
         }
 
 

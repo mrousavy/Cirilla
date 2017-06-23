@@ -25,15 +25,16 @@ namespace Cirilla.Modules {
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = "Bot Information",
-                        IconUrl = Information.IconUrl
+                        IconUrl = Information.BotIconUrl
                     },
-                    Color = new Color(50, 125, 0)
+                    Color = new Color(50, 125, 0),
+                    ThumbnailUrl = Information.IconUrl
                 };
                 builder.AddInlineField("Uptime", GetUptime());
                 builder.AddInlineField("Machine", mname);
                 builder.AddInlineField("Core #", $"{cores} cores");
-                builder.AddInlineField("RAM usage", $"{((double) current.WorkingSet64 / 1024 / 1024):#.#} MB");
-                builder.AddInlineField("Peak RAM usage", $"{((double) current.PeakWorkingSet64 / 1024 / 1024):#.#} MB");
+                builder.AddInlineField("RAM usage",
+                    $"{(double)current.WorkingSet64 / 1024 / 1024:#.#} / {(double)current.PeakWorkingSet64 / 1024 / 1024:#.#} MB");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
                 builder.AddInlineField("My Senpai", Information.Owner);

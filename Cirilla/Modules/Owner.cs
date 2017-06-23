@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Owner : ModuleBase {
@@ -115,6 +116,29 @@ namespace Cirilla.Modules {
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't announce that.. :confused:");
                 await ConsoleHelper.Log($"Error announcing, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
+        [Command("togglescripts"), Summary("Enable or disable Roslyn Scripts")]
+        public async Task ToggleScripts() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, only the owner can reboot the bot!");
+                    return;
+                }
+
+                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                config.EnableScripts = !config.EnableScripts;
+
+                if (config.EnableScripts) {
+                    await ReplyAsync("Scripts are now enabled for this guild! Use `$exec code`.");
+                } else {
+                    await ReplyAsync("Scripts are now disabled for this guild!");
+                }
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't toggle scripts.. :confused:");
+                await ConsoleHelper.Log($"Error changing script setting, {ex.Message}!", LogSeverity.Error);
             }
         }
 

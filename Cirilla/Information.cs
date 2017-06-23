@@ -19,6 +19,7 @@ namespace Cirilla {
         internal static string RepoUrl => Config.RepoUrl;
         internal static string Owner => Config.Owner;
         internal static string IconUrl => Config.IconUrl;
+        internal static string BotIconUrl => Config.BotIconUrl;
         internal static int XpGiveInterval => Config.XpGiveInterval;
         internal static int OwnXp => Config.OwnXp;
         internal static int GiveRandomXpChance => Config.GiveRandomXpChance;
@@ -105,6 +106,8 @@ namespace Cirilla {
 
         //URL for Bot Profile Pic
         public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
+        //URL for Bot Pic
+        public string BotIconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Bot.png";
 
 
         //Interval in ms to give XP (2100000 = 35m)

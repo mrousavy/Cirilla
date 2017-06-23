@@ -26,9 +26,10 @@ namespace Cirilla.Modules {
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
-                        IconUrl = user.GetAvatarUrl()
+                        //IconUrl = user.GetAvatarUrl()
                     },
-                    Color = new Color(50, 125, 0)
+                    Color = new Color(50, 125, 0),
+                    ThumbnailUrl = user.GetAvatarUrl()
                 };
 
                 builder.AddInlineField("Nickname", nick);

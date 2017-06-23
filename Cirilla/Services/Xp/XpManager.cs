@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Services.Xp {
     public static class XpManager {
@@ -27,6 +28,10 @@ namespace Cirilla.Services.Xp {
                     //Regex.Match(directory, "\\\\[0-9]+$").ToString();
                     string guildidstr = Path.GetFileName(Path.GetDirectoryName(xpfile));
                     ulong guildid = ulong.Parse(guildidstr);
+
+                    if (!GuildConfigManager.Get(guildid).EnableXpSystem) {
+                        continue;
+                    }
 
                     if (!File.Exists(xpfile)) {
                         GuildXp guildxp = new GuildXp();
@@ -167,6 +172,10 @@ namespace Cirilla.Services.Xp {
                 List<string> receivers = new List<string>();
 
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
+                    if (!GuildConfigManager.Get(guild.Id).EnableXpSystem) {
+                        continue;
+                    }
+
                     IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
                     Random rnd = new Random();
 

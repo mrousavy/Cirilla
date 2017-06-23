@@ -7,6 +7,14 @@ namespace Cirilla.Modules {
     public class Config : ModuleBase {
         [Command("config"), Summary("Show bot config")]
         public async Task ShowConfig() {
+            GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+
+            string prefixes = string.Empty;
+            if (config.EnablePrimaryPrefix) {
+                prefixes += $"{Information.Prefix}, ";
+            }
+            prefixes += $"{config.Prefix}, {Context.Client.CurrentUser.Mention}";
+
             EmbedBuilder builder = new EmbedBuilder {
                 Color = new Color(50, 125, 0),
                 Author = new EmbedAuthorBuilder {
@@ -15,10 +23,10 @@ namespace Cirilla.Modules {
                 }
             };
             builder.AddInlineField("Default Text Channel", Information.TextChannel);
-            builder.AddInlineField("Prefixes",
-                $"{Information.Prefix}, {GuildConfigManager.Get(Context.Guild.Id).Prefix}, {Context.Client.CurrentUser.Mention}");
+            builder.AddInlineField("Prefixes", prefixes);
             builder.AddInlineField("Repo URL", $"[GitHub]({Information.RepoUrl})");
             builder.AddInlineField("Senpai", Information.Owner);
+            builder.AddInlineField("Enable XP System", config.EnableXpSystem);
             builder.AddInlineField("XP Drop Interval", $"Every {Information.XpGiveInterval / 1000} Seconds");
             builder.AddInlineField("Regain gift XP", $"{100 / Information.OwnXp}% XP");
             builder.AddInlineField("XP Level Factor", $"Lvl = PreviousLvl * {Information.XpFactor}");

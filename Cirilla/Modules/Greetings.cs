@@ -19,6 +19,7 @@ namespace Cirilla.Modules {
             try {
                 IDMChannel dm = await user.CreateDMChannelAsync();
                 await dm.SendMessageAsync($"Hey! {Context.User} from {Context.Guild.Name} poked you!", true);
+                await ReplyAsync($"Poked {Helper.GetName(user)}!");
             } catch {
                 await ReplyAsync($"I couldn't poke {Helper.GetName(user)}, sorry!");
             }

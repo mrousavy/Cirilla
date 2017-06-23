@@ -89,7 +89,7 @@ namespace Cirilla.Modules {
                         return;
                     }
 
-                    if (!setter.GuildPermissions.Administrator) {
+                    if (!Helper.IsOwner(setter) && !setter.GuildPermissions.ManageMessages) {
                         await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                         return;
                     }

@@ -13,7 +13,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.Administrator)) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
@@ -37,7 +37,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Administrator) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
                 }
@@ -64,7 +64,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Administrator) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
                 }
@@ -87,7 +87,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Administrator && !Helper.IsOwner(user)) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
                 }
@@ -120,8 +120,12 @@ namespace Cirilla.Modules {
         [Command("prefix"), Summary("Change prefix")]
         public async Task ChangePrefix([Summary("New prefix")] [Remainder] string prefix) {
             try {
-                IUser user = Context.User;
-                if (!Helper.IsOwner(user)) {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
@@ -144,8 +148,12 @@ namespace Cirilla.Modules {
         [Command("toggleprimary"), Summary("Enable or disable the primary Prefix ($)")]
         public async Task TogglePrimaryPrefix() {
             try {
-                IUser user = Context.User;
-                if (!Helper.IsOwner(user)) {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }

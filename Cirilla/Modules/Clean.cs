@@ -13,7 +13,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.ManageMessages) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
@@ -39,7 +39,7 @@ namespace Cirilla.Modules {
                 if (user == null) {
                     return;
                 }
-                if (!user.GuildPermissions.Has(GuildPermission.ManageMessages)) {
+                if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }

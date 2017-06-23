@@ -9,7 +9,7 @@ namespace Cirilla.Modules {
         public async Task Execute([Summary("The Code to execute")] [Remainder] string code) {
             //Requirements to execute C# Roslyn scripts
             if (!(Context.User is IGuildUser user) || !user.GuildPermissions.Speak) {
-                await ReplyAsync("You're not allowed to use this super premium command!");
+                await ReplyAsync("You're not allowed to execute scripts!");
                 return;
             }
             if (!Information.AllowScripts) {
@@ -18,11 +18,11 @@ namespace Cirilla.Modules {
             }
 
             //Handle exec async - so MessageReceived is not blocking
-            HandleExecAsync(code, Context.Channel);
+            Task _ = HandleExecAsync(code, Context.Channel);
         }
 
 
-        public async void HandleExecAsync(string code, IMessageChannel contextChannel) {
+        public async Task HandleExecAsync(string code, IMessageChannel contextChannel) {
             //Clean for code formatting
             string cleaned = code.Replace("```cs", string.Empty).Replace("`", string.Empty);
 

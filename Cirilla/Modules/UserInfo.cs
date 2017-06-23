@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Cirilla.Modules {
     public class UserInfo : ModuleBase {
         [Command("info"), Summary("Shows Information for a specific user")]
-        public async Task Info(IGuildUser user) {
+        public async Task Info([Summary("The user you want info about")]IGuildUser user) {
             try {
                 string uname = user.Username ?? "?";
                 string nick = user.Nickname ?? "/";
@@ -59,7 +59,9 @@ namespace Cirilla.Modules {
                     string status = user.Status.ToString() ?? "/";
                     Game? nullableGame = user.Game;
                     string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
-                    string xp = XpManager.Get(Context.Guild, user).Xp.ToString();
+                    string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem
+                        ? XpManager.Get(Context.Guild, user).Xp.ToString()
+                        : "[disabled]";
 
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {

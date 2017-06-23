@@ -7,7 +7,7 @@
   </p>
 </p>
 
-**This bot is currently private due to Security reasons (I haven't fully tested every feature yet)**
+**This bot is currently private because I haven't fully tested every feature yet. For now you can test it [here](https://discord.gg/ebXZnFX)**
 
 # Features
 Cirilla is a multi-use Discord Bot with many functionalities like:

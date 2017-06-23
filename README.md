@@ -7,6 +7,8 @@
   </p>
 </p>
 
+**This bot is currently private due to Security reasons (I haven't fully tested every feature yet)**
+
 # Features
 Cirilla is a multi-use Discord Bot with many functionalities like:
 * A whole **XP System**

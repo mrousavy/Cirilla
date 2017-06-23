@@ -47,6 +47,8 @@ namespace Cirilla {
                 ConsoleHelper.Intro();
 #endif
 
+            GuildConfigManager.Init();
+
             Cirilla = new Cirilla(LogSeverity.Debug);
             StartTime = DateTime.Now;
 
@@ -54,7 +56,6 @@ namespace Cirilla {
             Stopwatch sw = Stopwatch.StartNew();
             XpManager.Init();
             NewsService.Init();
-            GuildConfigManager.Init();
             ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
 
             Thread.Sleep(-1);

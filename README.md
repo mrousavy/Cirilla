@@ -82,6 +82,7 @@ $addmodule
 $hi 
 $hello
 $poke user
+$say message
 ```
 **Hardware**
 ```

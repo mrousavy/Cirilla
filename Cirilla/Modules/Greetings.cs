@@ -24,5 +24,11 @@ namespace Cirilla.Modules {
                 await ReplyAsync($"I couldn't poke {Helper.GetName(user)}, sorry!");
             }
         }
+
+        [Command("say"), Summary("Let the Bot say something")]
+        public async Task Say([Summary("The text you want to let the bot say")] [Remainder] string text) {
+            await Context.Message.DeleteAsync();
+            await ReplyAsync(text);
+        }
     }
 }

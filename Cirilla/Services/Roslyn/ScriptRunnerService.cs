@@ -106,10 +106,19 @@ namespace Cirilla.Services.Roslyn {
             ScriptState<object> result = null;
             //execute
             CancellationTokenSource execCts = new CancellationTokenSource(Information.ExecutionTimeout);
-            try {
-                result = await script.RunAsync(globals, ex => true, execCts.Token);
 
-                if (result.Exception == null) {
+            try {
+                Thread runThread = new Thread(async () => {
+                    result = await script.RunAsync(globals, ex => true, execCts.Token);
+                });
+                runThread.Start();
+                bool successfullyEnded = runThread.Join(Information.ExecutionTimeout);
+
+                if (!successfullyEnded) {
+                    throw new TaskCanceledException();
+                }
+
+                if (result?.Exception == null) {
                     successful = true;
                 } else {
                     runEx = result.Exception;
@@ -133,8 +142,8 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Requested by", user.Mention);
                 builder.AddField("Result", "Successful");
                 string codeTrim = code.Length > 1024 ? code.Substring(0, 1024) : code;
-                builder.AddField("Code", $"```cs{nl}{code}{nl}```");
-                if (result.ReturnValue == null) {
+                builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
+                if (result?.ReturnValue == null) {
                     if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
                         builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                     } else {

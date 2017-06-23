@@ -123,6 +123,7 @@ namespace Cirilla.Services.GuildConfig {
         }
 
         public override int GetHashCode() {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return GuildId.GetHashCode();
         }
     }

@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class UserInfo : ModuleBase {
@@ -18,7 +19,9 @@ namespace Cirilla.Modules {
                 string status = user.Status.ToString() ?? "/";
                 Game? nullableGame = user.Game;
                 string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
-                string xp = XpManager.Get(Context.Guild, user).Xp.ToString();
+                string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem ?
+                    XpManager.Get(Context.Guild, user).Xp.ToString() :
+                    "[disabled]";
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {

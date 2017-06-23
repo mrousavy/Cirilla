@@ -80,6 +80,42 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("togglexp"), Summary("Enable or disable the XP System for this Guild")]
+        public async Task ToggleXp() {
+            try {
+                IGuildUser user = Context.User as IGuildUser;
+                if (user == null) {
+                    return;
+                }
+                if (!user.GuildPermissions.Administrator && !Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, only admins can use this command!");
+                    return;
+                }
+
+                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                bool after = !config.EnableXpSystem;
+
+                config.EnableXpSystem = after;
+                GuildConfigManager.Set(config);
+
+                if (after) {
+                    await ReplyAsync("XP System for this Guild is now enabled!");
+                    await ConsoleHelper.Log($"{Context.User} enabled XP System for Guild \"{Context.Guild.Name}\"!", LogSeverity.Info);
+                } else {
+                    //string guildDir = Path.Combine(Information.Directory, Context.Guild.Id.ToString());
+                    ////cleanup
+                    //if (Directory.Exists(guildDir)) {
+                    //    Directory.Delete(guildDir, true);
+                    //}
+                    await ReplyAsync("XP System for this Guild is now disabled!");
+                    await ConsoleHelper.Log($"{Context.User} disabled XP System for Guild \"{Context.Guild.Name}\"!", LogSeverity.Info);
+                }
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't toggle the XP System.. :confused:");
+                await ConsoleHelper.Log($"Error toggling XP system for guild, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
 
         [Command("prefix"), Summary("Change prefix")]
         public async Task ChangePrefix([Summary("New prefix")] [Remainder] string prefix) {

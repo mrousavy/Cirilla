@@ -1,4 +1,5 @@
-﻿using Cirilla.Services.Xp;
+﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Xp;
 using Discord;
 using Discord.Commands;
 using System;
@@ -11,6 +12,11 @@ namespace Cirilla.Modules {
         public async Task Give([Summary("The user to give XP")] IGuildUser user,
             [Summary("The amount of XP you want to give the user")] int xp) {
             try {
+                if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
+                    await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
+                    return;
+                }
+
                 if (user.Id == Context.User.Id) {
                     await ReplyAsync("Nice try, you can't give yourself XP!");
                     return;
@@ -78,6 +84,11 @@ namespace Cirilla.Modules {
             [Summary("The amount of XP you want to set")] int xp) {
             try {
                 if (Context.User is IGuildUser setter) {
+                    if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
+                        await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
+                        return;
+                    }
+
                     if (!setter.GuildPermissions.Administrator) {
                         await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                         return;
@@ -101,6 +112,10 @@ namespace Cirilla.Modules {
         [Command("xp"), Summary("Show own XP")]
         public async Task Info() {
             try {
+                if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
+                    await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
+                    return;
+                }
                 UserXp xp = XpManager.Get(Context.Guild, Context.User);
 
                 EmbedBuilder builder = new EmbedBuilder {
@@ -125,6 +140,11 @@ namespace Cirilla.Modules {
         [Command("xp"), Summary("Show XP of given User")]
         public async Task Info([Summary("The user you want to display XP")] IGuildUser user) {
             try {
+                if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
+                    await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
+                    return;
+                }
+
                 UserXp xp = XpManager.Get(Context.Guild, user);
 
                 EmbedBuilder builder = new EmbedBuilder {
@@ -148,6 +168,11 @@ namespace Cirilla.Modules {
         [Command("stats"), Summary("Show XP Statistics/Ranking for Guild")]
         public async Task Stats() {
             try {
+                if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
+                    await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
+                    return;
+                }
+
                 List<UserXp> xps = XpManager.Top10(Context.Guild);
 
                 if (xps.Count < 1) {
@@ -173,13 +198,13 @@ namespace Cirilla.Modules {
                     string place;
                     switch (i) {
                         case 0:
-                            place = $":first_place: 1";
+                            place = ":first_place: 1";
                             break;
                         case 1:
-                            place = $":second_place: 2";
+                            place = ":second_place: 2";
                             break;
                         case 2:
-                            place = $":third_place: 3";
+                            place = ":third_place: 3";
                             break;
                         default:
                             place = $"{i + 1}";

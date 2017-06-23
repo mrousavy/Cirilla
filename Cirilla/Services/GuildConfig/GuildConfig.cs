@@ -51,11 +51,12 @@ namespace Cirilla.Services.GuildConfig {
         }
 
 
-        public static GuildConfiguration Set(ulong guildId, string prefix, bool enablePrimaryPrefix = true) {
+        public static GuildConfiguration Set(ulong guildId, string prefix, bool enablePrimaryPrefix = true, bool enableXpSystem = false) {
             GuildConfiguration guildconfig = new GuildConfiguration {
                 GuildId = guildId,
                 EnablePrimaryPrefix = enablePrimaryPrefix,
-                Prefix = prefix
+                Prefix = prefix,
+                EnableXpSystem = enableXpSystem
             };
             bool contains = GuildConfigs.GuildConfigs.Any(gc => gc.GuildId == guildId);
             if (contains) {
@@ -63,6 +64,24 @@ namespace Cirilla.Services.GuildConfig {
                     if (gc.GuildId == guildconfig.GuildId) {
                         gc.Prefix = guildconfig.Prefix;
                         gc.EnablePrimaryPrefix = guildconfig.EnablePrimaryPrefix;
+                        gc.EnableXpSystem = guildconfig.EnableXpSystem;
+                    }
+                });
+            } else {
+                GuildConfigs.GuildConfigs.Add(guildconfig);
+            }
+            WriteOut();
+            return guildconfig;
+        }
+
+        public static GuildConfiguration Set(GuildConfiguration guildconfig) {
+            bool contains = GuildConfigs.GuildConfigs.Any(gc => gc.GuildId == guildconfig.GuildId);
+            if (contains) {
+                GuildConfigs.GuildConfigs.ForEach(gc => {
+                    if (gc.GuildId == guildconfig.GuildId) {
+                        gc.Prefix = guildconfig.Prefix;
+                        gc.EnablePrimaryPrefix = guildconfig.EnablePrimaryPrefix;
+                        gc.EnableXpSystem = guildconfig.EnableXpSystem;
                     }
                 });
             } else {
@@ -114,9 +133,11 @@ namespace Cirilla.Services.GuildConfig {
     }
 
     public class GuildConfiguration {
+        public ulong GuildId { get; set; }
+
         public string Prefix { get; set; } = Information.SecondaryPrefix;
         public bool EnablePrimaryPrefix { get; set; } = true;
-        public ulong GuildId { get; set; }
+        public bool EnableXpSystem { get; set; } = false;
 
         protected bool Equals(GuildConfiguration other) {
             return GuildId == other.GuildId;

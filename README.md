@@ -40,6 +40,7 @@ $setup
 $leave 
 $prefix prefix
 $toggleprimary
+$togglexp
 ```
 **BotInfo**
 ```

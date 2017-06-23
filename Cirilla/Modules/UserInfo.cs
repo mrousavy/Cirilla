@@ -19,9 +19,9 @@ namespace Cirilla.Modules {
                 string status = user.Status.ToString() ?? "/";
                 Game? nullableGame = user.Game;
                 string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
-                string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem ?
-                    XpManager.Get(Context.Guild, user).Xp.ToString() :
-                    "[disabled]";
+                string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem
+                    ? XpManager.Get(Context.Guild, user).Xp.ToString()
+                    : "[disabled]";
 
                 EmbedBuilder builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
@@ -78,6 +78,16 @@ namespace Cirilla.Modules {
                 }
             } catch (Exception ex) {
                 await ReplyAsync($"Error! ({ex.Message})");
+            }
+        }
+
+
+        [Command("avatar"), Summary("Get Avatar of User")]
+        public async Task Avatar() {
+            try {
+                await ReplyAsync(Context.User.GetAvatarUrl());
+            } catch {
+                await ReplyAsync("Couldn't find your Avatar, sorry!");
             }
         }
 

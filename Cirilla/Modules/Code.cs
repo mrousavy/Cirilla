@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Code : ModuleBase {
@@ -12,8 +13,8 @@ namespace Cirilla.Modules {
                 await ReplyAsync("You're not allowed to execute scripts!");
                 return;
             }
-            if (!Information.AllowScripts) {
-                await ReplyAsync("C# Roslyn Scripts are disabled via Config.");
+            if (!GuildConfigManager.Get(Context.Guild.Id).EnableScripts) {
+                await ReplyAsync($"C# Roslyn Scripts are disabled via Config. Ask {Information.Owner}.");
                 return;
             }
 
@@ -37,7 +38,8 @@ namespace Cirilla.Modules {
                 });
             } catch (TaskCanceledException) {
                 await message.ModifyAsync(props => {
-                    props.Content = $"Sorry, the compilation took longer than expected! ({Information.CompileTimeout}ms)";
+                    props.Content =
+                        $"Sorry, the compilation took longer than expected! ({Information.CompileTimeout}ms)";
                 });
             }
         }

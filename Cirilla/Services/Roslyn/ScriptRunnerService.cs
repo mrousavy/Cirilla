@@ -80,7 +80,8 @@ namespace Cirilla.Services.Roslyn {
             // compilation
             CancellationTokenSource compileCts = new CancellationTokenSource(Information.CompileTimeout);
             Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
-            CompilationWithAnalyzers compilation = script.GetCompilation().WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
+            CompilationWithAnalyzers compilation = script.GetCompilation()
+                .WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
             ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync(compileCts.Token);
             ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error)
                 .ToImmutableArray();
@@ -125,7 +126,8 @@ namespace Cirilla.Services.Roslyn {
                     successful = false;
                 }
             } catch (TaskCanceledException) {
-                runEx = new TimeoutException($"The execution of the script took longer than expected! ({Information.ExecutionTimeout}ms)");
+                runEx = new TimeoutException(
+                    $"The execution of the script took longer than expected! ({Information.ExecutionTimeout}ms)");
                 successful = false;
             } catch (Exception ex) {
                 runEx = ex;
@@ -147,11 +149,15 @@ namespace Cirilla.Services.Roslyn {
                     if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
                         builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                     } else {
-                        string resultTrim = stringBuilder.ToString().Length > 1024 ? stringBuilder.ToString().Substring(0, 1024) : stringBuilder.ToString();
+                        string resultTrim = stringBuilder.ToString().Length > 1024
+                            ? stringBuilder.ToString().Substring(0, 1024)
+                            : stringBuilder.ToString();
                         builder.AddField("Console Output:", $"```accesslog{nl}{resultTrim}{nl}```");
                     }
                 } else {
-                    string resultTrim = result.ReturnValue.ToString().Length > 1024 ? result.ReturnValue.ToString().Substring(0, 1024) : result.ReturnValue.ToString();
+                    string resultTrim = result.ReturnValue.ToString().Length > 1024
+                        ? result.ReturnValue.ToString().Substring(0, 1024)
+                        : result.ReturnValue.ToString();
                     builder.AddField($"Result: {result.ReturnValue.GetType()}",
                         $"```cs{nl}{resultTrim}{nl}```");
                 }
@@ -176,7 +182,9 @@ namespace Cirilla.Services.Roslyn {
                 string exceptionContent = compileException == null
                     ? $"```accesslog{nl}{runEx.Message}{nl}```"
                     : $"```accesslog{nl}{compileException.Message}{nl}```";
-                string exceptionTrim = exceptionContent.Length > 1024 ? exceptionContent.Substring(0, 1024) : exceptionContent;
+                string exceptionTrim = exceptionContent.Length > 1024
+                    ? exceptionContent.Substring(0, 1024)
+                    : exceptionContent;
                 builder.AddField(exceptionTitle, exceptionTrim);
             }
 

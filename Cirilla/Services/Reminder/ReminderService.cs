@@ -14,7 +14,8 @@ namespace Cirilla.Services.Reminder {
 
         public static async Task AddReminder(IUser user, string text, DateTime time, IGuild guild) {
             if (Reminders.Count(ur => ur.UserId == user.Id) + 1 > Information.MaximumReminders) {
-                throw new MaximumRemindersException($"Maximum simultaneous reminders for {user.Username} has been reached!");
+                throw new MaximumRemindersException(
+                    $"Maximum simultaneous reminders for {user.Username} has been reached!");
             }
 
             UserReminder reminder = new UserReminder(user.Mention, user.Id, text, time);
@@ -91,7 +92,7 @@ namespace Cirilla.Services.Reminder {
                 return;
             }
 
-            await Task.Delay((int)offset.TotalMilliseconds);
+            await Task.Delay((int) offset.TotalMilliseconds);
 
             string message = $"{reminder.UserMention}, you told me to remind you to: \"_{reminder.Text}_\"!";
 

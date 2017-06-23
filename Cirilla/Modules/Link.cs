@@ -103,7 +103,8 @@ namespace Cirilla.Modules {
             if (File.Exists(file)) {
                 string serialized = File.ReadAllText(file);
                 LinkFile guildLinks = JsonConvert.DeserializeObject<LinkFile>(serialized);
-                return guildLinks?.Links.Aggregate("", (current, tuple) => current + $"[{tuple.Item1}]({tuple.Item2}){Environment.NewLine}");
+                return guildLinks?.Links.Aggregate("",
+                    (current, tuple) => current + $"[{tuple.Item1}]({tuple.Item2}){Environment.NewLine}");
             }
 
             return null;

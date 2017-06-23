@@ -74,7 +74,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("game"), Summary("Change Bot's \"playing ..\" status")]
-        public async Task SetGame([Summary("The new game")] [Remainder]string game) {
+        public async Task SetGame([Summary("The new game")] [Remainder] string game) {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
@@ -91,7 +91,7 @@ namespace Cirilla.Modules {
         }
 
         [Command("announce"), Summary("Announce something in all guilds")]
-        public async Task Announce([Summary("The text to send")] [Remainder]string text) {
+        public async Task Announce([Summary("The text to send")] [Remainder] string text) {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
@@ -109,7 +109,8 @@ namespace Cirilla.Modules {
                     }
                 }
                 await ReplyAsync($"Sent the announcement to {sent}/{Cirilla.Client.Guilds.Count} guilds!");
-                await ConsoleHelper.Log($"{Context.User} announced \"{text}\" on {sent}/{Cirilla.Client.Guilds.Count} guilds!",
+                await ConsoleHelper.Log(
+                    $"{Context.User} announced \"{text}\" on {sent}/{Cirilla.Client.Guilds.Count} guilds!",
                     LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't announce that.. :confused:");

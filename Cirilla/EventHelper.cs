@@ -33,7 +33,7 @@ namespace Cirilla {
             try {
                 if (guild.CurrentUser.GuildPermissions.SendMessages) {
                     await guild.DefaultChannel.SendMessageAsync($"Hi guys! I'm the new bot!! :wave: :smile:" +
-                        $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
+                                                                $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
 
                     string dataPath = Path.Combine(Information.Directory, guild.Id.ToString());
                     if (!Directory.Exists(dataPath)) {
@@ -72,8 +72,6 @@ namespace Cirilla {
             return Task.CompletedTask;
         }
 
-        public static async Task Ready() {
-            await Cirilla.Client.SetGameAsync($"{Information.Prefix}help");
-        }
+        public static async Task Ready() { await Cirilla.Client.SetGameAsync($"{Information.Prefix}help"); }
     }
 }

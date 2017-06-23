@@ -216,7 +216,9 @@ namespace Cirilla.Modules {
                 try {
                     UserXp firstXp = xps[0];
                     IUser firstUser = await Context.Guild.GetUserAsync(firstXp.UserId);
-                    await ReplyAsync($"Good job **{Helper.GetName(firstUser)}** on being first place with **{firstXp.Xp}** XP!", embed: builder.Build());
+                    await ReplyAsync(
+                        $"Good job **{Helper.GetName(firstUser)}** on being first place with **{firstXp.Xp}** XP!",
+                        embed: builder.Build());
                 } catch {
                     await ReplyAsync("", embed: builder.Build());
                 }
@@ -228,7 +230,7 @@ namespace Cirilla.Modules {
 
         public static string GetNameForXp() {
             //7 times XP (so "XP" is more common) and 4 times other units
-            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
+            string[] names = {"XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins"};
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

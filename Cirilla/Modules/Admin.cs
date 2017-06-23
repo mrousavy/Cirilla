@@ -47,13 +47,15 @@ namespace Cirilla.Modules {
                     ITextChannel botchat = await Context.Guild.CreateTextChannelAsync(Information.Botchat);
                     await botchat.SendMessageAsync("Hi guys! You can chat with me here! :smile:");
                 } else {
-                    await ReplyAsync($"If you guys want to talk to me, you gotta create #{Information.Botchat}.. Couldn't do it myself!");
+                    await ReplyAsync(
+                        $"If you guys want to talk to me, you gotta create #{Information.Botchat}.. Couldn't do it myself!");
                 }
 
                 await ReplyAsync("I'm ready to go! :smile:");
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't setup myself.. :confused:");
-                await ConsoleHelper.Log($"Error setting up bot on \"{Context.Guild.Name}\", {ex.Message}!", LogSeverity.Error);
+                await ConsoleHelper.Log($"Error setting up bot on \"{Context.Guild.Name}\", {ex.Message}!",
+                    LogSeverity.Error);
             }
         }
 
@@ -100,7 +102,8 @@ namespace Cirilla.Modules {
 
                 if (after) {
                     await ReplyAsync("XP System for this Guild is now enabled!");
-                    await ConsoleHelper.Log($"{Context.User} enabled XP System for Guild \"{Context.Guild.Name}\"!", LogSeverity.Info);
+                    await ConsoleHelper.Log($"{Context.User} enabled XP System for Guild \"{Context.Guild.Name}\"!",
+                        LogSeverity.Info);
                 } else {
                     //string guildDir = Path.Combine(Information.Directory, Context.Guild.Id.ToString());
                     ////cleanup
@@ -108,7 +111,8 @@ namespace Cirilla.Modules {
                     //    Directory.Delete(guildDir, true);
                     //}
                     await ReplyAsync("XP System for this Guild is now disabled!");
-                    await ConsoleHelper.Log($"{Context.User} disabled XP System for Guild \"{Context.Guild.Name}\"!", LogSeverity.Info);
+                    await ConsoleHelper.Log($"{Context.User} disabled XP System for Guild \"{Context.Guild.Name}\"!",
+                        LogSeverity.Info);
                 }
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't toggle the XP System.. :confused:");
@@ -136,7 +140,8 @@ namespace Cirilla.Modules {
 
                 GuildConfigManager.Set(Context.Guild.Id, prefix, disablePrimary);
                 await ReplyAsync($"Prefix changed from `{before}` to `{prefix}`!");
-                await ConsoleHelper.Log($"{Context.User} changed the prefix on \"{Context.Guild.Name}\" from {before} to {prefix}!",
+                await ConsoleHelper.Log(
+                    $"{Context.User} changed the prefix on \"{Context.Guild.Name}\" from {before} to {prefix}!",
                     LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't change the prefix.. :confused:");
@@ -168,11 +173,11 @@ namespace Cirilla.Modules {
                     await ReplyAsync("Bot is now also listening to primary prefix (`$`)!");
                 } else {
                     await ReplyAsync("Bot is not listening to primary prefix anymore (`$`)!" + Environment.NewLine +
-                        $"Current prefixes: `{config.Prefix}` and \"{ Cirilla.Client.CurrentUser.Mention}\"");
+                                     $"Current prefixes: `{config.Prefix}` and \"{Cirilla.Client.CurrentUser.Mention}\"");
                 }
 
                 await ConsoleHelper.Log($"{Context.User} toggled the primary prefix on \"{Context.Guild.Name}\" from " +
-                    $"{before} to {after}!",
+                                        $"{before} to {after}!",
                     LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't toggle the primary prefix.. :confused:");

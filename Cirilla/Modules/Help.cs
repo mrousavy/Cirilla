@@ -42,6 +42,7 @@ namespace Cirilla.Modules {
                 try {
                     IDMChannel dm = await Context.User.CreateDMChannelAsync();
                     await dm.SendMessageAsync("", false, builder.Build());
+                    await ReplyAsync("Check your DMs!");
                 } catch {
                     //could not send private
                     await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..",

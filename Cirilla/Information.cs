@@ -8,6 +8,7 @@ namespace Cirilla {
     internal static class Information {
         //Directory to store configs in
         internal static string Directory { get; } = Path.Combine(AppContext.BaseDirectory, "_data");
+
         internal static Configuration Config { get; set; }
         internal static LogSeverity LogSeverity => Config.LogSeverity;
         internal static string Token => Config.Token;
@@ -30,14 +31,15 @@ namespace Cirilla {
         internal static int MaximumReminders => Config.MaximumReminders;
         internal static int MaximumRemindDays => Config.MaximumRemindDays;
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
+
         internal static string InviteLink =
             "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
+
         internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;
         internal static int NewsInterval => Config.NewsInterval;
         internal static bool PmHelp => Config.PmHelp;
         internal static long MaxLogSize => Config.MaxLogSize;
-        internal static bool AllowScripts => Config.AllowScripts;
         internal static int CompileTimeout => Config.CompileTimeout;
         internal static int ExecutionTimeout => Config.ExecutionTimeout;
 
@@ -129,6 +131,7 @@ namespace Cirilla {
 
         //Maximum simultaneous reminders for a user
         public int MaximumReminders = 3;
+
         //Maximum days for reminders
         public int MaximumRemindDays = 5;
 
@@ -146,9 +149,6 @@ namespace Cirilla {
 
         //Max Log Size in bytes
         public long MaxLogSize = 1024 * 1024 * 10;
-
-        //Enable Roslyn Scripting using the $exec Command
-        public bool AllowScripts = true;
 
         //Time in milliseconds until the compilation of $exec scipts cancels
         public int CompileTimeout = 15000;

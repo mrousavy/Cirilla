@@ -36,7 +36,7 @@ namespace Cirilla.Modules {
             builder.AddInlineField("Votekick Emojis", $"{Information.VotekickYes} {Information.VotekickNo}");
             builder.AddInlineField("Votekick expiration", $"{Information.VotekickExpire / 1000} Seconds");
             builder.AddInlineField("News Interval", $"Every {Information.NewsInterval} Hours");
-            builder.AddInlineField("Allow Scripts", Information.AllowScripts);
+            builder.AddInlineField("Allow Scripts", config.EnableScripts);
             builder.AddInlineField("Scripts Timeout",
                 $"C: {Information.CompileTimeout / 1000}s | X: {Information.ExecutionTimeout / 1000}s");
 

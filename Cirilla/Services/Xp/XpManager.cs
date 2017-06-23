@@ -159,7 +159,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int)(previousLevel * Information.XpFactor);
+                    return (int) (previousLevel * Information.XpFactor);
             }
         }
 

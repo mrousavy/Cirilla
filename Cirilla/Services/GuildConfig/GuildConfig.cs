@@ -20,7 +20,8 @@ namespace Cirilla.Services.GuildConfig {
 
             foreach (string dir in dirs) {
                 string dirName = Path.GetFileName(dir);
-                if (ulong.TryParse(dirName, out ulong guildId)) { // is it a valid Guild _data Directory?
+                if (ulong.TryParse(dirName, out ulong guildId)) {
+                    // is it a valid Guild _data Directory?
                     string config = Path.Combine(dir, "guildconfig.json");
                     if (!File.Exists(config)) {
                         //create
@@ -51,7 +52,8 @@ namespace Cirilla.Services.GuildConfig {
         }
 
 
-        public static GuildConfiguration Set(ulong guildId, string prefix, bool enablePrimaryPrefix = true, bool enableXpSystem = false) {
+        public static GuildConfiguration Set(ulong guildId, string prefix, bool enablePrimaryPrefix = true,
+            bool enableXpSystem = false) {
             GuildConfiguration guildconfig = new GuildConfiguration {
                 GuildId = guildId,
                 EnablePrimaryPrefix = enablePrimaryPrefix,
@@ -114,7 +116,8 @@ namespace Cirilla.Services.GuildConfig {
                         //create
                         File.Create(config).Dispose();
                     }
-                    GuildConfiguration guildconfig = GuildConfigs.GuildConfigs.FirstOrDefault(gc => gc.GuildId == guildId);
+                    GuildConfiguration guildconfig =
+                        GuildConfigs.GuildConfigs.FirstOrDefault(gc => gc.GuildId == guildId);
                     if (guildconfig == default(GuildConfiguration)) {
                         guildconfig = new GuildConfiguration {
                             EnablePrimaryPrefix = true,
@@ -137,11 +140,10 @@ namespace Cirilla.Services.GuildConfig {
 
         public string Prefix { get; set; } = Information.SecondaryPrefix;
         public bool EnablePrimaryPrefix { get; set; } = true;
-        public bool EnableXpSystem { get; set; } = false;
+        public bool EnableXpSystem { get; set; }
+        public bool EnableScripts { get; set; } //Get only, this will only be set by me in config
 
-        protected bool Equals(GuildConfiguration other) {
-            return GuildId == other.GuildId;
-        }
+        protected bool Equals(GuildConfiguration other) { return GuildId == other.GuildId; }
 
         public override int GetHashCode() {
             // ReSharper disable once NonReadonlyMemberInGetHashCode

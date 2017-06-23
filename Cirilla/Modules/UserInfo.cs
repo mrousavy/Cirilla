@@ -1,9 +1,9 @@
-﻿using Cirilla.Services.Xp;
+﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Xp;
 using Discord;
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
-using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class UserInfo : ModuleBase {
@@ -67,7 +67,7 @@ namespace Cirilla.Modules {
                             //IconUrl = user.GetAvatarUrl()
                         },
                         Color = new Color(50, 125, 0),
-						ThumbnailUrl = user.GetAvatarUrl()
+                        ThumbnailUrl = user.GetAvatarUrl()
                     };
                     builder.AddInlineField("Nickname", nick);
                     builder.AddInlineField("Created At", createdAt);
@@ -84,12 +84,21 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("avatar"), Summary("Get Avatar of User")]
+        [Command("avatar"), Summary("Get own Avatar")]
         public async Task Avatar() {
             try {
                 await ReplyAsync(Context.User.GetAvatarUrl());
             } catch {
                 await ReplyAsync("Couldn't find your Avatar, sorry!");
+            }
+        }
+
+        [Command("avatar"), Summary("Get Avatar of User")]
+        public async Task Avatar([Summary("The user you want to get the avatar from")]IUser user) {
+            try {
+                await ReplyAsync(user.GetAvatarUrl());
+            } catch {
+                await ReplyAsync("Couldn't find that user's Avatar, sorry!");
             }
         }
 

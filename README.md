@@ -151,6 +151,7 @@ $wiki query
 **UserInfo**
 ```
 $avatar
+$avatar user
 $details
 $stats user
 $stats

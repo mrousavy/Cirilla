@@ -7,6 +7,21 @@
   </p>
 </p>
 
+# Features
+Cirilla is a multi-use Discord Bot with many functionalities like:
+* A whole **XP System**
+* Random posts from **Reddit** or **dankmemes**
+* Custom **Reminders**
+* **Poking** users
+* Setting up custom **Hardware** or **Profile** pages
+* Adding important **links** to your guild
+* Calculating expressions
+* **News**
+* Querying **wikipedia**
+* Votekicking users
+* **C# Code/Script** compiling and executing
+* **Chat cleaning**
+
 ### Cirilla is currently a private bot (WIP)
 
 # Setup

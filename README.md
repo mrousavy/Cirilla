@@ -81,7 +81,8 @@ $help command
 **Link**
 ```
 $links 
-$addlink link
+$addlink name, link
+$removelink name
 ```
 **Maths**
 ```

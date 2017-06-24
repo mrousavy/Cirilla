@@ -1,8 +1,8 @@
-﻿using Cirilla.Services.Roslyn;
+﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Roslyn;
 using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
-using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Code : ModuleBase {

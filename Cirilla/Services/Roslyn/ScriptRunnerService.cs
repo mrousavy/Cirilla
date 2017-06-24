@@ -60,57 +60,86 @@ namespace Cirilla.Services.Roslyn {
         /// <returns>The Embed with detailed information of the results</returns>
         public static async Task<Embed> ScriptEmbed(string code, IUser user, IMessageChannel contextChannel) {
             string nl = Environment.NewLine;
+            // compilation
+            CompileResult compileResult = await Compile(code);
 
-            EmbedBuilder builder = new EmbedBuilder {
-                Author = new EmbedAuthorBuilder {
-                    Name = "Roslyn Scripting",
-                    IconUrl = "http://ourcodeworld.com/public-media/gallery/categorielogo-5713d627ccabf.png" //C# Icon
-                }
-            };
+            if (compileResult.CompileException != null) {
+                await ConsoleHelper.Log($"Error compiling C# script from {Helper.GetName(user)}! ({compileResult.CompileException.Message})",
+                    LogSeverity.Info);
+                return CompileError(user, code, compileResult);
+            }
 
-            StringBuilder stringBuilder = new StringBuilder();
-            StringWriter textWriter = new StringWriter(stringBuilder);
-            bool successful;
-            long compileTime, execTime;
-            CompilationErrorException compileException = null;
-            Exception runEx = null;
+            ExecuteResult execResult = Execute(compileResult, contextChannel);
+
+            if (execResult.ExecException != null) {
+                await ConsoleHelper.Log($"Error running C# script from {Helper.GetName(user)}! ({execResult.ExecException.Message})",
+                    LogSeverity.Info);
+                return RunError(user, code, execResult);
+            } else {
+                await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
+                        LogSeverity.Info);
+                return ScriptSuccess(user, code, execResult);
+            }
+        }
+
+
+
+        public static async Task<CompileResult> Compile(string code) {
+            CompileResult result = new CompileResult();
 
             Stopwatch compileSw = Stopwatch.StartNew();
 
-            // compilation
-            CancellationTokenSource compileCts = new CancellationTokenSource(Information.CompileTimeout);
-            Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
-            CompilationWithAnalyzers compilation = script.GetCompilation()
-                .WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
-            ImmutableArray<Diagnostic> compileResult = await compilation.GetAllDiagnosticsAsync(compileCts.Token);
-            ImmutableArray<Diagnostic> compileErrors = compileResult.Where(a => a.Severity == DiagnosticSeverity.Error)
-                .ToImmutableArray();
+            try {
+                CancellationTokenSource compileCts = new CancellationTokenSource(Information.CompileTimeout);
+                Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
+                CompilationWithAnalyzers compilation = script.GetCompilation()
+                    .WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
+                ImmutableArray<Diagnostic> compileDiagnostics = await compilation.GetAllDiagnosticsAsync(compileCts.Token);
+                ImmutableArray<Diagnostic> compileErrors = compileDiagnostics.Where(a => a.Severity == DiagnosticSeverity.Error)
+                    .ToImmutableArray();
 
-            compileSw.Stop();
-            compileTime = compileSw.ElapsedMilliseconds;
-            string diagnostics = Enumerable.Aggregate(compileResult, string.Empty,
-                (current, diagnostic) => current + diagnostic.ToString());
+                compileSw.Stop();
+                long compileTime = compileSw.ElapsedMilliseconds;
 
-            if (compileErrors.Length > 0) {
-                compileException =
-                    new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())),
-                        compileErrors);
+                string diagnostics = Enumerable.Aggregate(compileDiagnostics, string.Empty,
+                    (current, diagnostic) => current + diagnostic.ToString() + Environment.NewLine);
+
+                if (compileErrors.Length > 0) {
+                    result.CompileException =
+                        new CompilationErrorException(string.Join("\n", compileErrors.Select(a => a.GetMessage())),
+                            compileErrors);
+                }
+
+                result.Script = script;
+                result.CompileDiagnostics = compileDiagnostics;
+                result.CompileErrors = compileErrors;
+                result.CompileTime = compileTime;
+            } catch (Exception ex) {
+                result.CompileException = ex;
             }
 
+            return result;
+        }
+
+
+        public static ExecuteResult Execute(CompileResult compileResult, IMessageChannel contextChannel) {
+            StringBuilder stringBuilder = new StringBuilder();
+            ExecuteResult result = new ExecuteResult() {
+                CompileResult = compileResult
+            };
             Globals globals = new Globals {
-                Console = textWriter,
+                Console = new StringWriter(stringBuilder),
                 Random = Random,
                 ReplyAsync = async m => await contextChannel.SendMessageAsync(m)
             };
 
             Stopwatch execSw = Stopwatch.StartNew();
-            ScriptState<object> result = null;
-            //execute
-            CancellationTokenSource execCts = new CancellationTokenSource(Information.ExecutionTimeout);
+            ScriptState<object> scriptState = null;
+            CancellationTokenSource execCts = new CancellationTokenSource(Information.ExecutionTimeout + 100);
 
             try {
                 Thread runThread = new Thread(async () => {
-                    result = await script.RunAsync(globals, ex => true, execCts.Token);
+                    scriptState = await compileResult.Script.RunAsync(globals, ex => true, execCts.Token);
                 });
                 runThread.Start();
                 bool successfullyEnded = runThread.Join(Information.ExecutionTimeout);
@@ -119,82 +148,159 @@ namespace Cirilla.Services.Roslyn {
                     throw new TaskCanceledException();
                 }
 
-                if (result?.Exception == null) {
-                    successful = true;
-                } else {
-                    runEx = result.Exception;
-                    successful = false;
+                execSw.Stop();
+                result.ExecuteTime = execSw.ElapsedMilliseconds;
+
+                if (scriptState != null) {
+                    if (scriptState.Exception != null) {
+                        result.ExecException = scriptState.Exception;
+                    }
+
+                    result.ReturnValue = scriptState.ReturnValue;
+                }
+
+                if (stringBuilder.Length > 0) {
+                    result.ConsoleOutput = stringBuilder.Length > 1024
+                        ? stringBuilder.ToString().Substring(0, 1019) + " [..]"
+                        : stringBuilder.ToString();
                 }
             } catch (TaskCanceledException) {
-                runEx = new TimeoutException(
-                    $"The execution of the script took longer than expected! ({Information.ExecutionTimeout}ms)");
-                successful = false;
+                result.ExecException = new TimeoutException(
+                    $"The execution of the script took longer than expected! (> {Information.ExecutionTimeout}ms)");
             } catch (Exception ex) {
-                runEx = ex;
-                successful = false;
+                result.ExecException = ex;
             }
-            execSw.Stop();
-            execTime = execSw.ElapsedMilliseconds;
+            return result;
+        }
 
-            if (successful) {
-                await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
-                    LogSeverity.Info);
 
-                builder.Color = new Color(50, 155, 0);
-                builder.AddField("Requested by", user.Mention);
-                builder.AddField("Result", "Successful");
-                string codeTrim = code.Length > 1024 ? code.Substring(0, 1024) : code;
-                builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
-                if (result?.ReturnValue == null) {
-                    if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) {
-                        builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
-                    } else {
-                        string resultTrim = stringBuilder.ToString().Length > 1024
-                            ? stringBuilder.ToString().Substring(0, 1024)
-                            : stringBuilder.ToString();
-                        builder.AddField("Console Output:", $"```accesslog{nl}{resultTrim}{nl}```");
-                    }
-                } else {
-                    string resultTrim = result.ReturnValue.ToString().Length > 1024
-                        ? result.ReturnValue.ToString().Substring(0, 1024)
-                        : result.ReturnValue.ToString();
-                    builder.AddField($"Result: {result.ReturnValue.GetType()}",
-                        $"```cs{nl}{resultTrim}{nl}```");
-                }
-                if (!string.IsNullOrWhiteSpace(diagnostics)) {
-                    builder.AddField("Diagnostics",
-                        diagnostics.Length > 1024
-                            ? $"```{nl}{diagnostics.Substring(0, 1024)} [...]{nl}```"
-                            : $"```{nl}{diagnostics}{nl}```");
-                }
-            } else {
-                await ConsoleHelper.Log(
-                    $"Error compiling C# script from {Helper.GetName(user)}! ({compileException?.Message})",
-                    LogSeverity.Info);
 
-                builder.Color = new Color(180, 8, 8);
-                builder.AddField("Requested by", user.Mention);
-                builder.AddField("Result", "Failed");
-                string codeTrim = code.Length > 1024 ? code.Substring(0, 1024) : code;
-                builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
 
-                string exceptionTitle = compileException == null ? $"Exception: {runEx.GetType()}" : "Compiler Error:";
-                string exceptionContent = compileException == null
-                    ? $"```accesslog{nl}{runEx.Message}{nl}```"
-                    : $"```accesslog{nl}{compileException.Message}{nl}```";
-                string exceptionTrim = exceptionContent.Length > 1024
-                    ? exceptionContent.Substring(0, 1024)
-                    : exceptionContent;
-                builder.AddField(exceptionTitle, exceptionTrim);
+        public static Embed CompileError(IUser user, string code, CompileResult result) {
+            EmbedBuilder builder = DefaultEmbed();
+            string nl = Environment.NewLine;
+
+            builder.Color = new Color(180, 8, 8);
+            builder.AddField("Requested by", user.Mention);
+            builder.AddField("Result", "Failed (Compilation Error)");
+            string codeTrim = code.Length > 1019
+                ? code.Substring(0, 1019) + " [..]"
+                : code;
+            builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
+
+
+            string exceptionTitle = $"{result.CompileException.GetType()}:";
+            string exceptionContent = $"```accesslog{nl}{result.CompileException.Message}{nl}```";
+
+            string exceptionTrim = exceptionContent.Length > 1019
+                ? exceptionContent.Substring(0, 1019) + " [..]"
+                : exceptionContent;
+
+            builder.AddField(exceptionTitle, exceptionTrim);
+
+            if (!string.IsNullOrWhiteSpace(result.CompileDiagnosticsString)) {
+                string diagnosticsTrim = result.CompileDiagnosticsString.Length > 1019
+                    ? result.CompileDiagnosticsString.Substring(0, 1019) + " [..]"
+                    : result.CompileDiagnosticsString;
+
+                builder.AddField("Diagnostics", diagnosticsTrim);
             }
 
-            string compileTimeStr = compileTime == -1 ? "/" : compileTime + "ms";
-            string execTimeStr = execTime == -1 ? "/" : execTime + "ms";
             builder.Footer = new EmbedFooterBuilder {
-                Text = $"Compilation: {compileTimeStr} | Execution: {execTimeStr}"
+                Text = "Compile: / | Execute: /"
             };
 
             return builder.Build();
+        }
+
+        public static Embed RunError(IUser user, string code, ExecuteResult result) {
+            EmbedBuilder builder = DefaultEmbed();
+            string nl = Environment.NewLine;
+
+            builder.Color = new Color(180, 8, 8);
+            builder.AddField("Requested by", user.Mention);
+            builder.AddField("Result", "Failed (Execution Error)");
+            string codeTrim = code.Length > 1019
+                ? code.Substring(0, 1019) + " [..]"
+                : code;
+            builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
+
+
+            string exceptionTitle = $"{result.ExecException.GetType()}:";
+            string exceptionContent = $"```accesslog{nl}{result.ExecException.Message}{nl}```";
+
+            string exceptionTrim = exceptionContent.Length > 1019
+                ? exceptionContent.Substring(0, 1019) + " [..]"
+                : exceptionContent;
+
+            builder.AddField(exceptionTitle, exceptionTrim);
+
+            if (!string.IsNullOrWhiteSpace(result.CompileResult.CompileDiagnosticsString)) {
+                string diagnosticsTrim = result.CompileResult.CompileDiagnosticsString.Length > 1024
+                    ? result.CompileResult.CompileDiagnosticsString.Substring(0, 1019) + " [..]"
+                    : result.CompileResult.CompileDiagnosticsString;
+
+                builder.AddField("Diagnostics", diagnosticsTrim);
+            }
+
+            builder.Footer = new EmbedFooterBuilder {
+                Text = $"Compile: {result.CompileResult.CompileTime}ms | Execute: /"
+            };
+
+
+            return builder.Build();
+        }
+
+        public static Embed ScriptSuccess(IUser user, string code, ExecuteResult result) {
+            EmbedBuilder builder = DefaultEmbed();
+            string nl = Environment.NewLine;
+
+            builder.Color = new Color(50, 155, 0);
+            builder.AddField("Requested by", user.Mention);
+            builder.AddField("Result", "Successful");
+            string codeTrim = code.Length > 1019
+                ? code.Substring(0, 1019) + " [..]"
+                : code;
+            builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
+
+            if (result.ReturnValue == null) {
+                if (string.IsNullOrWhiteSpace(result.ConsoleOutput)) {
+                    builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
+                } else {
+                    builder.AddField("Console Output:", $"```accesslog{nl}{result.ConsoleOutput}{nl}```");
+                }
+            } else {
+                string resultTrim = result.ReturnValue.ToString().Length > 1024
+                    ? result.ReturnValue.ToString().Substring(0, 1019) + " [..]"
+                    : result.ReturnValue.ToString();
+                builder.AddField($"Result: {result.ReturnValue.GetType()}",
+                    $"```cs{nl}{resultTrim}{nl}```");
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.CompileResult.CompileDiagnosticsString)) {
+                builder.AddField("Diagnostics",
+                    result.CompileResult.CompileDiagnosticsString.Length > 1024
+                        ? $"```{nl}{result.CompileResult.CompileDiagnosticsString.Substring(0, 1019)} [..]{nl}```"
+                        : $"```{nl}{result.CompileResult.CompileDiagnosticsString}{nl}```");
+            }
+
+            builder.Footer = new EmbedFooterBuilder {
+                Text = $"Compile: {result.CompileResult.CompileTime}ms | Execute: {result.ExecuteTime}ms"
+            };
+
+            return builder.Build();
+        }
+
+
+        public static EmbedBuilder DefaultEmbed() {
+            EmbedBuilder builder = new EmbedBuilder {
+                Author = new EmbedAuthorBuilder {
+                    Name = "Roslyn Scripting",
+                    IconUrl = "http://ourcodeworld.com/public-media/gallery/categorielogo-5713d627ccabf.png" //C# Icon
+                }
+            };
+
+            return builder;
         }
     }
 

@@ -103,7 +103,7 @@ namespace Cirilla.Modules {
                 int sent = 0;
                 foreach (SocketGuild guild in Cirilla.Client.Guilds) {
                     try {
-                        await guild.DefaultChannel.SendMessageAsync($"{text} ~{Context.User.Username}");
+                        await guild.DefaultChannel.SendMessageAsync(text);
                         sent++;
                     } catch {
                         // could not send

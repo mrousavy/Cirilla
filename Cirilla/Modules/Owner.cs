@@ -1,11 +1,11 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Cirilla.Services.GuildConfig;
 
 namespace Cirilla.Modules {
     public class Owner : ModuleBase {
@@ -130,6 +130,7 @@ namespace Cirilla.Modules {
 
                 GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
                 config.EnableScripts = !config.EnableScripts;
+                GuildConfigManager.Set(config);
 
                 if (config.EnableScripts) {
                     await ReplyAsync("Scripts are now enabled for this guild! Use `$exec code`.");

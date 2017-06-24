@@ -78,8 +78,12 @@ namespace Cirilla {
 
                     IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
                     if (emote != null) {
-                        await message.AddReactionAsync(emote);
-                        await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                        try {
+                            await message.AddReactionAsync(emote);
+                            await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                        } catch {
+                            // AddReactions Permission missing?
+                        }
                     }
                 } else {
                     secondaryPrefix = Information.SecondaryPrefix;

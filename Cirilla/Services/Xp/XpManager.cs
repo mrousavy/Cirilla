@@ -39,7 +39,7 @@ namespace Cirilla.Services.Xp {
                         XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
                     } else {
                         GuildXp guildxp = JsonConvert.DeserializeObject<GuildXp>(File.ReadAllText(xpfile));
-                        XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
+                        XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp ?? new GuildXp()));
                     }
                     xpfiles[i] = xpfile;
                 }
@@ -88,6 +88,7 @@ namespace Cirilla.Services.Xp {
             bool contains = XpInfo.Guilds.Where(kvp => kvp.Key == guild.Id)
                 .Any(kvp => kvp.Value.Users.Any(userxp => userxp.UserId == user.Id));
 
+
             if (contains) {
                 foreach (UserXp uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users) {
                     if (uxp.UserId == user.Id) {
@@ -114,15 +115,15 @@ namespace Cirilla.Services.Xp {
 
         public static void WriteOut() {
             try {
-                foreach (KeyValuePair<ulong, GuildXp> pairs in XpInfo.Guilds) {
-                    string directory = Path.Combine(Information.Directory, pairs.Key.ToString());
+                foreach (KeyValuePair<ulong, GuildXp> pair in XpInfo.Guilds) {
+                    string directory = Path.Combine(Information.Directory, pair.Key.ToString());
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
-                        ConsoleHelper.Log($"Created new Directory for server {pairs.Key}.", LogSeverity.Info);
+                        ConsoleHelper.Log($"Created new Directory for server {pair.Key}.", LogSeverity.Info);
                     }
                     string xpfile = Path.Combine(directory, "userxp.json");
                     string serialized =
-                        JsonConvert.SerializeObject(pairs.Value);
+                        JsonConvert.SerializeObject(pair.Value);
                     File.WriteAllText(xpfile, serialized);
                 }
             } catch (Exception ex) {
@@ -159,7 +160,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int) (previousLevel * Information.XpFactor);
+                    return (int)(previousLevel * Information.XpFactor);
             }
         }
 

@@ -77,7 +77,7 @@ namespace Cirilla {
 
 
 
-        public static async Task MessageReceived(SocketMessage messageArg) {
+        public static async Task QuestionThinking(SocketMessage messageArg) {
             SocketUserMessage message = messageArg as SocketUserMessage;
             if (message == null)
                 return;
@@ -88,6 +88,23 @@ namespace Cirilla {
                 }
             } catch {
                 // can't add reactions
+            }
+        }
+        public static async Task RandomEmoji(SocketMessage messageArg) {
+            SocketUserMessage message = messageArg as SocketUserMessage;
+            if (message == null)
+                return;
+
+            if (message.Channel is IGuildChannel guildchannel) {
+                IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
+                if (emote != null) {
+                    try {
+                        await message.AddReactionAsync(emote);
+                        await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                    } catch {
+                        // can't add reactions
+                    }
+                }
             }
         }
     }

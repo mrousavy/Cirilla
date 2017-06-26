@@ -25,7 +25,7 @@ namespace Cirilla {
                         }
 
                         File.AppendAllLines(logfile,
-                            new List<string> {$"{DateTime.Now:HH:mm:ss}: {username}@{guildname}: {command}"});
+                            new List<string> { $"[{DateTime.Now:HH:mm:ss}] [{username}@{guildname}] \"{command}\"" });
                     } catch (Exception ex) {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Command Log File! ({ex.Message})");

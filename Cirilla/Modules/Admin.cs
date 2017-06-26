@@ -158,8 +158,14 @@ namespace Cirilla.Modules {
                                  $"`{Information.SecondaryPrefix}`, `{Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
                 return;
             }
-            await ReplyAsync($"Those are my current prefixes: " +
-                             $"`{GuildConfigManager.Get(Context.Guild.Id).Prefix}`, `{Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
+
+            GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+            string prefixes = string.Empty;
+            if (config.EnablePrimaryPrefix)
+                prefixes += $"`{Information.Prefix}` ";
+            prefixes += $"`{config.Prefix}`, {Cirilla.Client.CurrentUser.Mention}";
+
+            await ReplyAsync($"Those are my current prefixes: {prefixes}");
         }
 
 

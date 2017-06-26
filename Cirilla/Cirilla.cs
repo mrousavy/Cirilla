@@ -30,7 +30,8 @@ namespace Cirilla {
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
             Client.MessageReceived += MessageReceived;
-            Client.MessageReceived += EventHelper.MessageReceived;
+            Client.MessageReceived += EventHelper.RandomEmoji;
+            Client.MessageReceived += EventHelper.QuestionThinking;
             Client.UserJoined += EventHelper.UserJoined;
             Client.UserLeft += EventHelper.UserLeft;
             Client.LeftGuild += EventHelper.LeftGuild;
@@ -76,20 +77,9 @@ namespace Cirilla {
                     GuildConfiguration config = GuildConfigManager.Get(guildchannel.Guild.Id);
                     secondaryPrefix = config.Prefix;
                     enablePrimary = config.EnablePrimaryPrefix;
-
-                    IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
-                    if (emote != null) {
-                        try {
-                            await message.AddReactionAsync(emote);
-                            await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
-                        } catch {
-                            // AddReactions Permission missing?
-                        }
-                    }
                 } else {
                     secondaryPrefix = Information.SecondaryPrefix;
                 }
-
 
                 // Command (after prefix) Begin
                 int argPos = 0;
@@ -112,11 +102,7 @@ namespace Cirilla {
 
                     //Find out what the user probably meant
                     Embed embed = Helper.WrongCommand(message, Service, context);
-                    if (embed == null) {
-                        //unknown command/overloads
-                        //TODO: commented -> Bot is saying nothing on wrong command
-                        // await context.Channel.SendMessageAsync("Pardon?");
-                    } else {
+                    if (embed != default(Embed)) {
                         //Send "did you mean this?:" message
                         await context.Channel.SendMessageAsync("", embed: embed);
                     }

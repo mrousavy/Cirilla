@@ -41,6 +41,8 @@ namespace Cirilla {
                         Directory.CreateDirectory(dataPath);
                     }
                 }
+
+                await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count}");
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
                     Discord.LogSeverity.Error);
@@ -70,14 +72,11 @@ namespace Cirilla {
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", LogSeverity.Error);
             }
-            if (Cirilla.Client.CurrentUser.Game is Game game) {
-                if (game.Name.StartsWith("$help")) {
-                    await Cirilla.Client.SetGameAsync($"$help | {Cirilla.Client.Guilds.Count} Servers");
-                }
-            }
         }
 
-        public static async Task Ready() { await Cirilla.Client.SetGameAsync($"{Information.Prefix}help"); }
+        public static async Task Ready() {
+            await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count}");
+        }
 
 
 

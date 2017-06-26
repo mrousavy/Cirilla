@@ -150,7 +150,7 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("prefix"), Summary("Change prefix")]
+        [Command("prefix"), Summary("Get prefixes")]
         public async Task GetPrefix() {
             IGuildUser user = Context.User as IGuildUser;
             if (user == null) {
@@ -159,7 +159,7 @@ namespace Cirilla.Modules {
                 return;
             }
             await ReplyAsync($"Those are my current prefixes: " +
-                             $"`{GuildConfigManager.Get(Context.Guild.Id).Prefix}, {Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
+                             $"`{GuildConfigManager.Get(Context.Guild.Id).Prefix}`, `{Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
         }
 
 

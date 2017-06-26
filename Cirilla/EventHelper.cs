@@ -64,13 +64,17 @@ namespace Cirilla {
         }
 
 
-        public static Task GuildAvailable(SocketGuild guild) {
+        public static async Task GuildAvailable(SocketGuild guild) {
             try {
                 ReminderService.Init(guild);
             } catch (Exception ex) {
-                ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", Discord.LogSeverity.Error);
+                await ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", LogSeverity.Error);
             }
-            return Task.CompletedTask;
+            if (Cirilla.Client.CurrentUser.Game is Game game) {
+                if (game.Name.StartsWith("$help")) {
+                    await Cirilla.Client.SetGameAsync($"$help | {Cirilla.Client.Guilds.Count} Servers");
+                }
+            }
         }
 
         public static async Task Ready() { await Cirilla.Client.SetGameAsync($"{Information.Prefix}help"); }

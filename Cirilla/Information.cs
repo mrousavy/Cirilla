@@ -67,6 +67,11 @@ namespace Cirilla {
                         Process.GetCurrentProcess().Kill();
                     }
                 }
+                if (Config.Token == "DISCORD_API_TOKEN_GOES_HERE") {
+                    ConsoleHelper.Log($"Discord API Token is invalid, please edit {config}!", LogSeverity.Critical);
+                    Console.ReadKey();
+                    Process.GetCurrentProcess().Kill();
+                }
             }
         }
 

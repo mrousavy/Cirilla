@@ -18,7 +18,7 @@ namespace Cirilla.Modules {
         public async Task Poke([Summary("The User to poke")] IUser user) {
             try {
                 IDMChannel dm = await user.CreateDMChannelAsync();
-                await dm.SendMessageAsync($"Hey! **{Context.User}** from **{Context.Guild.Name}** poked you!", true);
+                await dm.SendMessageAsync($"Hey! **{Context.User.Mention}** from **{Context.Guild.Name}** poked you!", true);
                 await ReplyAsync($"Poked {Helper.GetName(user)}!");
             } catch {
                 await ReplyAsync($"I couldn't poke {Helper.GetName(user)}, sorry!");

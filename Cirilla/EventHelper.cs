@@ -17,10 +17,10 @@ namespace Cirilla {
         }
 
         public static async Task UserLeft(SocketGuildUser user) {
-            await ConsoleHelper.Log($"{user.Mention} left the \"{user.Guild.Name}\" server!", Discord.LogSeverity.Info);
+            await ConsoleHelper.Log($"{user} left the \"{user.Guild.Name}\" server!", Discord.LogSeverity.Info);
             SocketTextChannel channel = user.Guild.DefaultChannel;
             if (channel != null)
-                await channel.SendMessageAsync($"{Helper.GetName(user)} left the server!", true);
+                await channel.SendMessageAsync($"{user.Mention} left the server!", true);
 
             XpManager.RemoveUser(user.Guild, user);
 

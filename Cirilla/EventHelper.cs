@@ -42,7 +42,7 @@ namespace Cirilla {
                     }
                 }
 
-                await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count}");
+                await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
                     Discord.LogSeverity.Error);
@@ -75,7 +75,7 @@ namespace Cirilla {
         }
 
         public static async Task Ready() {
-            await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count}");
+            await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
         }
 
 

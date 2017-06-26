@@ -1,5 +1,6 @@
 ﻿using Cirilla.Services.Reminder;
 using Cirilla.Services.Xp;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using System;
@@ -73,5 +74,21 @@ namespace Cirilla {
         }
 
         public static async Task Ready() { await Cirilla.Client.SetGameAsync($"{Information.Prefix}help"); }
+
+
+
+        public static async Task MessageReceived(SocketMessage messageArg) {
+            SocketUserMessage message = messageArg as SocketUserMessage;
+            if (message == null)
+                return;
+
+            try {
+                if (message.Content.EndsWith("?")) {
+                    await message.AddReactionAsync(new Emoji(Information.ThinkEmoji));
+                }
+            } catch {
+                // can't add reactions
+            }
+        }
     }
 }

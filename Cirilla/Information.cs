@@ -32,10 +32,8 @@ namespace Cirilla {
         internal static int MaximumReminders => Config.MaximumReminders;
         internal static int MaximumRemindDays => Config.MaximumRemindDays;
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
-
         internal static string InviteLink =
             "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
-
         internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;
         internal static int NewsInterval => Config.NewsInterval;
@@ -43,6 +41,7 @@ namespace Cirilla {
         internal static long MaxLogSize => Config.MaxLogSize;
         internal static int CompileTimeout => Config.CompileTimeout;
         internal static int ExecutionTimeout => Config.ExecutionTimeout;
+        internal static string ThinkEmoji => "🤔";
 
 
         public static void LoadInfo() {

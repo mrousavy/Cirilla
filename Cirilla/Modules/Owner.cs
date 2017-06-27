@@ -108,7 +108,7 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("resetgame"), Summary("Reset Bot's \"playing ..\" status")]
+        [Command("game"), Summary("Reset Bot's \"playing ..\" status")]
         public async Task ResetGame() {
             try {
                 IUser user = Context.User;

@@ -53,6 +53,15 @@ $run
 $source
 $owner
 ```
+**Chat**
+```
+$embed text
+$hi 
+$hello
+$poke user
+$poke user message
+$say message
+```
 **Clean**
 ```
 $clean 
@@ -76,13 +85,6 @@ $ping
 $bugreport 
 $repo 
 $addmodule
-```
-**Greetings**
-```
-$hi 
-$hello
-$poke user
-$say message
 ```
 **Hardware**
 ```

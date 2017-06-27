@@ -108,6 +108,23 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("resetgame"), Summary("Reset Bot's \"playing ..\" status")]
+        public async Task ResetGame() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                await Cirilla.Client.SetGameAsync($"$help | {Cirilla.Client.Guilds.Count} Guilds");
+                await ReplyAsync($"Now playing: _{Cirilla.Client.CurrentUser.Game?.Name}_");
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't reset the game.. :confused:");
+                await ConsoleHelper.Log($"Error resetting game, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
         [Command("announce"), Summary("Announce something in all guilds")]
         public async Task Announce([Summary("The text to send")] [Remainder] string text) {
             try {

@@ -9,46 +9,35 @@ using System.Threading.Tasks;
 
 namespace Cirilla.Services.News {
     public class NewsService {
-        public static async Task DailyNews(ITextChannel channel) {
-            try {
-                Link link;
-                const int maxRetries = 10;
-                int retries = 0;
-                string lastName = null;
-                do {
-                    link = (await HotNews(1, lastName))[0];
-                    lastName = link.FullName;
+        public static async Task<Tuple<Embed, string>> GetDailyNews() {
+            Link link;
+            const int maxRetries = 10;
+            int retries = 0;
+            string lastName = null;
+            do {
+                link = (await HotNews(1, lastName))[0];
+                lastName = link.FullName;
 
-                    retries++;
-                    if (retries >= maxRetries) {
-                        // no news for today :/
-                        return;
-                    }
+                retries++;
+                if (retries >= maxRetries) {
+                    // no news for today :/
+                    return null;
+                }
 
-                    await ConsoleHelper.Log($"Article downloaded: {link.FullName}", LogSeverity.Info);
-                } while (link.FullName == Information.LastArticle);
+                await ConsoleHelper.Log($"Article downloaded: {link.FullName}", LogSeverity.Info);
+            } while (link.FullName == Information.LastArticle);
 
-                EmbedBuilder builder = new EmbedBuilder {
-                    Author = new EmbedAuthorBuilder {
-                        Name = "Reddit's Hot Story for today! 📰"
-                    },
-                    ThumbnailUrl =
-                        "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
-                    Color = new Color(119, 200, 255)
-                };
+            EmbedBuilder builder = new EmbedBuilder {
+                Author = new EmbedAuthorBuilder {
+                    Name = "Reddit's Hot Story for today! 📰"
+                },
+                ThumbnailUrl =
+                    "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Reddit_news.png",
+                Color = new Color(119, 200, 255)
+            };
 
-                builder.AddField(link.Title, link.Url ?? link.SelfText);
-                await channel.SendMessageAsync("", embed: builder.Build());
-
-                Information.Config.LastArticle = link.FullName;
-                Information.Config.LastPost = DateTime.Now;
-                Information.WriteOut();
-
-                await ConsoleHelper.Log($"Posted daily news in #{channel.Name}!", LogSeverity.Info);
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not get daily news! ({ex.Message})", LogSeverity.Error);
-                // no news for today :/
-            }
+            builder.AddField(link.Title, link.Url ?? link.SelfText);
+            return new Tuple<Embed, string>(builder.Build(), link.FullName);
         }
 
         public static void Init() {
@@ -77,17 +66,32 @@ namespace Cirilla.Services.News {
                 }
 
                 await ConsoleHelper.Log($"Next News in {diff}.. I'm going to sleep!", LogSeverity.Info);
-                Thread.Sleep((int) sleep);
+                Thread.Sleep((int)sleep);
                 await ConsoleHelper.Log("Fetching news..", LogSeverity.Info);
-                foreach (IGuild guild in Cirilla.Client.Guilds) {
-                    try {
-                        ITextChannel channel = await guild.GetDefaultChannelAsync();
-                        if (channel != null) {
-                            await DailyNews(channel);
+
+                try {
+                    Tuple<Embed, string> result = await GetDailyNews();
+                    if (result == default(Tuple<Embed, string>))
+                        throw new NullReferenceException(nameof(result) + " is null");
+
+                    foreach (IGuild guild in Cirilla.Client.Guilds) {
+                        try {
+                            ITextChannel channel = await guild.GetDefaultChannelAsync();
+                            if (channel != null) {
+                                await channel.SendMessageAsync("", embed: result.Item1);
+                                await ConsoleHelper.Log($"Posted daily news in #{channel.Name}!", LogSeverity.Info);
+                            }
+                        } catch (Exception ex) {
+                            await ConsoleHelper.Log($"Could not send news in #{guild.Name} ({ex.Message})!", LogSeverity.Info);
                         }
-                    } catch {
-                        // could not send news
                     }
+
+                    //Save that the last sent article was now
+                    Information.Config.LastArticle = result.Item2;
+                    Information.Config.LastPost = DateTime.Now;
+                    Information.WriteOut();
+                } catch (Exception ex) {
+                    await ConsoleHelper.Log($"Could not get daily news! ({ex.Message})", LogSeverity.Error);
                 }
             }
             // ReSharper disable once FunctionNeverReturns
@@ -97,9 +101,9 @@ namespace Cirilla.Services.News {
             RedditApi redditService = new RedditApi();
             Subreddit subreddit = await redditService.GetSubredditAsync("news");
             Listing listings =
-                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest {Limit = limit, After = after});
+                await subreddit.GetHotLinksAsync(new RedditNet.Requests.ListingRequest { Limit = limit, After = after });
 
-            return listings.Select((t, i) => (Link) listings.Children[i]).ToList();
+            return listings.Select((t, i) => (Link)listings.Children[i]).ToList();
         }
     }
 }

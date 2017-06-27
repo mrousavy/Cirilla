@@ -74,6 +74,23 @@ namespace Cirilla.Modules {
             }
         }
 
+        [Command("clearcmdlog"), Summary("Clear the Bot's command log")]
+        public async Task ClearCommandLog() {
+            try {
+                IUser user = Context.User;
+                if (!Helper.IsOwner(user)) {
+                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    return;
+                }
+
+                long kb = CommandLogger.Clear();
+                await ReplyAsync($"Log cleared! ({kb} kB)");
+            } catch (Exception ex) {
+                await ReplyAsync("Whoops, unfortunately I couldn't clear the log.. :confused:");
+                await ConsoleHelper.Log($"Error clearing log, {ex.Message}!", LogSeverity.Error);
+            }
+        }
+
         [Command("game"), Summary("Change Bot's \"playing ..\" status")]
         public async Task SetGame([Summary("The new game")] [Remainder] string game) {
             try {

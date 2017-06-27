@@ -48,5 +48,25 @@ namespace Cirilla {
                 File.Delete(filecopy);
             }
         }
+
+
+        public static long Clear() {
+            lock (Lock) {
+                try {
+                    string logfile = Path.Combine(Information.Directory, "commandlog.txt");
+                    if (!File.Exists(logfile)) {
+                        File.Create(logfile).Dispose();
+                    }
+                    long size = new FileInfo(logfile).Length / 1024;
+                    File.WriteAllBytes(logfile, new byte[0]);
+                    return size;
+                } catch (Exception ex) {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Could not clear Command Log File! ({ex.Message})");
+                    Console.ResetColor();
+                }
+                return -1;
+            }
+        }
     }
 }

@@ -130,7 +130,7 @@ namespace Cirilla.Modules {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
-                    await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
+                    await ReplyAsync($"Sorry, but only {Information.Owner} can announce!");
                     return;
                 }
 
@@ -158,7 +158,7 @@ namespace Cirilla.Modules {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
-                    await ReplyAsync("Sorry, only the owner can reboot the bot!");
+                    await ReplyAsync($"Sorry, but only {Information.Owner} can toggle scripts!");
                     return;
                 }
 
@@ -182,7 +182,7 @@ namespace Cirilla.Modules {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
-                    await ReplyAsync("Sorry, only the owner can reboot the bot!");
+                    await ReplyAsync($"Sorry, but only {Information.Owner} can reboot the bot!");
                     return;
                 }
 
@@ -217,7 +217,7 @@ namespace Cirilla.Modules {
             try {
                 IUser user = Context.User;
                 if (!Helper.IsOwner(user)) {
-                    await ReplyAsync("Sorry, only the owner can shutdown the bot!");
+                    await ReplyAsync($"Sorry, but only {Information.Owner} can shutdown the bot!");
                     return;
                 }
 

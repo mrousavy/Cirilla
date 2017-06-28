@@ -9,7 +9,7 @@ namespace Cirilla.Modules {
         [Command("votekick"), Summary("Votekick a User")]
         public async Task VoteToKick([Summary("The user to kick")] IGuildUser user) {
             if (!Information.AllowVotekick) {
-                await ReplyAsync("Votekick is disabled!");
+                await ReplyAsync($"Votekick is disabled! {Information.Owner} can enable it.");
                 return;
             }
 

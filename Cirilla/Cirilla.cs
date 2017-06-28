@@ -26,12 +26,11 @@ namespace Cirilla {
                 LogLevel = logSeverity,
                 WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance
             };
-            //Client = new WS4NetClient();
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
             Client.MessageReceived += MessageReceived;
             Client.MessageReceived += EventHelper.RandomEmoji;
-            Client.MessageReceived += EventHelper.QuestionThinking;
+            //Client.MessageReceived += EventHelper.QuestionThinking; annoying?
             Client.UserJoined += EventHelper.UserJoined;
             Client.UserLeft += EventHelper.UserLeft;
             Client.LeftGuild += EventHelper.LeftGuild;

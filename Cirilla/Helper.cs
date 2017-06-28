@@ -46,7 +46,7 @@ namespace Cirilla {
                             x.Value = $"Summary: {cmd.Summary}";
                         } else {
                             x.Value = $"Summary: {cmd.Summary}" + nl +
-                                      $"Parameters: {nl}\t{string.Join($"\t{nl}", cmd.Parameters.Select(p => $"_{p.Name}_: {p.Summary}"))}";
+                                      $"Parameters: {nl}{string.Join($"{nl}", cmd.Parameters.Select(p => $"\t_{p.Name}_: {p.Summary}"))}";
                         }
                         x.IsInline = false;
                     });

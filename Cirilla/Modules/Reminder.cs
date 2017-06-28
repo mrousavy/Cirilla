@@ -26,8 +26,17 @@ namespace Cirilla.Modules {
                 await ConsoleHelper.Log(
                     $"{Helper.GetName(Context.User)} set a reminder for {(DateTime.Now + time.Span):dd.MM.yyyy HH:mm}!",
                     LogSeverity.Info);
+
+                //Don't say Day when it's the same day
+                string when;
+                if ((DateTime.Now + time.Span).DayOfYear == DateTime.Now.DayOfYear) {
+                    when = (DateTime.Now + time.Span).ToString("HH:mm");
+                } else {
+                    when = (DateTime.Now + time.Span).ToString("dd.MM.yyyy HH:mm");
+                }
+
                 await ReplyAsync(
-                    $"All set {Helper.GetName(Context.User)}, I'll remind you at {(DateTime.Now + time.Span):dd.MM.yyyy HH:mm}!");
+                    $"All set {Helper.GetName(Context.User)}, I'll remind you at **{when}**!");
             } catch (MaximumRemindersException) {
                 await ReplyAsync($"You can't have more than {Information.MaximumReminders} reminders simultaneously!");
             } catch (Exception ex) {

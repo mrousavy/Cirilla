@@ -1,4 +1,5 @@
 ﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Reminder;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -45,6 +46,7 @@ namespace Cirilla {
             };
             Service = new CommandService(serviceConfig);
             Service.Log += Log;
+            Service.AddTypeReader(typeof(Timediff), new ReminderTypeReader());
             Service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
             try {

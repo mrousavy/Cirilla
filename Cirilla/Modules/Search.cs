@@ -29,13 +29,13 @@ namespace Cirilla.Modules {
 
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
-                            Name = $"Definition for \"{words}\"",
+                            Name = $"Definition for \"{list.Word}\"",
                             Url = list.Permalink
                         },
                         Color = new Color(239, 255, 0),
                         Title = "\u200B",
                         Footer = new EmbedFooterBuilder {
-                            Text = $"By {list.Author} | Result 1/{data.List.Length}"
+                            Text = $"By _{list.Author}_ | Result 1/{data.List.Length}"
                         }
                     };
                     builder.AddField("Definition", list.Definition);

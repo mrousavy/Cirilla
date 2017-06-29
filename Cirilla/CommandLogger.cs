@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.Pastebin;
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,17 +37,17 @@ namespace Cirilla {
         }
 
 
-        public static async Task Upload(IDMChannel dm) {
-            string file = Path.Combine(Information.Directory, "commandlog.txt");
-            string filecopy = Path.Combine(Information.Directory, "commandlog_copy.txt");
+        public static async Task Upload(IDMChannel dm, IMessageChannel channel) {
+            IMessage message = await channel.SendMessageAsync("One sec..");
 
-            lock (Lock) {
-                File.Copy(file, filecopy);
-            }
-            await dm.SendFileAsync(filecopy, "Here you go");
-            lock (Lock) {
-                File.Delete(filecopy);
-            }
+            string file = Path.Combine(Information.Directory, "commandlog.txt");
+            string log = File.ReadAllText(file);
+            //upload to pastebin
+            string link = await Pastebin.Post(log);
+
+            await dm.SendMessageAsync($"Here you go {link}");
+
+            await message.DeleteAsync();
         }
 
 

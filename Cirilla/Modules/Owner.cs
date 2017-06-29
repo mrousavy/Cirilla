@@ -1,4 +1,5 @@
 ﻿using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Pastebin;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -18,14 +19,17 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDMChannel dm = await user.CreateDMChannelAsync();
+                IMessage message = await ReplyAsync("One sec..");
 
-                string file = Path.Combine(Information.Directory, "log_copy.txt");
-                lock (Helper.Lock)
-                    File.Copy(Path.Combine(Information.Directory, "log.txt"), file);
-                await dm.SendFileAsync(file, "Here you go");
-                lock (Helper.Lock)
-                    File.Delete(file);
+                string file = Path.Combine(Information.Directory, "log.txt");
+                string log = File.ReadAllText(file);
+                //upload to pastebin
+                string link = await Pastebin.Post(log);
+
+                IDMChannel dm = await user.CreateDMChannelAsync();
+                await dm.SendMessageAsync($"Here you go {link}");
+
+                await message.DeleteAsync();
 
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
@@ -66,7 +70,7 @@ namespace Cirilla.Modules {
                 }
 
                 IDMChannel dm = await user.CreateDMChannelAsync();
-                await CommandLogger.Upload(dm);
+                await CommandLogger.Upload(dm, Context.Channel);
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. :confused:");

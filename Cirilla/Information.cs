@@ -12,6 +12,7 @@ namespace Cirilla {
         internal static Configuration Config { get; set; }
         internal static LogSeverity LogSeverity => Config.LogSeverity;
         internal static string Token => Config.Token;
+        internal static string PastebinToken => Config.PastebinToken;
         internal static string TextChannel => Config.TextChannel;
         internal static string Botchat => Config.Botchat;
         internal static char Prefix => Config.Prefix;
@@ -87,6 +88,9 @@ namespace Cirilla {
     public class Configuration {
         //Discord API Info
         public string Token = "DISCORD_API_TOKEN_GOES_HERE";
+
+        //Pastebin Token for sending Log
+        public string PastebinToken = "PASTEBIN_API_TOKEN_GOES_HERE";
 
         //Minimum Log Severity to output/log
         public LogSeverity LogSeverity = LogSeverity.Info;

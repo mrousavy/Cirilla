@@ -8,18 +8,22 @@ namespace Cirilla.Modules {
     public class Code : ModuleBase {
         [Command("exec"), Summary("Execute or run C# Code/Scripts")]
         public async Task Execute([Summary("The Code to execute")] [Remainder] string code) {
-            //Requirements to execute C# Roslyn scripts
-            if (!(Context.User is IGuildUser user) || !user.GuildPermissions.Speak) {
-                await ReplyAsync("You're not allowed to execute scripts!");
-                return;
-            }
-            if (!GuildConfigManager.Get(Context.Guild.Id).EnableScripts) {
-                await ReplyAsync($"C# Roslyn Scripts are disabled via Config. Ask {Information.Owner}.");
-                return;
-            }
+            try {
+                //Requirements to execute C# Roslyn scripts
+                if (!(Context.User is IGuildUser user) || !user.GuildPermissions.Speak) {
+                    await ReplyAsync("You're not allowed to execute scripts!");
+                    return;
+                }
+                if (!GuildConfigManager.Get(Context.Guild.Id).EnableScripts) {
+                    await ReplyAsync($"C# Roslyn Scripts are disabled via Config. Ask {Information.Owner}.");
+                    return;
+                }
 
-            //Handle exec async - so MessageReceived is not blocking
-            Task _ = HandleExecAsync(code, Context.Channel);
+                //Handle exec async - so MessageReceived is not blocking
+                Task _ = HandleExecAsync(code, Context.Channel);
+            } catch {
+                await ReplyAsync("Something went wrong, sorry!");
+            }
         }
 
 

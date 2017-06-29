@@ -19,17 +19,17 @@ namespace Cirilla.Modules {
         }
 
         [Command("define"), Summary("Define something! (using Urban dictionary)")]
-        public async Task Define([Summary("The word(s) to define")] [Remainder] string query) {
+        public async Task Define([Summary("The word(s) to define")] [Remainder] string words) {
             try {
                 UrbanService service = new UrbanService();
-                Data data = await service.Data(query);
+                Data data = await service.Data(words);
 
                 if (data.List.Length > 0) {
                     List list = data.List.First();
 
                     EmbedBuilder builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
-                            Name = $"Definition for \"{query}\"",
+                            Name = $"Definition for \"{words}\"",
                             Url = list.Permalink
                         },
                         Color = new Color(239, 255, 0),
@@ -43,7 +43,7 @@ namespace Cirilla.Modules {
 
                     await ReplyAsync("", embed: builder.Build());
                 } else {
-                    await ReplyAsync($"I couldn't define _\"{query}\"_ for you, sorry!");
+                    await ReplyAsync($"I couldn't define _\"{words}\"_ for you, sorry!");
                 }
             } catch {
                 await ReplyAsync("Whoops, couldn't define that for you.. Now you have to do it yourself! :confused:");

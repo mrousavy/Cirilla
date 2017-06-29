@@ -45,7 +45,7 @@ namespace Cirilla {
             //upload to pastebin
             string link = await Pastebin.Post(log);
 
-            await dm.SendMessageAsync($"Here you go {link}");
+            await dm.SendMessageAsync($"Here you go <{link}>");
 
             await message.DeleteAsync();
         }

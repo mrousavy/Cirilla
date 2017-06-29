@@ -27,7 +27,7 @@ namespace Cirilla.Modules {
                 string link = await Pastebin.Post(log);
 
                 IDMChannel dm = await user.CreateDMChannelAsync();
-                await dm.SendMessageAsync($"Here you go {link}");
+                await dm.SendMessageAsync($"Here you go <{link}>");
 
                 await message.DeleteAsync();
 

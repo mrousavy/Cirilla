@@ -32,6 +32,8 @@ namespace Cirilla {
 
         public static async Task JoinedGuild(SocketGuild guild) {
             try {
+                await ConsoleHelper.Log($"Joined Guild \"{guild.Name}\"!", LogSeverity.Info);
+
                 if (guild.CurrentUser.GuildPermissions.SendMessages) {
                     await guild.DefaultChannel.SendMessageAsync($"Hi guys! I'm the new bot!! :wave: :smile:" +
                                                                 $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
@@ -45,7 +47,7 @@ namespace Cirilla {
                 await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
-                    Discord.LogSeverity.Error);
+                    LogSeverity.Error);
             }
         }
 
@@ -58,9 +60,9 @@ namespace Cirilla {
                 }
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not cleanup for \"{guild.Name}\" guild! ({ex.Message})",
-                    Discord.LogSeverity.Error);
+                    LogSeverity.Error);
             }
-            ConsoleHelper.Log($"Left \"{guild.Name}\" guild!", Discord.LogSeverity.Info);
+            ConsoleHelper.Log($"Left Guild \"{guild.Name}\"!", LogSeverity.Info);
 
             return Task.CompletedTask;
         }
@@ -76,6 +78,12 @@ namespace Cirilla {
 
         public static async Task Ready() {
             await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
+
+
+            await ConsoleHelper.Log("Connected Guilds:", LogSeverity.Info);
+            foreach (IGuild guild in Cirilla.Client.Guilds) {
+                await ConsoleHelper.Log($"\t{guild.Name}", LogSeverity.Info);
+            }
         }
 
 

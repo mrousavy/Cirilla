@@ -63,11 +63,6 @@ namespace Cirilla {
                 return;
 
             if (message.Author.ToString() != Client.CurrentUser.ToString()) {
-                await ConsoleHelper.Log(new LogMessage(
-                    LogSeverity.Info,
-                    message.Author.ToString(),
-                    message.Content));
-
                 string secondaryPrefix;
                 bool enablePrimary = true;
                 string guildname = "private";
@@ -81,6 +76,9 @@ namespace Cirilla {
                 } else {
                     secondaryPrefix = Information.SecondaryPrefix;
                 }
+
+                //Log to console but don't write log to file
+                await ConsoleHelper.Log(new LogMessage(LogSeverity.Info, $"{message.Author}@{guildname}", message.Content), false);
 
                 // Command (after prefix) Begin
                 int argPos = 0;

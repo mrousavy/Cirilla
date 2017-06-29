@@ -13,6 +13,7 @@ namespace Cirilla.Modules {
             try {
                 IGuildUser user = Context.User as IGuildUser;
                 if (user == null) {
+                    await ReplyAsync("You can't set reminders in DM!");
                     return;
                 }
                 int maxDays = Information.MaximumRemindDays;

@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cirilla.Services.GuildConfig;
+using Discord;
 using Discord.Commands;
 using System;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace Cirilla.Modules {
             char prefix = Information.Prefix;
             EmbedBuilder builder = new EmbedBuilder() {
                 Color = new Color(114, 137, 218),
-                Description = "These are the commands you can use:",
+                Description = "These are the commands **you can use** here:",
                 Footer = new EmbedFooterBuilder {
                     Text = "Use \"$help command\" to see more info about a specific Command!"
-                }
+                },
+                Title = "Help (Click here for a list of **all** available commands)",
+                Url = "http://github.com/mrousavy/Cirilla#commands"
             };
 
             foreach (ModuleInfo module in _service.Modules) {
@@ -30,8 +33,7 @@ namespace Cirilla.Modules {
                     PreconditionResult result = await cmd.CheckPreconditionsAsync(Context);
                     if (result.IsSuccess) {
                         description +=
-                            $"{prefix}{cmd.Aliases.First()} {string.Join(", ", cmd.Parameters.Select(p => p.Name))}" +
-                            Environment.NewLine;
+                            $"{prefix}{cmd.Aliases.First()} {string.Join(", ", cmd.Parameters.Select(p => p.Name))} {Environment.NewLine}";
                     }
                 }
 
@@ -39,7 +41,7 @@ namespace Cirilla.Modules {
                     builder.AddField(x => {
                         x.Name = module.Name;
                         x.Value = description;
-                        x.IsInline = false;
+                        x.IsInline = true;
                     });
                 }
             }
@@ -48,7 +50,9 @@ namespace Cirilla.Modules {
                 try {
                     IDMChannel dm = await Context.User.CreateDMChannelAsync();
                     await dm.SendMessageAsync("", false, builder.Build());
-                    await ReplyAsync("Check your DMs!");
+
+                    if (Context.Channel is IGuildChannel _) //Only send "Check your DMs" if Message is in a Guild Channel
+                        await ReplyAsync("Check your DMs!");
                 } catch {
                     //could not send private
                     await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..",
@@ -95,32 +99,44 @@ namespace Cirilla.Modules {
 
 
         public static bool CanUse(IUser user, CommandInfo command) {
-            if (user.Id == Information.OwnerId) {
-                return true;
-            }
+            //if (user.Id == Information.OwnerId) {
+            //    return true;
+            //}
 
             IGuildUser guilduser = user as IGuildUser;
 
-            if (command.Module.Name == "Admin") {
-                if (guilduser == null) {
+            switch (command.Module.Name) {
+                case "Admin":
+                case "Clean":
+                    if (guilduser == null) {
+                        return false;
+                    } else {
+                        return guilduser.GuildPermissions.Administrator;
+                    }
+                case "Owner":
+                    if (guilduser == null) {
+                        return false;
+                    } else {
+                        return user.Id == Information.OwnerId;
+                    }
+                case "Votekick":
+                    if (Information.AllowVotekick && guilduser != null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                case "Xp":
+                    if (guilduser != null) {
+                        if (GuildConfigManager.Get(guilduser.GuildId).EnableXpSystem) {
+                            return true;
+                        }
+                    }
                     return false;
-                } else {
-                    return guilduser.GuildPermissions.Administrator;
-                }
-            }
-            if (command.Module.Name == "Owner") {
-                if (guilduser == null) {
-                    return false;
-                } else {
-                    return user.Id == Information.OwnerId;
-                }
-            }
-            if (command.Module.Name == "Votekick") {
-                if (Information.AllowVotekick) {
-                    return true;
-                } else {
-                    return false;
-                }
+                case "Profile":
+                case "Hardware":
+                case "Link":
+                case "Code":
+                    return guilduser != null;
             }
             return true;
         }

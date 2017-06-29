@@ -131,9 +131,9 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Created At", createdAt);
                 builder.AddInlineField("Status", status);
                 builder.AddInlineField("Game", game);
-                builder.AddInlineField("Avatar URL", avatarUrl);
                 builder.AddInlineField("Mention", mention);
                 builder.AddInlineField("ID", id);
+                builder.AddInlineField("Avatar URL", avatarUrl);
 
                 await ReplyAsync("", embed: builder.Build());
             } catch (Exception ex) {

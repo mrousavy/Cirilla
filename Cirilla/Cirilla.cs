@@ -41,7 +41,6 @@ namespace Cirilla {
 
             CommandServiceConfig serviceConfig = new CommandServiceConfig {
                 CaseSensitiveCommands = false,
-                SeparatorChar = '$',
                 LogLevel = logSeverity
             };
             Service = new CommandService(serviceConfig);

@@ -5,18 +5,50 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Urban.NET;
 
 namespace Cirilla.Modules {
     public class Search : ModuleBase {
         [Command("google"), Summary("Google something!")]
         public async Task GoogleSearch([Summary("The Google search query")] [Remainder] string query) {
             try {
-                await ReplyAsync("" + Environment.NewLine + LmgtfyQuery(query));
+                await ReplyAsync(LmgtfyQuery(query));
             } catch {
                 await ReplyAsync("Whoops, couldn't google that for you.. Now you have to do it yourself! :confused:");
             }
         }
 
+        [Command("define"), Summary("Define something! (using Urban dictionary)")]
+        public async Task Define([Summary("The word(s) to define")] [Remainder] string query) {
+            try {
+                UrbanService service = new UrbanService();
+                Data data = await service.Data(query);
+
+                if (data.List.Length > 0) {
+                    List list = data.List.First();
+
+                    EmbedBuilder builder = new EmbedBuilder {
+                        Author = new EmbedAuthorBuilder {
+                            Name = $"Definition for \"{query}\"",
+                            Url = list.Permalink
+                        },
+                        Color = new Color(239, 255, 0),
+                        Title = "\u200B",
+                        Footer = new EmbedFooterBuilder {
+                            Text = $"By {list.Author} | Result 1/{data.List.Length}"
+                        }
+                    };
+                    builder.AddField("Definition", list.Definition);
+                    builder.AddField("Example", list.Example);
+
+                    await ReplyAsync("", embed: builder.Build());
+                } else {
+                    await ReplyAsync($"I couldn't define _\"{query}\"_ for you, sorry!");
+                }
+            } catch {
+                await ReplyAsync("Whoops, couldn't define that for you.. Now you have to do it yourself! :confused:");
+            }
+        }
 
         [Command("wiki"), Summary("Search something on Wikipedia!")]
         public async Task WikipediaSearch([Summary("The Google search query")] [Remainder] string query) {

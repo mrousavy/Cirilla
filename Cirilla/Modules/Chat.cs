@@ -48,8 +48,12 @@ namespace Cirilla.Modules {
 
         [Command("say"), Summary("Let the Bot say something")]
         public async Task Say([Summary("The text you want to let the bot say")] [Remainder] string text) {
-            await Context.Message.DeleteAsync();
-            await ReplyAsync(text);
+            try {
+                await Context.Message.DeleteAsync();
+                await ReplyAsync(text);
+            } catch {
+                // can't delete?
+            }
         }
 
         [Command("embed"), Summary("Let the Bot say something in an Embed")]

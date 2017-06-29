@@ -4,6 +4,7 @@
   <p align="center">The swiss army knife discord bot</p>
   <p align="center">
     <a href="https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707"><img src="https://img.shields.io/badge/Add%20to%20your-Discord-9399ff.svg" alt="Add to your discord"></a>
+    <a href="https://discord.gg/ebXZnFX"><img src="https://discordapp.com/api/guilds/326668996550197249/widget.png" alt="Test it"></a>
   </p>
 </p>
 

@@ -148,6 +148,7 @@ $remindme time, text
 ```
 **Search**
 ```
+$define words
 $google query
 $wiki query
 ```

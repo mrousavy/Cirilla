@@ -12,17 +12,18 @@
 
 # Features
 Cirilla is a multi-use Discord Bot with many functionalities like:
-* A whole **XP System**
+* A whole **XP System** _(disabled by default)_
 * Random posts from **Reddit** or **dankmemes**
 * Custom **Reminders**
 * **Poking** users
 * Setting up custom **Hardware** or **Profile** pages
 * Adding important **links** to your guild
-* Calculating expressions
+* Calculating math expressions
 * **News**
 * Querying **wikipedia**
-* Votekicking users
-* **C# Code/Script** compiling and executing
+* Defining some words
+* Votekicking users _(disabled by default)_
+* **C# Code/Script** compiling and executing _(disabled by default)_
 * **Chat cleaning**
 
 # Setup

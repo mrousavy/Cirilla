@@ -15,12 +15,18 @@ namespace Cirilla.Modules {
             char prefix = Information.Prefix;
             EmbedBuilder builder = new EmbedBuilder() {
                 Color = new Color(114, 137, 218),
-                Description = "These are the commands you can use:"
+                Description = "These are the commands you can use:",
+                Footer = new EmbedFooterBuilder {
+                    Text = "Use \"$help command\" to see more info about a specific Command!"
+                }
             };
 
             foreach (ModuleInfo module in _service.Modules) {
                 string description = null;
-                foreach (var cmd in module.Commands) {
+                foreach (CommandInfo cmd in module.Commands) {
+                    if (!CanUse(Context.User, cmd))
+                        continue; //Don't include commands if user can't use them
+
                     PreconditionResult result = await cmd.CheckPreconditionsAsync(Context);
                     if (result.IsSuccess) {
                         description +=
@@ -85,6 +91,38 @@ namespace Cirilla.Modules {
             }
 
             await ReplyAsync("", false, builder.Build());
+        }
+
+
+        public static bool CanUse(IUser user, CommandInfo command) {
+            if (user.Id == Information.OwnerId) {
+                return true;
+            }
+
+            IGuildUser guilduser = user as IGuildUser;
+
+            if (command.Module.Name == "Admin") {
+                if (guilduser == null) {
+                    return false;
+                } else {
+                    return guilduser.GuildPermissions.Administrator;
+                }
+            }
+            if (command.Module.Name == "Owner") {
+                if (guilduser == null) {
+                    return false;
+                } else {
+                    return user.Id == Information.OwnerId;
+                }
+            }
+            if (command.Module.Name == "Votekick") {
+                if (Information.AllowVotekick) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

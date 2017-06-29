@@ -18,6 +18,7 @@ namespace Cirilla {
         internal static string SecondaryPrefix => Config.SecondaryPrefix;
         internal static string RepoUrl => Config.RepoUrl;
         internal static string Owner => Config.Owner;
+        internal static ulong OwnerId => Config.OwnerId;
         internal static string IconUrl => Config.IconUrl;
         internal static string BotIconUrl => Config.BotIconUrl;
         internal static int XpGiveInterval => Config.XpGiveInterval;
@@ -107,6 +108,8 @@ namespace Cirilla {
 
         //Bot Creator/Owner (me)
         public string Owner = "<@266162606161526784>";
+        //Bot Creator/Owner ID (me)
+        public ulong OwnerId = 266162606161526784;
 
         //URL for Bot Profile Pic
         public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";

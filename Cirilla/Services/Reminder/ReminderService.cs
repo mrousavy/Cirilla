@@ -92,11 +92,22 @@ namespace Cirilla.Services.Reminder {
                 return;
             }
 
-            await Task.Delay((int) offset.TotalMilliseconds);
+            await Task.Delay((int)offset.TotalMilliseconds);
 
             string message = $"{reminder.UserMention}, you told me to remind you to: \"_{reminder.Text}_\"!";
 
-            await channel.SendMessageAsync(message);
+            if (channel != null) {
+                await channel.SendMessageAsync(message);
+            } else {
+                try {
+                    IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
+                    IGuildUser user = users.FirstOrDefault(u => u.Mention == reminder.UserMention);
+                    IDMChannel dm = await user.CreateDMChannelAsync();
+                    await dm.SendMessageAsync(message);
+                } catch {
+                    //could not dm user
+                }
+            }
 
             for (int i = 0; i < Reminders.Count; i++) {
                 if (Reminders[i].Equals(reminder)) {

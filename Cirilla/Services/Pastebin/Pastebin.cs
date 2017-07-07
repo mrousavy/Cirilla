@@ -38,7 +38,7 @@ namespace Cirilla.Services.Pastebin {
 
         //Check if string is longer than 2000 chars, if yes - limit it
         public static string CheckLength(string input) {
-            const int maxLength = 65520;
+            const int maxLength = 65519;
 
             if (input.Length >= maxLength) { //max length for the FormUrlEncodedContent's parameters
                 return input.Substring(input.Length - maxLength, maxLength); // trim to the last 65520 chars

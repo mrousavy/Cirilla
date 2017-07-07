@@ -18,7 +18,7 @@ namespace Cirilla.Services.Pastebin {
                         { "api_paste_private" , "1" },
                         { "api_paste_name", "Cirilla Bot log" },
                         { "api_paste_expire_date", "1H" }
-                    };
+                };
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(parameters);
 
@@ -38,7 +38,7 @@ namespace Cirilla.Services.Pastebin {
 
         //Check if string is longer than 2000 chars, if yes - limit it
         public static string CheckLength(string input) {
-            if (input.Length >= 2000) {
+            if (input.Length >= 65520) { //max length for the FormUrlEncodedContent's parameters
                 return input.Substring(input.Length - 2000, 2000);
             }
             return input;

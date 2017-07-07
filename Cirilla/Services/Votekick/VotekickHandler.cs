@@ -115,10 +115,10 @@ namespace Cirilla.Services.Votekick {
         //Send user an Invite via DM
         private async Task<IUserMessage> DmInvite() {
             string nl = Environment.NewLine;
-            IInviteMetadata invite = await ((IGuildChannel) _message.Channel).CreateInviteAsync(maxUses: 1);
+            IInviteMetadata invite = await ((IGuildChannel)_message.Channel).CreateInviteAsync(maxUses: 1);
             try {
                 //DM the invite
-                IDMChannel dm = await _user.CreateDMChannelAsync();
+                IDMChannel dm = await _user.GetOrCreateDMChannelAsync();
                 return await dm.SendMessageAsync($"You've been kicked from the _{_guild.Name}_ guild by votekick!" +
                                                  nl +
                                                  $"As I'm very generous today, here's an invite link to the _{_guild.Name}_ guild:" +

@@ -12,7 +12,7 @@ namespace Cirilla.Services.Reminder {
         private static readonly Regex _minute = new Regex($"{_tdn}m", RegexOptions.IgnoreCase);
         private static readonly Regex _second = new Regex($"{_tdn}s", RegexOptions.IgnoreCase);
 
-        public override Task<TypeReaderResult> Read(ICommandContext context, string input) {
+        public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider services) {
             try {
                 string[] split = input.Split(':');
 

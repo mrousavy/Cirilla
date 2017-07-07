@@ -22,7 +22,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDMChannel dm = await user.CreateDMChannelAsync();
+                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
                 await dm.SendMessageAsync($"Hey! **{Context.User.Mention}** from **{Context.Guild.Name}** poked you!", true);
                 await ReplyAsync($"Poked {Helper.GetName(user)}!");
             } catch {
@@ -38,7 +38,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDMChannel dm = await user.CreateDMChannelAsync();
+                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
                 await dm.SendMessageAsync($"Hey! **{Context.User.Mention}** from **{Context.Guild.Name}** poked you, saying: _\"{message}\"_", true);
                 await ReplyAsync($"Poked {Helper.GetName(user)}!");
             } catch {

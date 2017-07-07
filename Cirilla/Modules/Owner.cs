@@ -26,7 +26,7 @@ namespace Cirilla.Modules {
                 //upload to pastebin
                 string link = await Pastebin.Post(log);
 
-                IDMChannel dm = await user.CreateDMChannelAsync();
+                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
                 await dm.SendMessageAsync($"Here you go <{link}>");
 
                 await message.DeleteAsync();
@@ -69,7 +69,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IDMChannel dm = await user.CreateDMChannelAsync();
+                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
                 await CommandLogger.Upload(dm, Context.Channel);
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {

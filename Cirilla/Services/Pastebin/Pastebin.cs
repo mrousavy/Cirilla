@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 namespace Cirilla.Services.Pastebin {
     public static class Pastebin {
         public static async Task<string> Post(string text) {
+            text = CheckLength(text);
+
             using (HttpClient client = new HttpClient()) {
                 client.BaseAddress = new Uri("https://pastebin.com/api/api_post.php");
                 Dictionary<string, string> parameters = new Dictionary<string, string>
@@ -32,6 +34,14 @@ namespace Cirilla.Services.Pastebin {
                     return responseString;
                 }
             }
+        }
+
+        //Check if string is longer than 2000 chars, if yes - limit it
+        public static string CheckLength(string input) {
+            if (input.Length >= 2000) {
+                return input.Substring(input.Length - 2000, 2000);
+            }
+            return input;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Cirilla.Modules {
 
             if (Information.PmHelp) {
                 try {
-                    IDMChannel dm = await Context.User.CreateDMChannelAsync();
+                    IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
                     await dm.SendMessageAsync("", false, builder.Build());
 
                     if (Context.Channel is IGuildChannel _) //Only send "Check your DMs" if Message is in a Guild Channel

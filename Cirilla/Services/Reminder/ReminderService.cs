@@ -24,7 +24,7 @@ namespace Cirilla.Services.Reminder {
 
             IMessageChannel channel;
             try {
-                channel = await user.CreateDMChannelAsync();
+                channel = await user.GetOrCreateDMChannelAsync();
             } catch {
                 // not accepting dms
                 channel = await guild.GetDefaultChannelAsync();
@@ -67,7 +67,7 @@ namespace Cirilla.Services.Reminder {
                         IMessageChannel channel;
                         try {
                             IUser user = guild.Users.FirstOrDefault(u => u.Id == reminder.UserId);
-                            channel = user.GetDMChannelAsync().GetAwaiter().GetResult();
+                            channel = user.GetOrCreateDMChannelAsync().GetAwaiter().GetResult();
                         } catch {
                             // not accepting dms
                             channel = guild.DefaultChannel;
@@ -102,7 +102,7 @@ namespace Cirilla.Services.Reminder {
                 try {
                     IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
                     IGuildUser user = users.FirstOrDefault(u => u.Mention == reminder.UserMention);
-                    IDMChannel dm = await user.CreateDMChannelAsync();
+                    IDMChannel dm = await user.GetOrCreateDMChannelAsync();
                     await dm.SendMessageAsync(message);
                 } catch {
                     //could not dm user

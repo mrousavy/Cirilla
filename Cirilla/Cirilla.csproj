@@ -6,6 +6,18 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <StartupObject />
+    <Description>Cirilla - The swiss army knife discord bot supporting many commands and systems</Description>
+    <Company>mrousavy</Company>
+    <Authors>mrousavy</Authors>
+    <Version>1.0.1</Version>
+    <PackageIconUrl>https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/mrousavy/Cirilla</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mrousavy/Cirilla</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>discord, bot, ciri, cirilla</PackageTags>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
+    <PackageReleaseNotes>bugfixes, new modules (wiki, search, etc)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -24,6 +24,8 @@ namespace Cirilla {
                 Information.LoadInfo();
                 ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
 
+                bool x =Information.NeedsWs4Net;
+
 #pragma warning disable 219
                 bool skipIntro = false;
 #pragma warning restore 219

@@ -55,7 +55,9 @@ namespace Cirilla.Services.News {
                 if (nextPost > now) {
                     diff = nextPost - now;
                 } else {
-                    diff = now - nextPost;
+                    // diff = now - nextPost;
+                    await ConsoleHelper.Log("Next news post was in the past, exiting!", LogSeverity.Error);
+                    return;
                 }
 
                 double sleep = Math.Abs(diff.TotalMilliseconds);
@@ -71,8 +73,8 @@ namespace Cirilla.Services.News {
 
                 try {
                     Tuple<Embed, string> result = await GetDailyNews();
-                    if (result == default(Tuple<Embed, string>))
-                        throw new NullReferenceException(nameof(result) + " is null");
+                    if (result.Equals(default(Tuple<Embed, string>)))
+                        throw new NullReferenceException($"{nameof(result)} is null");
 
                     foreach (IGuild guild in Cirilla.Client.Guilds) {
                         try {
@@ -94,7 +96,6 @@ namespace Cirilla.Services.News {
                     await ConsoleHelper.Log($"Could not get daily news! ({ex.Message})", LogSeverity.Error);
                 }
             }
-            // ReSharper disable once FunctionNeverReturns
         }
 
         public static async Task<List<Link>> HotNews(int limit, string after = null) {

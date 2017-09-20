@@ -3,12 +3,21 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Cirilla {
     internal static class Information {
         //Directory to store configs in
         internal static string Directory { get; } = Path.Combine(AppContext.BaseDirectory, "_data");
 
+        internal static bool NeedsWs4Net {
+            get {
+                bool isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+                bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+                bool isWin = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+                return isWin;
+            }
+        }
         internal static Configuration Config { get; set; }
         internal static LogSeverity LogSeverity => Config.LogSeverity;
         internal static string Token => Config.Token;

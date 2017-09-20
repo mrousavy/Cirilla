@@ -44,7 +44,7 @@ namespace Cirilla {
                 Console.Title = "Cirilla Discord Bot";
 
 #if !DEBUG
-            if (skipIntro)
+            if (!skipIntro)
                 ConsoleHelper.Intro();
 #endif
 

@@ -14,7 +14,7 @@ namespace Cirilla {
                 return "[Unknown]";
             }
 
-            IGuildUser guildUser = user as IGuildUser;
+            var guildUser = user as IGuildUser;
             if (guildUser == null) {
                 return string.IsNullOrWhiteSpace(user.Username) ? user.ToString() : user.Username;
             } else {
@@ -27,18 +27,18 @@ namespace Cirilla {
                 .Replace(Information.Prefix.ToString(), "")
                 .Replace(GuildConfigManager.Get(context.Guild.Id).Prefix, "")
                 .Replace(Cirilla.Client.CurrentUser.Mention, "");
-            SearchResult searchResult = service.Search(context, command);
+            var searchResult = service.Search(context, command);
             if (searchResult.Commands != null && searchResult.Commands.Count > 0) {
                 string nl = Environment.NewLine;
                 bool multiple = searchResult.Commands.Count > 1;
 
-                EmbedBuilder builder = new EmbedBuilder() {
+                var builder = new EmbedBuilder() {
                     Color = new Color(114, 137, 218),
                     Description = multiple ? "Did you mean some of these?" : "Did you mean this?"
                 };
 
-                foreach (CommandMatch match in searchResult.Commands) {
-                    CommandInfo cmd = match.Command;
+                foreach (var match in searchResult.Commands) {
+                    var cmd = match.Command;
 
                     builder.AddField(x => {
                         x.Name = $"{Information.Prefix}{cmd.Aliases.First()} {string.Join(" ", cmd.Parameters)}";

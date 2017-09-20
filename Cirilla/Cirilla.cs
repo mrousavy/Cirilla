@@ -23,7 +23,7 @@ namespace Cirilla {
         #endregion
 
         public Cirilla(LogSeverity logSeverity) {
-            DiscordSocketConfig config = new DiscordSocketConfig {
+            var config = new DiscordSocketConfig {
                 LogLevel = logSeverity,
                 WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance
             };
@@ -39,7 +39,7 @@ namespace Cirilla {
             Client.GuildAvailable += EventHelper.GuildAvailable;
             Client.Ready += EventHelper.Ready;
 
-            CommandServiceConfig serviceConfig = new CommandServiceConfig {
+            var serviceConfig = new CommandServiceConfig {
                 CaseSensitiveCommands = false,
                 LogLevel = logSeverity
             };
@@ -57,7 +57,7 @@ namespace Cirilla {
 
         private async Task MessageReceived(SocketMessage messageArg) {
             // Don't process the command if it was a System Message
-            SocketUserMessage message = messageArg as SocketUserMessage;
+            var message = messageArg as SocketUserMessage;
             if (message == null)
                 return;
 
@@ -69,7 +69,7 @@ namespace Cirilla {
                 if (messageArg.Channel is IGuildChannel guildchannel) {
                     guildname = guildchannel.Guild.Name;
 
-                    GuildConfiguration config = GuildConfigManager.Get(guildchannel.Guild.Id);
+                    var config = GuildConfigManager.Get(guildchannel.Guild.Id);
                     secondaryPrefix = config.Prefix;
                     enablePrimary = config.EnablePrimaryPrefix;
                 } else {
@@ -91,15 +91,15 @@ namespace Cirilla {
 
                 CommandLogger.Log(message.Author.ToString(), guildname, message.Content);
 
-                CommandContext context = new CommandContext(Client, message);
-                IResult result = await Service.ExecuteAsync(context, argPos);
+                var context = new CommandContext(Client, message);
+                var result = await Service.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess) {
                     await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}",
                         LogSeverity.Error);
                     //await context.Channel.SendMessageAsync(result.ErrorReason);
 
                     //Find out what the user probably meant
-                    Embed embed = Helper.WrongCommand(message, Service, context);
+                    var embed = Helper.WrongCommand(message, Service, context);
                     if (embed != default(Embed)) {
                         //Send "did you mean this?:" message
                         await context.Channel.SendMessageAsync("", embed: embed);

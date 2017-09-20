@@ -10,21 +10,21 @@ namespace Cirilla {
     public static class EventHelper {
         public static async Task UserJoined(SocketGuildUser user) {
             await ConsoleHelper.Log($"{Helper.GetName(user)} joined the \"{user.Guild.Name}\" server!",
-                Discord.LogSeverity.Info);
-            SocketTextChannel channel = user.Guild.DefaultChannel;
+                LogSeverity.Info);
+            var channel = user.Guild.DefaultChannel;
             if (channel != null)
                 await channel.SendMessageAsync($"Hi {user.Mention}!", true);
         }
 
         public static async Task UserLeft(SocketGuildUser user) {
-            await ConsoleHelper.Log($"{user} left the \"{user.Guild.Name}\" server!", Discord.LogSeverity.Info);
-            SocketTextChannel channel = user.Guild.DefaultChannel;
+            await ConsoleHelper.Log($"{user} left the \"{user.Guild.Name}\" server!", LogSeverity.Info);
+            var channel = user.Guild.DefaultChannel;
             if (channel != null)
                 await channel.SendMessageAsync($"{Helper.GetName(user)} left the server!", true);
 
             XpManager.RemoveUser(user.Guild, user);
 
-            IDMChannel dm = await user.GetOrCreateDMChannelAsync();
+            var dm = await user.GetOrCreateDMChannelAsync();
             await dm.SendMessageAsync("Why did you leave man?", true);
         }
 
@@ -34,7 +34,7 @@ namespace Cirilla {
                 await ConsoleHelper.Log($"Joined Guild \"{guild.Name}\"!", LogSeverity.Info);
 
                 if (guild.CurrentUser.GuildPermissions.SendMessages) {
-                    await guild.DefaultChannel.SendMessageAsync($"Hi guys! I'm the new bot!! :wave: :smile:" +
+                    await guild.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :wave: :smile:" +
                                                                 $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
 
                     string dataPath = Path.Combine(Information.Directory, guild.Id.ToString());
@@ -88,7 +88,7 @@ namespace Cirilla {
 
 
         public static async Task QuestionThinking(SocketMessage messageArg) {
-            SocketUserMessage message = messageArg as SocketUserMessage;
+            var message = messageArg as SocketUserMessage;
             if (message == null)
                 return;
 
@@ -101,12 +101,12 @@ namespace Cirilla {
             }
         }
         public static async Task RandomEmoji(SocketMessage messageArg) {
-            SocketUserMessage message = messageArg as SocketUserMessage;
+            var message = messageArg as SocketUserMessage;
             if (message == null)
                 return;
 
             if (message.Channel is IGuildChannel guildchannel) {
-                IEmote emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
+                var emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
                 if (emote != null) {
                     try {
                         await message.AddReactionAsync(emote);

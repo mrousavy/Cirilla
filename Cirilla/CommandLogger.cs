@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cirilla {
     public static class CommandLogger {
-        private static object Lock { get; set; } = new object();
+        private static object Lock { get; } = new object();
 
 
         public static void Log(string username, string guildname, string command) {

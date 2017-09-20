@@ -110,7 +110,7 @@ namespace Cirilla {
             const uint enableQuickEdit = 0x0040;
             const uint enableMouseInput = 0x0010;
 
-            IntPtr consoleHandle = GetConsoleWindow();
+            var consoleHandle = GetConsoleWindow();
 
             if (!GetConsoleMode(consoleHandle, out uint consoleMode)) {
                 // error
@@ -135,7 +135,7 @@ namespace Cirilla {
             const ConsoleColor introColor = ConsoleColor.Magenta;
 
             Console.SetCursorPosition(left, top);
-            ConsoleColor originalColor = Console.ForegroundColor;
+            var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = introColor;
 
             foreach (char ch in introText) {
@@ -155,13 +155,13 @@ namespace Cirilla {
 
             Console.Clear();
 
-            string introText = "Shutting down..";
+            const string introText = "Shutting down..";
             int left = (Console.WindowWidth / 2) - (introText.Length / 2);
             int top = (Console.WindowHeight / 2) - 1;
-            ConsoleColor outroColor = ConsoleColor.Red;
+            const ConsoleColor outroColor = ConsoleColor.Red;
 
             Console.SetCursorPosition(left, top);
-            ConsoleColor originalColor = Console.ForegroundColor;
+            var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = outroColor;
 
             foreach (char ch in introText) {

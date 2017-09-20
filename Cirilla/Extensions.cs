@@ -7,7 +7,7 @@ namespace Cirilla {
         /// </summary>
         /// <returns>The valid filename</returns>
         public static string ToFileName(this string value) {
-            StringBuilder builder = new StringBuilder(value);
+            var builder = new StringBuilder(value);
             foreach (char c in System.IO.Path.GetInvalidFileNameChars()) {
                 builder.Replace(c, '_');
             }

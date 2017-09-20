@@ -8,6 +8,18 @@
   </p>
 </p>
 
+# Commandline Parameters
+
+* **Skip the Intro** at the beginning:
+```sh
+Cirilla.exe skip
+```
+
+* **Use Legacy Sockets** (WS4NET) (Use this if **Cirilla** can't connect/constantly _prints connection errors_):
+```sh
+Cirilla.exe legacy
+```
+
 # Features
 Cirilla is a multi-use Discord Bot with many functionalities like:
 * A whole **XP System** _(disabled by default)_
@@ -38,25 +50,25 @@ These are the commands you can use:
 **Admin**
 ```
 $nick nickname
-$setup 
-$leave 
+$setup
+$leave
 $prefix prefix
 $toggleprimary
 $togglexp
 ```
 **BotInfo**
 ```
-$host 
-$invite 
-$uptime 
-$run 
+$host
+$invite
+$uptime
+$run
 $source
 $owner
 ```
 **Chat**
 ```
 $embed text
-$hi 
+$hi
 $hello
 $poke user
 $poke user message
@@ -64,7 +76,7 @@ $say message
 ```
 **Clean**
 ```
-$clean 
+$clean
 $clean count
 ```
 **Code**
@@ -73,7 +85,7 @@ $exec code
 ```
 **Config**
 ```
-$config 
+$config
 $reload
 ```
 **Connection**
@@ -82,24 +94,24 @@ $ping
 ```
 **GitHub**
 ```
-$bugreport 
-$repo 
+$bugreport
+$repo
 $addmodule
 ```
 **Hardware**
 ```
 $hw user
-$hw 
+$hw
 $sethw title
 ```
 **Help**
 ```
-$help 
+$help
 $help command
 ```
 **Link**
 ```
-$links 
+$links
 $addlink name, link
 $removelink name
 ```
@@ -112,34 +124,34 @@ $pi
 ```
 **News**
 ```
-$news 
+$news
 $news limit
 ```
 **Owner**
 ```
 $announce text
 $cmdlog
-$log 
-$clearlog 
+$log
+$clearlog
 $game game
-$reboot 
+$reboot
 $shutdown
 $togglescripts
 ```
 **Profile**
 ```
 $profile user
-$profile 
+$profile
 $setprofile
 ```
 **Randoms**
 ```
-$flip 
+$flip
 $random maximum
 ```
 **Reddit**
 ```
-$dankmeme 
+$dankmeme
 $reddit rsubreddit
 ```
 **Reminder**
@@ -168,7 +180,7 @@ $votekick user
 ```
 $xp user, xp
 $setxp user, xp
-$xp 
+$xp
 $xp user
 $stats
 ```

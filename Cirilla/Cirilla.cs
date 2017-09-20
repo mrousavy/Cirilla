@@ -24,9 +24,13 @@ namespace Cirilla {
 
         public Cirilla(LogSeverity logSeverity) {
             var config = new DiscordSocketConfig {
-                LogLevel = logSeverity,
-                WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance
+                LogLevel = logSeverity
             };
+            if (Information.NeedsWs4Net) {
+                // Use legacy (WS4NET) Sockets
+                config.WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance;
+            }
+
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
             Client.MessageReceived += MessageReceived;

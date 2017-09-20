@@ -23,19 +23,21 @@ namespace Cirilla {
 
                 Information.LoadInfo();
                 ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
-
-                bool x =Information.NeedsWs4Net;
-
+                
 #pragma warning disable 219
                 bool skipIntro = false;
 #pragma warning restore 219
 
                 foreach (string arg in args) {
-                    string larg = arg.ToLower();
-                    switch (larg) {
+                    string cleanArg = arg.ToLower().Replace("-", "");
+                    switch (cleanArg) {
                         case "skip":
                             // ReSharper disable once RedundantAssignment
                             skipIntro = true;
+                            break;
+                        case "legacy":
+                            // Need legacy Sockets (WS4NET)
+                            Information.NeedsWs4Net = true;
                             break;
                     }
                 }

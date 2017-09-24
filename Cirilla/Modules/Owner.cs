@@ -33,7 +33,7 @@ namespace Cirilla.Modules {
 
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. :confused:");
+                await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. I think it's a faulty API key :confused:");
                 await ConsoleHelper.Log($"Error sending log, {ex.Message}!", LogSeverity.Error);
             }
         }

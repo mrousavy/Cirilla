@@ -56,8 +56,10 @@ namespace Cirilla.Services.News {
                     diff = nextPost - now;
                 } else {
                     // diff = now - nextPost;
-                    await ConsoleHelper.Log("Next news post was in the past, exiting!", LogSeverity.Error);
-                    return;
+                    Information.Config.LastPost = DateTime.Now.AddHours(Information.NewsInterval);
+                    Information.WriteOut();
+                    await ConsoleHelper.Log($"Next news post was in the past, resetted it to {Information.LastPost}!", LogSeverity.Error);
+                    continue;
                 }
 
                 double sleep = Math.Abs(diff.TotalMilliseconds);

@@ -58,7 +58,7 @@ namespace Cirilla {
                 StartTime = DateTime.Now;
 
                 ConsoleHelper.Log("Initializing services..", LogSeverity.Info);
-                Stopwatch sw = Stopwatch.StartNew();
+                var sw = Stopwatch.StartNew();
                 XpManager.Init();
                 NewsService.Init();
                 ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)", LogSeverity.Info);

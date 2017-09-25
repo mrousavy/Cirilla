@@ -13,11 +13,19 @@ namespace Cirilla.Modules {
                 string mname = Environment.MachineName;
 
                 string pre = string.Empty;
-                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
-                if (config.EnablePrimaryPrefix) {
+                bool enablePrimary = true;
+                string sPrefix = Information.SecondaryPrefix;
+                if (Context.Guild == null) {
+                    // It's DM
+                } else {
+                    GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                    enablePrimary = config.EnablePrimaryPrefix;
+                    sPrefix = config.Prefix;
+                }
+                if (enablePrimary) {
                     pre += $"`{Information.Prefix}`, ";
                 }
-                pre += $"`{config.Prefix}`, {Context.Client.CurrentUser.Mention}";
+                pre += $"`{sPrefix}`, {Context.Client.CurrentUser.Mention}";
 
                 int cores = Environment.ProcessorCount;
                 Process current = Process.GetCurrentProcess();

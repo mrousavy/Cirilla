@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Cirilla {
@@ -11,6 +12,10 @@ namespace Cirilla {
             var builder = new StringBuilder(value);
             foreach (char c in Path.GetInvalidFileNameChars()) builder.Replace(c, '_');
             return builder.Length > 255 ? builder.ToString(0, 254) : builder.ToString();
+        }
+
+        public static string Capitalize(this string value) {
+            return value.First().ToString().ToUpper() + value.Substring(1);
         }
     }
 }

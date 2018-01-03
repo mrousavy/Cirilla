@@ -1,11 +1,11 @@
-﻿using Cirilla.Services.GuildConfig;
-using Cirilla.Services.News;
-using Cirilla.Services.Xp;
-using Discord;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Cirilla.Services.GuildConfig;
+using Cirilla.Services.News;
+using Cirilla.Services.Xp;
+using Discord;
 
 namespace Cirilla {
     public class Program {
@@ -17,13 +17,11 @@ namespace Cirilla {
         public static void Main(string[] args) {
             try {
                 Random = new Random();
-                if (!Directory.Exists(Information.Directory)) {
-                    Directory.CreateDirectory(Information.Directory);
-                }
+                if (!Directory.Exists(Information.Directory)) Directory.CreateDirectory(Information.Directory);
 
                 Information.LoadInfo();
                 ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
-                
+
 #pragma warning disable 219
                 bool skipIntro = false;
 #pragma warning restore 219

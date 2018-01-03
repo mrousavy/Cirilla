@@ -17,6 +17,7 @@ namespace Cirilla {
         internal static bool NeedsWs4Net { get; set; }
         internal static Configuration Config { get; set; }
         internal static LogSeverity LogSeverity => Config.LogSeverity;
+        internal static string PokedexUrl => Config.PokedexUrl;
         internal static string Token => Config.Token;
         internal static string PastebinToken => Config.PastebinToken;
         internal static string TextChannel => Config.TextChannel;
@@ -144,6 +145,10 @@ namespace Cirilla {
 
         //Send Help in private Message
         public bool PmHelp = true;
+
+        public string PokedexUrl =
+                "https://vignette.wikia.nocookie.net/pokemon/images/6/6f/Pok%C3%A9dex_Pt.png/revision/latest/scale-to-width-down/2000?cb=20110528144645"
+            ;
 
         //Bot prefix ($help)
         public char Prefix = '$';

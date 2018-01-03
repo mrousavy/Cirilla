@@ -7,7 +7,7 @@ namespace Cirilla.Services.Pokemon {
         public int Id { get; set; }
 
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; } = "Missingo";
+        public string Name { get; set; } = "Missigno";
 
         [JsonProperty(PropertyName = "base_experience")]
         public int BaseExperience { get; set; }
@@ -41,7 +41,7 @@ namespace Cirilla.Services.Pokemon {
 
         [JsonProperty(PropertyName = "moves")]
         public IEnumerable<Move> Moves { get; set; }
-        
+
         [JsonProperty(PropertyName = "species")]
         public Property Species { get; set; }
 
@@ -127,5 +127,104 @@ namespace Cirilla.Services.Pokemon {
 
         [JsonProperty(PropertyName = "type")]
         public Property Actual { get; set; }
+
+        public string ToEmoji() {
+            switch (Name) {
+                case "normal":
+                    return "✊";
+                case "fire":
+                    return "🔥";
+                case "fighting":
+                    return "🥊";
+                case "water":
+                    return "🌊";
+                case "flying":
+                    return "🐦";
+                case "grass":
+                    return "🌿";
+                case "poison":
+                    return "🍼";
+                case "electric":
+                    return "⚡";
+                case "ground":
+                    return "🕳️";
+                case "psychic":
+                    return "🧙";
+                case "rock":
+                    return "🧗‍♂️";
+                case "ice":
+                    return "🍦";
+                case "bug":
+                    return "🐛";
+                case "dragon":
+                    return "🐉";
+                case "ghost":
+                    return "👻";
+                case "dark":
+                    return "🧛🏿";
+                case "steel":
+                    return "🔩";
+                case "fairy":
+                    return "🧚";
+                default:
+                    return "❓";
+            }
+        }
+    }
+
+
+    public class Form {
+        [JsonProperty(PropertyName = "id")]
+        public int Id { get; set; }
+
+        [JsonProperty(PropertyName = "form_name")]
+        public string FormName { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; } = "Missigno";
+
+        [JsonProperty(PropertyName = "is_default")]
+        public bool Default { get; set; }
+
+        [JsonProperty(PropertyName = "is_battle_only")]
+        public bool BattleOnly { get; set; }
+
+        [JsonProperty(PropertyName = "sprites")]
+        public Sprites Sprites { get; set; }
+
+        [JsonProperty(PropertyName = "version_group")]
+        public Property VersionGroup { get; set; }
+
+        [JsonProperty(PropertyName = "form_order")]
+        public int FormOrder { get; set; }
+
+        [JsonProperty(PropertyName = "is_mega")]
+        public bool IsMega { get; set; }
+
+        [JsonProperty(PropertyName = "form_names")]
+        public IEnumerable<string> FormNames { get; set; }
+
+        [JsonProperty(PropertyName = "names")]
+        public IEnumerable<string> Names { get; set; }
+
+        [JsonProperty(PropertyName = "pokemon")]
+        public Property Pokemon { get; set; }
+
+        [JsonProperty(PropertyName = "order")]
+        public int Order { get; set; }
+    }
+
+    public class Sprites {
+        [JsonProperty(PropertyName = "front_default")]
+        public string Front { get; set; }
+
+        [JsonProperty(PropertyName = "back_default")]
+        public string Back { get; set; }
+
+        [JsonProperty(PropertyName = "front_shiny")]
+        public string FrontShiny { get; set; }
+
+        [JsonProperty(PropertyName = "back_shiny")]
+        public string BackShiny { get; set; }
     }
 }

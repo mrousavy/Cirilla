@@ -1,19 +1,19 @@
-﻿using Cirilla.Services.GuildConfig;
-using Cirilla.Services.Pastebin;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
+using Cirilla.Services.Pastebin;
+using Discord;
+using Discord.Commands;
 
 namespace Cirilla.Modules {
     public class Owner : ModuleBase {
-        [Command("log"), Summary("Upload the Bot's log")]
+        [Command("log")]
+        [Summary("Upload the Bot's log")]
         public async Task GetLog() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -26,22 +26,24 @@ namespace Cirilla.Modules {
                 //upload to pastebin
                 string link = await Pastebin.Post(log);
 
-                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
+                var dm = await user.GetOrCreateDMChannelAsync();
                 await dm.SendMessageAsync($"Here you go <{link}>");
 
                 await message.DeleteAsync();
 
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
-                await ReplyAsync("Whoops, unfortunately I couldn't send you the log.. I think it's a faulty API key :confused:");
+                await ReplyAsync(
+                    "Whoops, unfortunately I couldn't send you the log.. I think it's a faulty API key :confused:");
                 await ConsoleHelper.Log($"Error sending log, {ex.Message}!", LogSeverity.Error);
             }
         }
 
-        [Command("clearlog"), Summary("Clear the Bot's log")]
+        [Command("clearlog")]
+        [Summary("Clear the Bot's log")]
         public async Task ClearLog() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -49,8 +51,9 @@ namespace Cirilla.Modules {
 
                 string file = Path.Combine(Information.Directory, "log.txt");
                 long size = new FileInfo(file).Length;
-                lock (Helper.Lock)
+                lock (Helper.Lock) {
                     File.WriteAllBytes(file, new byte[0]);
+                }
                 await ReplyAsync($"Log cleared! ({size / 1000} kB)");
                 await ConsoleHelper.Log($"{Context.User} cleared the bot log! ({size / 1000} kB)", LogSeverity.Info);
             } catch (Exception ex) {
@@ -60,16 +63,17 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("cmdlog"), Summary("Upload the Bot's command log")]
+        [Command("cmdlog")]
+        [Summary("Upload the Bot's command log")]
         public async Task GetCommandLog() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
 
-                IDMChannel dm = await user.GetOrCreateDMChannelAsync();
+                var dm = await user.GetOrCreateDMChannelAsync();
                 await CommandLogger.Upload(dm, Context.Channel);
                 await ConsoleHelper.Log($"{Context.User} requested the bot log!", LogSeverity.Info);
             } catch (Exception ex) {
@@ -78,10 +82,11 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("clearcmdlog"), Summary("Clear the Bot's command log")]
+        [Command("clearcmdlog")]
+        [Summary("Clear the Bot's command log")]
         public async Task ClearCommandLog() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -95,10 +100,11 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("game"), Summary("Change Bot's \"playing ..\" status")]
+        [Command("game")]
+        [Summary("Change Bot's \"playing ..\" status")]
         public async Task SetGame([Summary("The new game")] [Remainder] string game) {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -112,10 +118,11 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("game"), Summary("Reset Bot's \"playing ..\" status")]
+        [Command("game")]
+        [Summary("Reset Bot's \"playing ..\" status")]
         public async Task ResetGame() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -129,24 +136,24 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("announce"), Summary("Announce something in all guilds")]
+        [Command("announce")]
+        [Summary("Announce something in all guilds")]
         public async Task Announce([Summary("The text to send")] [Remainder] string text) {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync($"Sorry, but only {Information.Owner} can announce!");
                     return;
                 }
 
                 int sent = 0;
-                foreach (SocketGuild guild in Cirilla.Client.Guilds) {
+                foreach (var guild in Cirilla.Client.Guilds)
                     try {
                         await guild.DefaultChannel.SendMessageAsync(text);
                         sent++;
                     } catch {
                         // could not send
                     }
-                }
                 await ReplyAsync($"Sent the announcement to {sent}/{Cirilla.Client.Guilds.Count} guilds!");
                 await ConsoleHelper.Log(
                     $"{Context.User} announced \"{text}\" on {sent}/{Cirilla.Client.Guilds.Count} guilds!",
@@ -157,34 +164,33 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("togglescripts"), Summary("Enable or disable Roslyn Scripts")]
+        [Command("togglescripts")]
+        [Summary("Enable or disable Roslyn Scripts")]
         public async Task ToggleScripts() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync($"Sorry, but only {Information.Owner} can toggle scripts!");
                     return;
                 }
 
-                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                var config = GuildConfigManager.Get(Context.Guild.Id);
                 config.EnableScripts = !config.EnableScripts;
                 GuildConfigManager.Set(config);
 
-                if (config.EnableScripts) {
-                    await ReplyAsync("Scripts are now enabled for this guild! Use `$exec code`.");
-                } else {
-                    await ReplyAsync("Scripts are now disabled for this guild!");
-                }
+                if (config.EnableScripts) await ReplyAsync("Scripts are now enabled for this guild! Use `$exec code`.");
+                else await ReplyAsync("Scripts are now disabled for this guild!");
             } catch (Exception ex) {
                 await ReplyAsync("Whoops, unfortunately I couldn't toggle scripts.. :confused:");
                 await ConsoleHelper.Log($"Error changing script setting, {ex.Message}!", LogSeverity.Error);
             }
         }
 
-        [Command("reboot"), Summary("Reboot the Bot")]
+        [Command("reboot")]
+        [Summary("Reboot the Bot")]
         public async Task Reboot() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync($"Sorry, but only {Information.Owner} can reboot the bot!");
                     return;
@@ -206,7 +212,7 @@ namespace Cirilla.Modules {
             await ConsoleHelper.Log("Handler done, stopping Bot..", LogSeverity.Debug);
             await Cirilla.Client.StopAsync();
             await Task.Delay(1000);
-            Process current = Process.GetCurrentProcess();
+            var current = Process.GetCurrentProcess();
 
             Process.Start(current.MainModule.FileName);
 
@@ -216,10 +222,11 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("shutdown"), Summary("Shutdown the Bot")]
+        [Command("shutdown")]
+        [Summary("Shutdown the Bot")]
         public async Task Shutdown() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 if (!Helper.IsOwner(user)) {
                     await ReplyAsync($"Sorry, but only {Information.Owner} can shutdown the bot!");
                     return;

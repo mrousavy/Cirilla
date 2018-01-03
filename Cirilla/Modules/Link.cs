@@ -1,15 +1,16 @@
-﻿using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Newtonsoft.Json;
 
 namespace Cirilla.Modules {
     public class Link : ModuleBase {
-        [Command("links"), Summary("Displays all saved links")]
+        [Command("links")]
+        [Summary("Displays all saved links")]
         public async Task GetLinks() {
             try {
                 if (Context.User is IGuildUser guilduser) {
@@ -25,7 +26,7 @@ namespace Cirilla.Modules {
                 string links = GetLinks(Context.Guild.Id);
 
                 if (!string.IsNullOrWhiteSpace(links)) {
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Color = new Color(66, 134, 244)
                     };
 
@@ -42,7 +43,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("addlink"), Summary("Saves a new link")]
+        [Command("addlink")]
+        [Summary("Saves a new link")]
         public async Task AddLinkCommand(
             [Summary("The name of the Link (Use \"<name>\" when the name has whitespaces")] string name,
             [Summary("The link to store")] string link) {
@@ -67,7 +69,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("removelink"), Summary("Removes a link")]
+        [Command("removelink")]
+        [Summary("Removes a link")]
         public async Task RemoveLinkCommand(
             [Summary("The name of the Link (Use \"<name>\" when the name has whitespaces")] string name) {
             try {
@@ -102,7 +105,7 @@ namespace Cirilla.Modules {
 
             if (File.Exists(file)) {
                 string serialized = File.ReadAllText(file);
-                LinkFile guildLinks = JsonConvert.DeserializeObject<LinkFile>(serialized);
+                var guildLinks = JsonConvert.DeserializeObject<LinkFile>(serialized);
                 return guildLinks?.Links.Aggregate("",
                     (current, tuple) => current + $"[{tuple.Item1}]({tuple.Item2}){Environment.NewLine}");
             }
@@ -139,14 +142,13 @@ namespace Cirilla.Modules {
                 guildLinks = new LinkFile();
             }
 
-            for (int i = 0; i < guildLinks.Links.Count; i++) {
+            for (int i = 0; i < guildLinks.Links.Count; i++)
                 if (guildLinks.Links[i].Item1 == name) {
                     guildLinks.Links.RemoveAt(i);
                     serialized = JsonConvert.SerializeObject(guildLinks);
                     File.WriteAllText(file, serialized);
                     return true;
                 }
-            }
 
             return false;
         }

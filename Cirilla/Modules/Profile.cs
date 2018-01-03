@@ -1,12 +1,13 @@
-﻿using Cirilla.Services.Profiles;
+﻿using System;
+using System.Threading.Tasks;
+using Cirilla.Services.Profiles;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Profile : ModuleBase {
-        [Command("profile"), Summary("Show a user's Profile")]
+        [Command("profile")]
+        [Summary("Show a user's Profile")]
         public async Task ShowProfile([Summary("The user you want to show the Profile of")] IGuildUser user) {
             string text = ProfileManager.ReadProfile(Context.Guild, user.Id);
 
@@ -18,7 +19,7 @@ namespace Cirilla.Modules {
             }
 
 
-            EmbedBuilder builder = new EmbedBuilder {
+            var builder = new EmbedBuilder {
                 Color = new Color(50, 125, 125),
                 Author = new EmbedAuthorBuilder {
                     Name = $"{Helper.GetName(user)}'s Profile 📜",
@@ -32,9 +33,10 @@ namespace Cirilla.Modules {
                 LogSeverity.Info);
         }
 
-        [Command("profile"), Summary("Show your own Profile")]
+        [Command("profile")]
+        [Summary("Show your own Profile")]
         public async Task ShowProfile() {
-            IGuildUser user = Context.User as IGuildUser;
+            var user = Context.User as IGuildUser;
             if (user == null)
                 return;
 
@@ -47,7 +49,7 @@ namespace Cirilla.Modules {
             }
 
 
-            EmbedBuilder builder = new EmbedBuilder {
+            var builder = new EmbedBuilder {
                 Color = new Color(50, 125, 125),
                 Author = new EmbedAuthorBuilder {
                     Name = $"{Helper.GetName(user)}'s Profile 📜",
@@ -61,9 +63,10 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("setprofile"), Summary("Set your custom user profile, this will be displayed in a Markdown Embed!")]
+        [Command("setprofile")]
+        [Summary("Set your custom user profile, this will be displayed in a Markdown Embed!")]
         public async Task SetProfile() {
-            ProfileListener listener = new ProfileListener(Context.Channel as ITextChannel, Context.User);
+            var listener = new ProfileListener(Context.Channel as ITextChannel, Context.User);
             Cirilla.Client.MessageReceived += listener.ProfileTextReceived;
 
             await ReplyAsync("What text do you want to display on your Profile?");

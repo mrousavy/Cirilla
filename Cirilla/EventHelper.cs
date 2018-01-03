@@ -1,10 +1,11 @@
-﻿using Cirilla.Services.Reminder;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Cirilla.Modules;
+using Cirilla.Services.Reminder;
 using Cirilla.Services.Xp;
 using Discord;
 using Discord.WebSocket;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Cirilla {
     public static class EventHelper {
@@ -38,9 +39,7 @@ namespace Cirilla {
                                                                 $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
 
                     string dataPath = Path.Combine(Information.Directory, guild.Id.ToString());
-                    if (!Directory.Exists(dataPath)) {
-                        Directory.CreateDirectory(dataPath);
-                    }
+                    if (!Directory.Exists(dataPath)) Directory.CreateDirectory(dataPath);
                 }
 
                 await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
@@ -54,9 +53,7 @@ namespace Cirilla {
             try {
                 string guildDir = Path.Combine(Information.Directory, guild.Id.ToString());
                 //cleanup
-                if (Directory.Exists(guildDir)) {
-                    Directory.Delete(guildDir, true);
-                }
+                if (Directory.Exists(guildDir)) Directory.Delete(guildDir, true);
             } catch (Exception ex) {
                 ConsoleHelper.Log($"Could not cleanup for \"{guild.Name}\" guild! ({ex.Message})",
                     LogSeverity.Error);
@@ -80,11 +77,9 @@ namespace Cirilla {
 
 
             await ConsoleHelper.Log("Connected Guilds:", LogSeverity.Info);
-            foreach (IGuild guild in Cirilla.Client.Guilds) {
+            foreach (IGuild guild in Cirilla.Client.Guilds)
                 await ConsoleHelper.Log($"\t{guild.Name}", LogSeverity.Info);
-            }
         }
-
 
 
         public static async Task QuestionThinking(SocketMessage messageArg) {
@@ -93,28 +88,26 @@ namespace Cirilla {
                 return;
 
             try {
-                if (message.Content.EndsWith("?")) {
-                    await message.AddReactionAsync(new Emoji(Information.ThinkEmoji));
-                }
+                if (message.Content.EndsWith("?")) await message.AddReactionAsync(new Emoji(Information.ThinkEmoji));
             } catch {
                 // can't add reactions
             }
         }
+
         public static async Task RandomEmoji(SocketMessage messageArg) {
             var message = messageArg as SocketUserMessage;
             if (message == null)
                 return;
 
             if (message.Channel is IGuildChannel guildchannel) {
-                var emote = Modules.RandomEmote.GetRandomEmote(guildchannel.Guild);
-                if (emote != null) {
+                var emote = RandomEmote.GetRandomEmote(guildchannel.Guild);
+                if (emote != null)
                     try {
                         await message.AddReactionAsync(emote);
                         await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
                     } catch {
                         // can't add reactions
                     }
-                }
             }
         }
     }

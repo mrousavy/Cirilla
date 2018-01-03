@@ -1,14 +1,15 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System;
+using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Cirilla.Services.Xp;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class UserInfo : ModuleBase {
-        [Command("info"), Summary("Shows Information for a specific user")]
-        public async Task Info([Summary("The user you want info about")]IGuildUser user) {
+        [Command("info")]
+        [Summary("Shows Information for a specific user")]
+        public async Task Info([Summary("The user you want info about")] IGuildUser user) {
             try {
                 string uname = user.Username ?? "?";
                 string nick = user.Nickname ?? "/";
@@ -23,9 +24,9 @@ namespace Cirilla.Modules {
                     ? XpManager.Get(Context.Guild, user).Xp.ToString()
                     : "[disabled]";
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
-                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
+                        Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
                         //IconUrl = user.GetAvatarUrl()
                     },
                     Color = new Color(50, 125, 0),
@@ -46,7 +47,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("info"), Summary("Shows information for user")]
+        [Command("info")]
+        [Summary("Shows information for user")]
         public async Task Info() {
             try {
                 if (Context.User is IGuildUser user) {
@@ -63,9 +65,9 @@ namespace Cirilla.Modules {
                         ? XpManager.Get(Context.Guild, user).Xp.ToString()
                         : "[disabled]";
 
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
-                            Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
+                            Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
                             //IconUrl = user.GetAvatarUrl()
                         },
                         Color = new Color(50, 125, 0),
@@ -86,7 +88,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("avatar"), Summary("Get own Avatar")]
+        [Command("avatar")]
+        [Summary("Get own Avatar")]
         public async Task Avatar() {
             try {
                 await ReplyAsync(Context.User.GetAvatarUrl());
@@ -95,8 +98,9 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("avatar"), Summary("Get Avatar of User")]
-        public async Task Avatar([Summary("The user you want to get the avatar from")]IUser user) {
+        [Command("avatar")]
+        [Summary("Get Avatar of User")]
+        public async Task Avatar([Summary("The user you want to get the avatar from")] IUser user) {
             try {
                 await ReplyAsync(user.GetAvatarUrl());
             } catch {
@@ -105,10 +109,11 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("details"), Summary("Shows detailed developer information for user")]
+        [Command("details")]
+        [Summary("Shows detailed developer information for user")]
         public async Task Details() {
             try {
-                IUser user = Context.User;
+                var user = Context.User;
                 string uname = user.Username ?? "?";
                 string createdAt = user.CreatedAt.ToString("d") ?? "/";
 
@@ -120,7 +125,7 @@ namespace Cirilla.Modules {
                 string mention = user.Mention;
                 string id = user.Id.ToString();
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
                         IconUrl = user.GetAvatarUrl()

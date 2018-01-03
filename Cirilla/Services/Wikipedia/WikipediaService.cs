@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Cirilla.Services.Wikipedia {
     public class WikipediaService {
@@ -15,11 +15,10 @@ namespace Cirilla.Services.Wikipedia {
             var client = new HttpClient();
             var response = await client.GetAsync(string.Format(WikipediaApiScheme, query));
 
-            if (!response.IsSuccessStatusCode) {
+            if (!response.IsSuccessStatusCode)
                 throw new WebException("Something failed while querying the Wikipedia API.");
-            }
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
+            string jsonResponse = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<WikipediaResponse>(jsonResponse);
         }
     }

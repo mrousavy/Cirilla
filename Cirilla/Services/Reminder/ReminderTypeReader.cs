@@ -1,7 +1,7 @@
-﻿using Discord.Commands;
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord.Commands;
 
 namespace Cirilla.Services.Reminder {
     public class ReminderTypeReader : TypeReader {
@@ -16,22 +16,26 @@ namespace Cirilla.Services.Reminder {
             try {
                 string[] split = input.Split(':');
 
-                Match dayMatch = _day.Match(input);
-                Match hourMatch = _hour.Match(input);
-                Match minuteMatch = _minute.Match(input);
-                Match secondMatch = _second.Match(input);
+                var dayMatch = _day.Match(input);
+                var hourMatch = _hour.Match(input);
+                var minuteMatch = _minute.Match(input);
+                var secondMatch = _second.Match(input);
 
                 string dayValue = string.IsNullOrWhiteSpace(dayMatch.Value) ? "0" : dayMatch.Value.Replace("d", "");
                 string hourValue = string.IsNullOrWhiteSpace(hourMatch.Value) ? "0" : hourMatch.Value.Replace("h", "");
-                string minuteValue = string.IsNullOrWhiteSpace(minuteMatch.Value) ? "0" : minuteMatch.Value.Replace("m", "");
-                string secondValue = string.IsNullOrWhiteSpace(secondMatch.Value) ? "0" : secondMatch.Value.Replace("s", "");
+                string minuteValue = string.IsNullOrWhiteSpace(minuteMatch.Value)
+                    ? "0"
+                    : minuteMatch.Value.Replace("m", "");
+                string secondValue = string.IsNullOrWhiteSpace(secondMatch.Value)
+                    ? "0"
+                    : secondMatch.Value.Replace("s", "");
 
                 int days = int.Parse(dayValue);
                 int hours = int.Parse(hourValue);
                 int minutes = int.Parse(minuteValue);
                 int seconds = int.Parse(secondValue);
 
-                Timediff diff = new Timediff(days, hours, minutes, seconds);
+                var diff = new Timediff(days, hours, minutes, seconds);
                 if (diff.TotalSeconds < 1)
                     throw new Exception();
 

@@ -1,21 +1,22 @@
-﻿using Cirilla.Services.News;
-using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cirilla.Services.News;
+using Discord;
+using Discord.Commands;
 
 namespace Cirilla.Modules {
     public class News : ModuleBase {
-        [Command("news"), Summary("Get top 3 Hot stories on r/news")]
+        [Command("news")]
+        [Summary("Get top 3 Hot stories on r/news")]
         public async Task RedditNews() {
             try {
                 const string loadingStr = "Loading top stories.. ({0}/3) :newspaper2:";
-                IUserMessage loadingMsg = await ReplyAsync(string.Format(loadingStr, 0));
+                var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0));
 
                 List<RedditNet.Things.Link> links = await NewsService.HotNews(3);
                 for (int i = 0; i < links.Count; i++) {
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },
@@ -40,7 +41,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("news"), Summary("Get Hot stories on r/news")]
+        [Command("news")]
+        [Summary("Get Hot stories on r/news")]
         public async Task RedditNews([Summary("Limit for news articles")] uint limit) {
             try {
                 if (limit > 15) {
@@ -49,11 +51,11 @@ namespace Cirilla.Modules {
                 }
 
                 const string loadingStr = "Loading top stories.. ({0}/{1}) :newspaper2:";
-                IUserMessage loadingMsg = await ReplyAsync(string.Format(loadingStr, 0, limit));
+                var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0, limit));
 
                 List<RedditNet.Things.Link> links = await NewsService.HotNews((int) limit);
                 for (int i = 0; i < links.Count; i++) {
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },

@@ -1,7 +1,7 @@
-﻿using Discord;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 
 namespace Cirilla.Services.Hardware {
     public class HardwareListener {
@@ -17,12 +17,12 @@ namespace Cirilla.Services.Hardware {
 
         public async Task HardwareReceived(SocketMessage arg) {
             try {
-                SocketUserMessage message = arg as SocketUserMessage;
+                var message = arg as SocketUserMessage;
                 if (message == null)
                     return;
 
                 IUser user = message.Author;
-                if (message.Channel is ITextChannel channel && (user.Id == _user.Id && channel.Id == _channel.Id)) {
+                if (message.Channel is ITextChannel channel && user.Id == _user.Id && channel.Id == _channel.Id) {
                     Cirilla.Client.MessageReceived -= HardwareReceived;
 
                     HardwareManager.UpdateHardware(channel.Guild, user.Id, null, message.Content);

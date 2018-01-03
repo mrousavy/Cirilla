@@ -1,12 +1,12 @@
-﻿using Discord;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Cirilla.Services.GuildConfig;
+using Discord;
+using Newtonsoft.Json;
 
 namespace Cirilla.Services.Xp {
     public static class XpManager {
@@ -20,7 +20,7 @@ namespace Cirilla.Services.Xp {
 
             if (directories.Length > 0) {
                 ConsoleHelper.Log($"Loading {directories.Length} Guild XP Files..", LogSeverity.Info);
-                Stopwatch sw = Stopwatch.StartNew();
+                var sw = Stopwatch.StartNew();
 
                 for (int i = 0; i < directories.Length; i++) {
                     string directory = directories[i];
@@ -29,16 +29,14 @@ namespace Cirilla.Services.Xp {
                     string guildidstr = Path.GetFileName(Path.GetDirectoryName(xpfile));
                     ulong guildid = ulong.Parse(guildidstr);
 
-                    if (!GuildConfigManager.Get(guildid).EnableXpSystem) {
-                        continue;
-                    }
+                    if (!GuildConfigManager.Get(guildid).EnableXpSystem) continue;
 
                     if (!File.Exists(xpfile)) {
-                        GuildXp guildxp = new GuildXp();
+                        var guildxp = new GuildXp();
                         File.WriteAllText(xpfile, JsonConvert.SerializeObject(guildxp));
                         XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp));
                     } else {
-                        GuildXp guildxp = JsonConvert.DeserializeObject<GuildXp>(File.ReadAllText(xpfile));
+                        var guildxp = JsonConvert.DeserializeObject<GuildXp>(File.ReadAllText(xpfile));
                         XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guildid, guildxp ?? new GuildXp()));
                     }
                     xpfiles[i] = xpfile;
@@ -60,24 +58,21 @@ namespace Cirilla.Services.Xp {
         public static UserXp Add(IGuild guild, IUser user, int xp) {
             //contains Guild?
             bool contains = XpInfo.Guilds.Any(kvp => kvp.Key == guild.Id);
-            if (!contains) {
-                XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guild.Id, new GuildXp()));
-            }
+            if (!contains) XpInfo.Guilds.Add(new KeyValuePair<ulong, GuildXp>(guild.Id, new GuildXp()));
 
-            UserXp userXp = new UserXp(user.Id, xp);
+            var userXp = new UserXp(user.Id, xp);
             XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users.Add(userXp);
             WriteOut();
             return userXp;
         }
 
         public static void Update(IGuild guild, IUser user, int plusXp) {
-            foreach (UserXp uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users) {
+            foreach (var uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users)
                 if (uxp.UserId == user.Id) {
                     uxp.Xp += plusXp;
                     WriteOut();
                     return;
                 }
-            }
 
             //user does not exist
             Add(guild, user, plusXp);
@@ -89,13 +84,9 @@ namespace Cirilla.Services.Xp {
                 .Any(kvp => kvp.Value.Users.Any(userxp => userxp.UserId == user.Id));
 
 
-            if (contains) {
-                foreach (UserXp uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users) {
-                    if (uxp.UserId == user.Id) {
-                        return uxp;
-                    }
-                }
-            }
+            if (contains)
+                foreach (var uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users)
+                    if (uxp.UserId == user.Id) return uxp;
 
             //user does not exist
             return Add(guild, user, 0);
@@ -107,7 +98,7 @@ namespace Cirilla.Services.Xp {
 
         public static List<UserXp> Top10(IGuild guild) {
             //LINQ is love <3
-            GuildXp gxp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
+            var gxp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
             List<UserXp> userxp = gxp.Users.OrderByDescending(uxp => uxp).ToList();
 
             return userxp;
@@ -133,7 +124,7 @@ namespace Cirilla.Services.Xp {
 
         public static void RemoveUser(IGuild guild, IUser user) {
             try {
-                GuildXp guildXp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
+                var guildXp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
                 guildXp.Users.RemoveAll(p => p.UserId == user.Id);
                 WriteOut();
             } catch (Exception ex) {
@@ -144,9 +135,7 @@ namespace Cirilla.Services.Xp {
         //Get Level for user XP
         public static int GetLevel(int xp) {
             int i = 0;
-            while (xp >= GetXp(i)) {
-                i++;
-            }
+            while (xp >= GetXp(i)) i++;
             return i - 1;
         }
 
@@ -160,7 +149,7 @@ namespace Cirilla.Services.Xp {
                     return 0;
                 default:
                     int previousLevel = GetXp(level - 1);
-                    return (int)(previousLevel * Information.XpFactor);
+                    return (int) (previousLevel * Information.XpFactor);
             }
         }
 
@@ -173,14 +162,12 @@ namespace Cirilla.Services.Xp {
                 List<string> receivers = new List<string>();
 
                 foreach (IGuild guild in Cirilla.Client.Guilds) {
-                    if (!GuildConfigManager.Get(guild.Id).EnableXpSystem) {
-                        continue;
-                    }
+                    if (!GuildConfigManager.Get(guild.Id).EnableXpSystem) continue;
 
                     IEnumerable<IGuildUser> users = await guild.GetUsersAsync();
-                    Random rnd = new Random();
+                    var rnd = new Random();
 
-                    foreach (IGuildUser user in users.Where(u =>
+                    foreach (var user in users.Where(u =>
                         !u.IsBot &&
                         (u.Status == UserStatus.Online ||
                          u.Status == UserStatus.DoNotDisturb ||
@@ -205,15 +192,14 @@ namespace Cirilla.Services.Xp {
                     }
                 }
 
-                if (receivers.Count < 1) {
+                if (receivers.Count < 1)
                     await ConsoleHelper.Log(
                         $"{Information.XpGiveInterval / 1000} Second interval - no-one gained XP!",
                         LogSeverity.Info);
-                } else {
+                else
                     await ConsoleHelper.Log(
                         $"{Information.XpGiveInterval / 1000} Second interval - gave XP to: {string.Join(", ", receivers)}",
                         LogSeverity.Info);
-                }
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not give XP to everyone! ({ex.Message})", LogSeverity.Error);
             }

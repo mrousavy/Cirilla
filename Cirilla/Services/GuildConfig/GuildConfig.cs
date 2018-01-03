@@ -1,21 +1,20 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
+using Newtonsoft.Json;
 
 namespace Cirilla.Services.GuildConfig {
     public static class GuildConfigManager {
-        public static GuildConfigurations GuildConfigs { get; set; }
         public static List<KeyValuePair<ulong, string>> Prefixes = new List<KeyValuePair<ulong, string>>();
+        public static GuildConfigurations GuildConfigs { get; set; }
 
 
         public static void Init() {
-            if (GuildConfigs == null) {
-                GuildConfigs = new GuildConfigurations();
-            }
+            if (GuildConfigs == null) GuildConfigs = new GuildConfigurations();
 
             string[] dirs = Directory.GetDirectories(Information.Directory);
-            ConsoleHelper.Log($"Loading {dirs.Length} Guild configuration files..", Discord.LogSeverity.Info);
+            ConsoleHelper.Log($"Loading {dirs.Length} Guild configuration files..", LogSeverity.Info);
             int loaded = 0;
 
             foreach (string dir in dirs) {
@@ -26,19 +25,18 @@ namespace Cirilla.Services.GuildConfig {
                     if (!File.Exists(config)) {
                         //create
                         File.Create(config).Dispose();
-                        GuildConfiguration guildconfig = new GuildConfiguration {
+                        var guildconfig = new GuildConfiguration {
                             GuildId = guildId
                         };
-                        if (!GuildConfigs.GuildConfigs.Contains(guildconfig)) {
+                        if (!GuildConfigs.GuildConfigs.Contains(guildconfig))
                             GuildConfigs.GuildConfigs.Add(guildconfig);
-                        } else {
+                        else
                             GuildConfigs.GuildConfigs.ForEach(gc => {
                                 if (gc.GuildId == guildconfig.GuildId) {
                                     gc.Prefix = guildconfig.Prefix;
                                     gc.EnablePrimaryPrefix = guildconfig.EnablePrimaryPrefix;
                                 }
                             });
-                        }
                         File.WriteAllText(config, JsonConvert.SerializeObject(guildconfig));
                     } else {
                         //load
@@ -48,20 +46,20 @@ namespace Cirilla.Services.GuildConfig {
                     }
                 }
             }
-            ConsoleHelper.Log($"{loaded}/{dirs.Length} guild configuration files loaded!", Discord.LogSeverity.Info);
+            ConsoleHelper.Log($"{loaded}/{dirs.Length} guild configuration files loaded!", LogSeverity.Info);
         }
 
 
         public static GuildConfiguration Set(ulong guildId, string prefix, bool enablePrimaryPrefix = true,
             bool enableXpSystem = false) {
-            GuildConfiguration guildconfig = new GuildConfiguration {
+            var guildconfig = new GuildConfiguration {
                 GuildId = guildId,
                 EnablePrimaryPrefix = enablePrimaryPrefix,
                 Prefix = prefix,
                 EnableXpSystem = enableXpSystem
             };
             bool contains = GuildConfigs.GuildConfigs.Any(gc => gc.GuildId == guildId);
-            if (contains) {
+            if (contains)
                 GuildConfigs.GuildConfigs.ForEach(gc => {
                     if (gc.GuildId == guildconfig.GuildId) {
                         gc.Prefix = guildconfig.Prefix;
@@ -69,16 +67,14 @@ namespace Cirilla.Services.GuildConfig {
                         gc.EnableXpSystem = guildconfig.EnableXpSystem;
                     }
                 });
-            } else {
-                GuildConfigs.GuildConfigs.Add(guildconfig);
-            }
+            else GuildConfigs.GuildConfigs.Add(guildconfig);
             WriteOut();
             return guildconfig;
         }
 
         public static GuildConfiguration Set(GuildConfiguration guildconfig) {
             bool contains = GuildConfigs.GuildConfigs.Any(gc => gc.GuildId == guildconfig.GuildId);
-            if (contains) {
+            if (contains)
                 GuildConfigs.GuildConfigs.ForEach(gc => {
                     if (gc.GuildId == guildconfig.GuildId) {
                         gc.Prefix = guildconfig.Prefix;
@@ -86,23 +82,19 @@ namespace Cirilla.Services.GuildConfig {
                         gc.EnableXpSystem = guildconfig.EnableXpSystem;
                     }
                 });
-            } else {
-                GuildConfigs.GuildConfigs.Add(guildconfig);
-            }
+            else GuildConfigs.GuildConfigs.Add(guildconfig);
             WriteOut();
             return guildconfig;
         }
 
 
         public static GuildConfiguration Get(ulong guildId) {
-            GuildConfiguration config = GuildConfigs.GuildConfigs.FirstOrDefault(gc => gc.GuildId == guildId);
-            if (config == default(GuildConfiguration)) {
+            var config = GuildConfigs.GuildConfigs.FirstOrDefault(gc => gc.GuildId == guildId);
+            if (config == default(GuildConfiguration))
                 return new GuildConfiguration {
                     GuildId = guildId
                 };
-            } else {
-                return config;
-            }
+            return config;
         }
 
 
@@ -112,19 +104,15 @@ namespace Cirilla.Services.GuildConfig {
                 string dirName = Path.GetFileName(dir);
                 if (ulong.TryParse(dirName, out ulong guildId)) {
                     string config = Path.Combine(dir, "guildconfig.json");
-                    if (!File.Exists(config)) {
-                        //create
-                        File.Create(config).Dispose();
-                    }
-                    GuildConfiguration guildconfig =
+                    if (!File.Exists(config)) File.Create(config).Dispose();
+                    var guildconfig =
                         GuildConfigs.GuildConfigs.FirstOrDefault(gc => gc.GuildId == guildId);
-                    if (guildconfig == default(GuildConfiguration)) {
+                    if (guildconfig == default(GuildConfiguration))
                         guildconfig = new GuildConfiguration {
                             EnablePrimaryPrefix = true,
                             GuildId = guildId,
                             Prefix = Information.SecondaryPrefix
                         };
-                    }
                     File.WriteAllText(config, JsonConvert.SerializeObject(guildconfig));
                 }
             }
@@ -143,7 +131,9 @@ namespace Cirilla.Services.GuildConfig {
         public bool EnableXpSystem { get; set; }
         public bool EnableScripts { get; set; } //Get only, this will only be set by me in config
 
-        protected bool Equals(GuildConfiguration other) { return GuildId == other.GuildId; }
+        protected bool Equals(GuildConfiguration other) {
+            return GuildId == other.GuildId;
+        }
 
         public override int GetHashCode() {
             // ReSharper disable once NonReadonlyMemberInGetHashCode

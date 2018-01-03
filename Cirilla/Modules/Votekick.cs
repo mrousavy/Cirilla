@@ -1,12 +1,13 @@
-﻿using Cirilla.Services.Votekick;
+﻿using System;
+using System.Threading.Tasks;
+using Cirilla.Services.Votekick;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Votekick : ModuleBase {
-        [Command("votekick"), Summary("Votekick a User")]
+        [Command("votekick")]
+        [Summary("Votekick a User")]
         public async Task VoteToKick([Summary("The user to kick")] IGuildUser user) {
             if (!Information.AllowVotekick) {
                 await ReplyAsync($"Votekick is disabled! {Information.Owner} can enable it.");
@@ -31,13 +32,13 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IUserMessage message = await ReplyAsync(
+                var message = await ReplyAsync(
                     $"{Helper.GetName(Context.User)} started a votekick on {user.Mention} - " +
                     "This vote expires in 30 seconds!");
                 await message.AddReactionAsync(new Emoji(Information.VotekickYes));
                 await message.AddReactionAsync(new Emoji(Information.VotekickNo));
 
-                VotekickHandler handler = new VotekickHandler(user, message, Context.Guild);
+                var handler = new VotekickHandler(user, message, Context.Guild);
                 Cirilla.Client.ReactionAdded += handler.ReactionAdded;
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Could not start votekick {Helper.GetName(user)}! ({ex.Message})",

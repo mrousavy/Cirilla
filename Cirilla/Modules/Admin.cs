@@ -1,18 +1,17 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System;
+using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Admin : ModuleBase {
-        [Command("nick"), Summary("Change Bot's nickname")]
+        [Command("nick")]
+        [Summary("Change Bot's nickname")]
         public async Task SetNickname([Summary("The new nickname")] string nickname) {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -22,7 +21,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                IGuildUser bot = await Context.Guild.GetCurrentUserAsync();
+                var bot = await Context.Guild.GetCurrentUserAsync();
                 await bot.ModifyAsync(p => p.Nickname = nickname);
                 await ReplyAsync("Nickname changed!");
             } catch (Exception ex) {
@@ -31,21 +30,20 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("setup"), Summary("Setup the bot!")]
+        [Command("setup")]
+        [Summary("Setup the bot!")]
         public async Task SetupBot() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
                 }
 
-                IGuildUser me = await Context.Guild.GetCurrentUserAsync();
+                var me = await Context.Guild.GetCurrentUserAsync();
                 if (me.GuildPermissions.ManageChannels) {
-                    ITextChannel botchat = await Context.Guild.CreateTextChannelAsync(Information.Botchat);
+                    var botchat = await Context.Guild.CreateTextChannelAsync(Information.Botchat);
                     await botchat.SendMessageAsync("Hi guys! You can chat with me here! :smile:");
                 } else {
                     await ReplyAsync(
@@ -60,13 +58,12 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("leave"), Summary("Leave this Guild")]
+        [Command("leave")]
+        [Summary("Leave this Guild")]
         public async Task LeaveGuild() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
@@ -83,19 +80,18 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("togglexp"), Summary("Enable or disable the XP System for this Guild")]
+        [Command("togglexp")]
+        [Summary("Enable or disable the XP System for this Guild")]
         public async Task ToggleXp() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, only admins can use this command!");
                     return;
                 }
 
-                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                var config = GuildConfigManager.Get(Context.Guild.Id);
                 bool after = !config.EnableXpSystem;
 
                 config.EnableXpSystem = after;
@@ -122,20 +118,19 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("prefix"), Summary("Change prefix")]
+        [Command("prefix")]
+        [Summary("Change prefix")]
         public async Task ChangePrefix([Summary("New prefix")] [Remainder] string prefix) {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
 
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
 
-                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                var config = GuildConfigManager.Get(Context.Guild.Id);
                 string before = config.Prefix;
                 bool disablePrimary = config.EnablePrimaryPrefix;
 
@@ -150,16 +145,17 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("prefix"), Summary("Get prefixes")]
+        [Command("prefix")]
+        [Summary("Get prefixes")]
         public async Task GetPrefix() {
-            IGuildUser user = Context.User as IGuildUser;
+            var user = Context.User as IGuildUser;
             if (user == null) {
                 await ReplyAsync($"Those are my global prefixes: " +
                                  $"`{Information.SecondaryPrefix}`, `{Information.Prefix}`, {Cirilla.Client.CurrentUser.Mention}");
                 return;
             }
 
-            GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+            var config = GuildConfigManager.Get(Context.Guild.Id);
             string prefixes = string.Empty;
             if (config.EnablePrimaryPrefix)
                 prefixes += $"`{Information.Prefix}` ";
@@ -169,31 +165,28 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("toggleprimary"), Summary("Enable or disable the primary Prefix ($)")]
+        [Command("toggleprimary")]
+        [Summary("Enable or disable the primary Prefix ($)")]
         public async Task TogglePrimaryPrefix() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
-                    return;
-                }
+                var user = Context.User as IGuildUser;
+                if (user == null) return;
 
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.Administrator) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
                 }
 
-                GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+                var config = GuildConfigManager.Get(Context.Guild.Id);
                 bool before = config.EnablePrimaryPrefix;
                 bool after = !config.EnablePrimaryPrefix;
                 config.EnablePrimaryPrefix = after;
                 GuildConfigManager.Set(config.GuildId, config.Prefix, config.EnablePrimaryPrefix);
 
-                if (after) {
-                    await ReplyAsync("Bot is now also listening to primary prefix (`$`)!");
-                } else {
+                if (after) await ReplyAsync("Bot is now also listening to primary prefix (`$`)!");
+                else
                     await ReplyAsync("Bot is not listening to primary prefix anymore (`$`)!" + Environment.NewLine +
                                      $"Current prefixes: `{config.Prefix}` and \"{Cirilla.Client.CurrentUser.Mention}\"");
-                }
 
                 await ConsoleHelper.Log($"{Context.User} toggled the primary prefix on \"{Context.Guild.Name}\" from " +
                                         $"{before} to {after}!",

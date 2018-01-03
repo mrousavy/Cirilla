@@ -1,14 +1,15 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Cirilla.Services.Xp;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Xp : ModuleBase {
-        [Command("xp"), Summary("Give a user XP")]
+        [Command("xp")]
+        [Summary("Give a user XP")]
         public async Task Give([Summary("The user to give XP")] IGuildUser user,
             [Summary("The amount of XP you want to give the user")] int xp) {
             try {
@@ -27,22 +28,19 @@ namespace Cirilla.Modules {
                 }
                 bool canDrain = false; //Is sender Admin?
                 bool drainOwn = true; //False if Admin is draining XP
-                if (Context.User is IGuildUser guilduser && guilduser.GuildPermissions.Administrator) {
-                    canDrain = true;
-                }
-                if (xp < 1) {
+                if (Context.User is IGuildUser guilduser && guilduser.GuildPermissions.Administrator) canDrain = true;
+                if (xp < 1)
                     if (!canDrain) {
                         await ReplyAsync("Nice try, you can't drain XP from Users!");
                         return;
                     } else {
                         drainOwn = false;
                     }
-                }
 
 
                 int ownXp = xp / Information.OwnXp;
 
-                UserXp userxp = XpManager.Get(Context.Guild, Context.User);
+                var userxp = XpManager.Get(Context.Guild, Context.User);
 
                 if (userxp.Xp >= xp) {
                     int lvlBefore = XpManager.Get(Context.Guild, user).Level;
@@ -50,21 +48,17 @@ namespace Cirilla.Modules {
                     int lvlAfter = XpManager.Get(Context.Guild, user).Level;
 
                     //Drain XP from Sender, minus own XP (you get 1/100 from donations)
-                    if (drainOwn) {
-                        XpManager.Update(Context.Guild, Context.User, -xp + ownXp);
-                    }
+                    if (drainOwn) XpManager.Update(Context.Guild, Context.User, -xp + ownXp);
 
-                    if (xp < 1) {
+                    if (xp < 1)
                         await ReplyAsync(
                             $"{Helper.GetName(Context.User)} drained {Helper.GetName(user)} {-xp} {GetNameForXp()}! :money_with_wings:");
-                    } else {
+                    else
                         await ReplyAsync(
                             $"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp} {GetNameForXp()}! :money_with_wings:");
-                    }
 
-                    if (lvlAfter > lvlBefore) {
+                    if (lvlAfter > lvlBefore)
                         await ReplyAsync($":tada: {Helper.GetName(user)} was promoted to level {lvlAfter}! :tada:");
-                    }
                     await ConsoleHelper.Log($"{Helper.GetName(Context.User)} gave {Helper.GetName(user)} {xp}XP!",
                         LogSeverity.Info);
                 } else {
@@ -79,7 +73,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("setxp"), Summary("Set a user's XP (Admin only)")]
+        [Command("setxp")]
+        [Summary("Set a user's XP (Admin only)")]
         public async Task Set([Summary("The user to set XP")] IGuildUser user,
             [Summary("The amount of XP you want to set")] int xp) {
             try {
@@ -94,7 +89,7 @@ namespace Cirilla.Modules {
                         return;
                     }
 
-                    UserXp userxp = XpManager.Get(Context.Guild, user);
+                    var userxp = XpManager.Get(Context.Guild, user);
                     XpManager.Update(Context.Guild, user, xp - userxp.Xp);
                     await ReplyAsync($"{Helper.GetName(user)} set {user.Mention}'s XP to {xp}!");
                 } else {
@@ -109,16 +104,17 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("xp"), Summary("Show own XP")]
+        [Command("xp")]
+        [Summary("Show own XP")]
         public async Task Info() {
             try {
                 if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
                     await ReplyAsync("XP System is disabled for this Guild! An Admin can use `$togglexp`!");
                     return;
                 }
-                UserXp xp = XpManager.Get(Context.Guild, Context.User);
+                var xp = XpManager.Get(Context.Guild, Context.User);
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = Context.User.IsBot
                             ? $"{Helper.GetName(Context.User)}'s XP (Bot)"
@@ -137,7 +133,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("xp"), Summary("Show XP of given User")]
+        [Command("xp")]
+        [Summary("Show XP of given User")]
         public async Task Info([Summary("The user you want to display XP")] IGuildUser user) {
             try {
                 if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
@@ -145,9 +142,9 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                UserXp xp = XpManager.Get(Context.Guild, user);
+                var xp = XpManager.Get(Context.Guild, user);
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = user.IsBot ? $"{Helper.GetName(user)}'s XP (Bot)" : $"{Helper.GetName(user)}'s XP",
                         IconUrl = user.GetAvatarUrl()
@@ -165,7 +162,8 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("stats"), Summary("Show XP Statistics/Ranking for Guild")]
+        [Command("stats")]
+        [Summary("Show XP Statistics/Ranking for Guild")]
         public async Task Stats() {
             try {
                 if (!GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem) {
@@ -180,7 +178,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Author = new EmbedAuthorBuilder {
                         Name = $"XP Ranking for {Context.Guild.Name} 🏆"
                     },
@@ -193,7 +191,7 @@ namespace Cirilla.Modules {
 
                 int max = xps.Count > 10 ? 10 : xps.Count;
                 for (int i = 0; i < max; i++) {
-                    UserXp xp = xps[i];
+                    var xp = xps[i];
                     IUser user = await Context.Guild.GetUserAsync(xp.UserId);
                     string place;
                     switch (i) {
@@ -214,7 +212,7 @@ namespace Cirilla.Modules {
                 }
 
                 try {
-                    UserXp firstXp = xps[0];
+                    var firstXp = xps[0];
                     IUser firstUser = await Context.Guild.GetUserAsync(firstXp.UserId);
                     await ReplyAsync(
                         $"Good job **{Helper.GetName(firstUser)}** on being first place with **{firstXp.Xp}** XP!",

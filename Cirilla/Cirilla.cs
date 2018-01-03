@@ -1,35 +1,20 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Cirilla.Services.Reminder;
 using Discord;
 using Discord.Commands;
+using Discord.Net.Providers.WS4Net;
 using Discord.WebSocket;
-using System;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Cirilla {
     public class Cirilla {
-        #region Privates
-
-        private CommandService Service { get; }
-
-        #endregion
-
-        #region Publics
-
-        public bool StopRequested { get; set; }
-        public static DiscordSocketClient Client { get; set; }
-
-        #endregion
-
         public Cirilla(LogSeverity logSeverity) {
             var config = new DiscordSocketConfig {
                 LogLevel = logSeverity
             };
-            if (Information.NeedsWs4Net) {
-                // Use legacy (WS4NET) Sockets
-                config.WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance;
-            }
+            if (Information.NeedsWs4Net) config.WebSocketProvider = WS4NetProvider.Instance;
 
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
@@ -59,6 +44,12 @@ namespace Cirilla {
             }
         }
 
+        #region Privates
+
+        private CommandService Service { get; }
+
+        #endregion
+
         private async Task MessageReceived(SocketMessage messageArg) {
             // Don't process the command if it was a System Message
             var message = messageArg as SocketUserMessage;
@@ -81,7 +72,8 @@ namespace Cirilla {
                 }
 
                 //Log to console but don't write log to file
-                await ConsoleHelper.Log(new LogMessage(LogSeverity.Info, $"{message.Author}@{guildname}", message.Content), false);
+                await ConsoleHelper.Log(
+                    new LogMessage(LogSeverity.Info, $"{message.Author}@{guildname}", message.Content), false);
 
                 // Command (after prefix) Begin
                 int argPos = 0;
@@ -104,10 +96,7 @@ namespace Cirilla {
 
                     //Find out what the user probably meant
                     var embed = Helper.WrongCommand(message, Service, context);
-                    if (embed != default(Embed)) {
-                        //Send "did you mean this?:" message
-                        await context.Channel.SendMessageAsync("", embed: embed);
-                    }
+                    if (embed != default(Embed)) await context.Channel.SendMessageAsync("", embed: embed);
                 }
             }
         }
@@ -136,5 +125,12 @@ namespace Cirilla {
             ConsoleHelper.Log(message);
             return Task.CompletedTask;
         }
+
+        #region Publics
+
+        public bool StopRequested { get; set; }
+        public static DiscordSocketClient Client { get; set; }
+
+        #endregion
     }
 }

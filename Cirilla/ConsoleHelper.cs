@@ -1,14 +1,19 @@
-﻿using Discord;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
 
 namespace Cirilla {
     public class ConsoleHelper {
+        public enum CtrlType {
+            CtrlCEvent = 0
+        }
+
+        private static EventHandler _handler;
         public static bool ShuttingDown { get; set; }
 
         public static Task Log(LogMessage message, bool writeOut = true) {
@@ -57,17 +62,14 @@ namespace Cirilla {
                 lock (Helper.Lock) {
                     try {
                         string logfile = Path.Combine(Information.Directory, "log.txt");
-                        if (!File.Exists(logfile)) {
-                            using (File.Create(logfile)) {
-                            }
-                        }
+                        if (!File.Exists(logfile))
+                            using (File.Create(logfile)) { }
 
                         // > than 10 MB (default) -> clear log
-                        if (Information.Config != null && new FileInfo(logfile).Length > Information.MaxLogSize) {
+                        if (Information.Config != null && new FileInfo(logfile).Length > Information.MaxLogSize)
                             File.WriteAllBytes(logfile, new byte[0]);
-                        }
 
-                        File.AppendAllLines(logfile, new List<string> { text });
+                        File.AppendAllLines(logfile, new List<string> {text});
                     } catch (Exception ex) {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
@@ -92,7 +94,9 @@ namespace Cirilla {
             DisableMouse();
         }
 
-        private static void CancelKey(object sender, ConsoleCancelEventArgs e) { DisposeBot(CtrlType.CtrlCEvent); }
+        private static void CancelKey(object sender, ConsoleCancelEventArgs e) {
+            DisposeBot(CtrlType.CtrlCEvent);
+        }
 
         public static bool DisposeBot(CtrlType sig) {
             if (Program.Cirilla != null)
@@ -112,10 +116,7 @@ namespace Cirilla {
 
             var consoleHandle = GetConsoleWindow();
 
-            if (!GetConsoleMode(consoleHandle, out uint consoleMode)) {
-                // error
-                return;
-            }
+            if (!GetConsoleMode(consoleHandle, out uint consoleMode)) return;
 
             // Clear quick edit & Mouse input flags
             consoleMode &= ~enableQuickEdit;
@@ -130,8 +131,8 @@ namespace Cirilla {
             Console.Clear();
 
             const string introText = "~Cirilla~";
-            int left = (Console.WindowWidth / 2) - (introText.Length / 2);
-            int top = (Console.WindowHeight / 2) - 1;
+            int left = Console.WindowWidth / 2 - introText.Length / 2;
+            int top = Console.WindowHeight / 2 - 1;
             const ConsoleColor introColor = ConsoleColor.Magenta;
 
             Console.SetCursorPosition(left, top);
@@ -156,8 +157,8 @@ namespace Cirilla {
             Console.Clear();
 
             const string introText = "Shutting down..";
-            int left = (Console.WindowWidth / 2) - (introText.Length / 2);
-            int top = (Console.WindowHeight / 2) - 1;
+            int left = Console.WindowWidth / 2 - introText.Length / 2;
+            int top = Console.WindowHeight / 2 - 1;
             const ConsoleColor outroColor = ConsoleColor.Red;
 
             Console.SetCursorPosition(left, top);
@@ -174,14 +175,6 @@ namespace Cirilla {
             Thread.Sleep(300);
         }
 
-        public enum CtrlType {
-            CtrlCEvent = 0
-        }
-
-        private delegate bool EventHandler(CtrlType sig);
-
-        private static EventHandler _handler;
-
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
@@ -194,5 +187,7 @@ namespace Cirilla {
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetConsoleWindow();
+
+        private delegate bool EventHandler(CtrlType sig);
     }
 }

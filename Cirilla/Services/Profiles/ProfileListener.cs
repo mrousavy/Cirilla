@@ -1,7 +1,7 @@
-﻿using Discord;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 
 namespace Cirilla.Services.Profiles {
     public class ProfileListener {
@@ -17,7 +17,7 @@ namespace Cirilla.Services.Profiles {
 
         public async Task ProfileTextReceived(SocketMessage arg) {
             try {
-                SocketUserMessage message = arg as SocketUserMessage;
+                var message = arg as SocketUserMessage;
                 if (message == null)
                     return;
 

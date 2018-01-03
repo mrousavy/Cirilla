@@ -1,12 +1,13 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Cirilla.Services.Roslyn;
 using Discord;
 using Discord.Commands;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Code : ModuleBase {
-        [Command("exec"), Summary("Execute or run C# Code/Scripts")]
+        [Command("exec")]
+        [Summary("Execute or run C# Code/Scripts")]
         public async Task Execute([Summary("The Code to execute")] [Remainder] string code) {
             try {
                 //Requirements to execute C# Roslyn scripts
@@ -20,7 +21,7 @@ namespace Cirilla.Modules {
                 }
 
                 //Handle exec async - so MessageReceived is not blocking
-                Task _ = HandleExecAsync(code, Context.Channel);
+                var _ = HandleExecAsync(code, Context.Channel);
             } catch {
                 await ReplyAsync("Something went wrong, sorry!");
             }
@@ -31,10 +32,10 @@ namespace Cirilla.Modules {
             //Clean for code formatting
             string cleaned = code.Replace("```cs", string.Empty).Replace("`", string.Empty);
 
-            IUserMessage message = await ReplyAsync("Compiling.. :inbox_tray:");
+            var message = await ReplyAsync("Compiling.. :inbox_tray:");
 
             try {
-                Embed embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User, contextChannel);
+                var embed = await ScriptRunnerService.ScriptEmbed(cleaned, Context.User, contextChannel);
 
                 await message.ModifyAsync(props => {
                     props.Content = string.Empty;

@@ -1,18 +1,18 @@
-﻿using Discord;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 
 namespace Cirilla.Services.Votekick {
     //Individual handler for each reactions
     public class VotekickHandler {
-        private readonly IGuildUser _user;
-        private readonly IUserMessage _message;
-        private readonly IGuild _guild;
         private readonly CancellationTokenSource _cts;
+        private readonly IGuild _guild;
+        private readonly IUserMessage _message;
+        private readonly IGuildUser _user;
 
 
         public VotekickHandler(IGuildUser user, IUserMessage message, IGuild guild) {
@@ -32,7 +32,7 @@ namespace Cirilla.Services.Votekick {
 
                 if (await HasMajority()) {
                     await ConsoleHelper.Log($"Kicking {Helper.GetName(_user)}..", LogSeverity.Info);
-                    IUserMessage sentInvite = await DmInvite();
+                    var sentInvite = await DmInvite();
                     try {
                         await Kick();
                     } catch {
@@ -61,11 +61,10 @@ namespace Cirilla.Services.Votekick {
                 if (channel == null)
                     return;
 
-                if (await channel.GetMessageAsync(cachableMessage.Id) is IUserMessage message) {
-                    //Check if Message is exactly the one we attached this Reaction handler to
-                    if (message.Id == _message.Id) {
+                if (await channel.GetMessageAsync(cachableMessage.Id) is IUserMessage message)
+                    if (message.Id == _message.Id)
                         if (await HasMajority()) {
-                            IUserMessage sentInvite = await DmInvite();
+                            var sentInvite = await DmInvite();
                             try {
                                 await Kick();
                             } catch {
@@ -75,8 +74,6 @@ namespace Cirilla.Services.Votekick {
                                 throw;
                             }
                         }
-                    }
-                }
             } catch (Exception ex) {
                 await ConsoleHelper.Log($"Error processing reaction! ({ex.Message})", LogSeverity.Error);
             }
@@ -115,10 +112,10 @@ namespace Cirilla.Services.Votekick {
         //Send user an Invite via DM
         private async Task<IUserMessage> DmInvite() {
             string nl = Environment.NewLine;
-            IInviteMetadata invite = await ((IGuildChannel)_message.Channel).CreateInviteAsync(maxUses: 1);
+            var invite = await ((IGuildChannel) _message.Channel).CreateInviteAsync(maxUses: 1);
             try {
                 //DM the invite
-                IDMChannel dm = await _user.GetOrCreateDMChannelAsync();
+                var dm = await _user.GetOrCreateDMChannelAsync();
                 return await dm.SendMessageAsync($"You've been kicked from the _{_guild.Name}_ guild by votekick!" +
                                                  nl +
                                                  $"As I'm very generous today, here's an invite link to the _{_guild.Name}_ guild:" +
@@ -136,10 +133,7 @@ namespace Cirilla.Services.Votekick {
             try {
                 _cts.Cancel();
 
-                if (await _guild.GetUserAsync(_user.Id) == null) {
-                    //already kicked by ReactionAdded event or server left
-                    return;
-                }
+                if (await _guild.GetUserAsync(_user.Id) == null) return;
                 await _user.KickAsync();
                 await _message.Channel.SendMessageAsync($"You bullies kicked the poor {Helper.GetName(_user)}..");
                 try {

@@ -1,11 +1,16 @@
-﻿using Discord;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Discord;
+using Newtonsoft.Json;
 
 namespace Cirilla {
     internal static class Information {
+        internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
+
+        internal static string InviteLink =
+            "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
+
         //Directory to store configs in
         internal static string Directory { get; } = Path.Combine(AppContext.BaseDirectory, "_data");
 
@@ -34,9 +39,6 @@ namespace Cirilla {
         internal static double XpFactor => Config.XpFactor;
         internal static int MaximumReminders => Config.MaximumReminders;
         internal static int MaximumRemindDays => Config.MaximumRemindDays;
-        internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
-        internal static string InviteLink =
-            "https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707";
         internal static DateTime LastPost => Config.LastPost;
         internal static string LastArticle => Config.LastArticle;
         internal static int NewsInterval => Config.NewsInterval;
@@ -87,88 +89,92 @@ namespace Cirilla {
 
 
     public class Configuration {
-        //Discord API Info
-        public string Token = "DISCORD_API_TOKEN_GOES_HERE";
-
-        //Pastebin Token for sending Log
-        public string PastebinToken = "PASTEBIN_API_TOKEN_GOES_HERE";
-
-        //Minimum Log Severity to output/log
-        public LogSeverity LogSeverity = LogSeverity.Info;
-
-        //Default Text Channel
-        public string TextChannel = "general";
+        public bool AllowVotekick = false;
 
         //Default Botchat Text Channel
         public string Botchat = "botchat";
 
-        //Bot prefix ($help)
-        public char Prefix = '$';
-
-        //Bot prefix (!help)
-        public string SecondaryPrefix = "!";
-
-        //Bot Source Code Repository URL
-        public string RepoUrl = "http://github.com/mrousavy/Cirilla";
-
-        //Bot Creator/Owner (me)
-        public string Owner = "<@266162606161526784>";
-        //Bot Creator/Owner ID (me)
-        public ulong OwnerId = 266162606161526784;
-
-        //URL for Bot Profile Pic
-        public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
         //URL for Bot Pic
         public string BotIconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Bot.png";
-
-
-        //Interval in ms to give XP (2100000 = 35m)
-        public int XpGiveInterval = 2100000;
-
-        //1 in [OwnXp] go to the XP Giver
-        public int OwnXp = 7;
-
-        //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
-        public double XpFactor = 1.20;
-
-        //1 in [GiveRandomXpChance] to give a user 200 XP on XpGiveInterval interval
-        public int GiveRandomXpChance = 400;
-
-        //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
-        public int RandomReactionChance = 100;
-
-        //Time in ms until a votekick expires
-        public int VotekickExpire = 30000;
-
-        public string VotekickYes = "👍";
-        public string VotekickNo = "👎";
-        public bool AllowVotekick = false;
-
-        //Maximum simultaneous reminders for a user
-        public int MaximumReminders = 3;
-
-        //Maximum days for reminders
-        public int MaximumRemindDays = 5;
-
-        //Last time news got posted
-        public DateTime LastPost = DateTime.Now;
-
-        //Last article (name) that got posted
-        public string LastArticle;
-
-        //Time (in hours) until next news article is sent
-        public int NewsInterval = 24;
-
-        //Send Help in private Message
-        public bool PmHelp = true;
-
-        //Max Log Size in bytes
-        public long MaxLogSize = 1024 * 1024 * 10;
 
         //Time in milliseconds until the compilation of $exec scipts cancels
         public int CompileTimeout = 15000;
 
         //Time in milliseconds until the execution of $exec scripts cancels
         public int ExecutionTimeout = 5000;
+
+        //1 in [GiveRandomXpChance] to give a user 200 XP on XpGiveInterval interval
+        public int GiveRandomXpChance = 400;
+
+        //URL for Bot Profile Pic
+        public string IconUrl = "https://raw.githubusercontent.com/mrousavy/Cirilla/master/Resources/Ciri_round.png";
+
+        //Last article (name) that got posted
+        public string LastArticle;
+
+        //Last time news got posted
+        public DateTime LastPost = DateTime.Now;
+
+        //Minimum Log Severity to output/log
+        public LogSeverity LogSeverity = LogSeverity.Info;
+
+        //Maximum days for reminders
+        public int MaximumRemindDays = 5;
+
+        //Maximum simultaneous reminders for a user
+        public int MaximumReminders = 3;
+
+        //Max Log Size in bytes
+        public long MaxLogSize = 1024 * 1024 * 10;
+
+        //Time (in hours) until next news article is sent
+        public int NewsInterval = 24;
+
+        //Bot Creator/Owner (me)
+        public string Owner = "<@266162606161526784>";
+
+        //Bot Creator/Owner ID (me)
+        public ulong OwnerId = 266162606161526784;
+
+        //1 in [OwnXp] go to the XP Giver
+        public int OwnXp = 7;
+
+        //Pastebin Token for sending Log
+        public string PastebinToken = "PASTEBIN_API_TOKEN_GOES_HERE";
+
+        //Send Help in private Message
+        public bool PmHelp = true;
+
+        //Bot prefix ($help)
+        public char Prefix = '$';
+
+        //1 in [RandomReactionChance] chance to add a random Emoji as reaction to a new message
+        public int RandomReactionChance = 100;
+
+        //Bot Source Code Repository URL
+        public string RepoUrl = "http://github.com/mrousavy/Cirilla";
+
+        //Bot prefix (!help)
+        public string SecondaryPrefix = "!";
+
+        //Default Text Channel
+        public string TextChannel = "general";
+
+        //Discord API Info
+        public string Token = "DISCORD_API_TOKEN_GOES_HERE";
+
+        //Time in ms until a votekick expires
+        public int VotekickExpire = 30000;
+
+        public string VotekickNo = "👎";
+
+        public string VotekickYes = "👍";
+
+        //Formula for calculating XP/Level: Level = PreviousLevel * XpFactor
+        public double XpFactor = 1.20;
+
+
+        //Interval in ms to give XP (2100000 = 35m)
+        public int XpGiveInterval = 2100000;
     }
 }

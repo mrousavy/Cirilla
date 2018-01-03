@@ -1,21 +1,20 @@
-﻿using Cirilla.Services.GuildConfig;
+﻿using System.Threading.Tasks;
+using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Config : ModuleBase {
-        [Command("config"), Summary("Show bot config")]
+        [Command("config")]
+        [Summary("Show bot config")]
         public async Task ShowConfig() {
-            GuildConfiguration config = GuildConfigManager.Get(Context.Guild.Id);
+            var config = GuildConfigManager.Get(Context.Guild.Id);
 
             string prefixes = string.Empty;
-            if (config.EnablePrimaryPrefix) {
-                prefixes += $"{Information.Prefix}, ";
-            }
+            if (config.EnablePrimaryPrefix) prefixes += $"{Information.Prefix}, ";
             prefixes += $"{config.Prefix}, {Context.Client.CurrentUser.Mention}";
 
-            EmbedBuilder builder = new EmbedBuilder {
+            var builder = new EmbedBuilder {
                 Color = new Color(50, 125, 0),
                 Author = new EmbedAuthorBuilder {
                     IconUrl = Information.IconUrl,
@@ -43,16 +42,16 @@ namespace Cirilla.Modules {
             await ReplyAsync("", embed: builder.Build());
         }
 
-        [Command("reload"), Summary("Reload bot configuration")]
+        [Command("reload")]
+        [Summary("Reload bot configuration")]
         public async Task ReloadConfig() {
-            if (Context.User is IGuildUser user) {
+            if (Context.User is IGuildUser user)
                 if (Helper.IsOwner(user)) {
                     Information.LoadInfo();
                     await ReplyAsync($"Config reloaded! Type `{Information.Prefix}config` to see the config");
                 } else {
                     await ReplyAsync("You're not allowed to reload my config!");
                 }
-            }
         }
     }
 }

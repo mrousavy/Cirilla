@@ -1,12 +1,13 @@
-﻿using Discord;
+﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class GitHub : ModuleBase {
-        [Command("bugreport"), Summary("Report a Bug in Cirilla on GitHub")]
+        [Command("bugreport")]
+        [Summary("Report a Bug in Cirilla on GitHub")]
         public async Task Bugreport() {
-            EmbedBuilder builder = new EmbedBuilder {
+            var builder = new EmbedBuilder {
                 Color = new Color(244, 196, 65),
                 ThumbnailUrl = Information.GitHubLogo
             };
@@ -16,17 +17,19 @@ namespace Cirilla.Modules {
             await ReplyAsync("", embed: builder.Build());
         }
 
-        [Command("repo"), Summary("Get Repository URL")]
+        [Command("repo")]
+        [Summary("Get Repository URL")]
         public async Task Repo() {
             await ReplyAsync(Information.RepoUrl);
         }
 
-        [Command("addModule"), Summary("Help making Cirilla better by adding Modules!")]
+        [Command("addModule")]
+        [Summary("Help making Cirilla better by adding Modules!")]
         public async Task AddModules() {
-            EmbedBuilder builder = new EmbedBuilder {
+            var builder = new EmbedBuilder {
                 Color = new Color(66, 179, 244),
                 ThumbnailUrl = Information.GitHubLogo,
-                Title = "Help making Cirilla better!",
+                Title = "Help making Cirilla better!"
             };
             builder.AddField("1. Fork it", $"Fork the Project on GitHub [here]({Information.RepoUrl + "/fork"})!");
             builder.AddField("2. Clone it", "Clone the Project with any git client " +

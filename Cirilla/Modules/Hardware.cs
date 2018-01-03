@@ -1,12 +1,13 @@
-﻿using Cirilla.Services.Hardware;
+﻿using System;
+using System.Threading.Tasks;
+using Cirilla.Services.Hardware;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace Cirilla.Modules {
     public class Hardware : ModuleBase {
-        [Command("hw"), Summary("Show a user's Hardware")]
+        [Command("hw")]
+        [Summary("Show a user's Hardware")]
         public async Task ShowHardware([Summary("The user you want to show the Hardware of")] IGuildUser user) {
             try {
                 Tuple<string, string> hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
@@ -18,7 +19,7 @@ namespace Cirilla.Modules {
                 }
 
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Color = new Color(50, 125, 125),
                     Author = new EmbedAuthorBuilder {
                         Name = $"{Helper.GetName(user)}'s Hardware 🖥️",
@@ -35,10 +36,11 @@ namespace Cirilla.Modules {
         }
 
 
-        [Command("hw"), Summary("Show own Hardware")]
+        [Command("hw")]
+        [Summary("Show own Hardware")]
         public async Task ShowHardware() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
+                var user = Context.User as IGuildUser;
                 if (user == null)
                     return;
 
@@ -51,7 +53,7 @@ namespace Cirilla.Modules {
                 }
 
 
-                EmbedBuilder builder = new EmbedBuilder {
+                var builder = new EmbedBuilder {
                     Color = new Color(50, 125, 125),
                     Author = new EmbedAuthorBuilder {
                         Name = $"{Helper.GetName(user)}'s Hardware 🖥️",
@@ -67,7 +69,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("sethw"), Summary("Set your custom hardware, this will be displayed in a Markdown Embed!")]
+        [Command("sethw")]
+        [Summary("Set your custom hardware, this will be displayed in a Markdown Embed!")]
         public async Task SetHardware([Summary("The hardware title")] [Remainder] string title) {
             if (string.IsNullOrWhiteSpace(title)) {
                 await ReplyAsync(
@@ -75,7 +78,7 @@ namespace Cirilla.Modules {
                 return;
             }
 
-            HardwareListener listener = new HardwareListener(Context.Channel as ITextChannel, Context.User);
+            var listener = new HardwareListener(Context.Channel as ITextChannel, Context.User);
             Cirilla.Client.MessageReceived += listener.HardwareReceived;
             HardwareManager.UpdateHardware(Context.Guild, Context.User.Id, title, null);
 

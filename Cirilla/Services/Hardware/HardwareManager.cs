@@ -1,22 +1,23 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Discord;
+using Newtonsoft.Json;
 
 namespace Cirilla.Services.Hardware {
     public class HardwareManager {
+        public static UserHardwareFile UserHardwares;
+
         public static Tuple<string, string> ReadHardware(IGuild guild, ulong userId) {
             string hwfile = Helper.GetPath(guild, "hardware.json");
             if (File.Exists(hwfile)) {
                 UserHardwares = JsonConvert.DeserializeObject<UserHardwareFile>(File.ReadAllText(hwfile));
 
-                UserHardware hw = UserHardwares.Hardwares.FirstOrDefault(h => h.UserId == userId);
+                var hw = UserHardwares.Hardwares.FirstOrDefault(h => h.UserId == userId);
                 return hw == null ? null : new Tuple<string, string>(hw.Title, hw.Hardware);
-            } else {
-                return null;
             }
+            return null;
         }
 
         public static void UpdateHardware(IGuild guild, ulong userId, string title, string hardware) {
@@ -27,7 +28,7 @@ namespace Cirilla.Services.Hardware {
 
             bool contains = false;
 
-            foreach (UserHardware usrhw in UserHardwares.Hardwares) {
+            foreach (var usrhw in UserHardwares.Hardwares)
                 if (usrhw.UserId == userId) {
                     if (!string.IsNullOrWhiteSpace(title))
                         usrhw.Title = title;
@@ -36,20 +37,16 @@ namespace Cirilla.Services.Hardware {
                     contains = true;
                     break;
                 }
-            }
 
-            if (!contains) {
-                UserHardwares.Hardwares.Add(new UserHardware(userId, title, hardware));
-            }
+            if (!contains) UserHardwares.Hardwares.Add(new UserHardware(userId, title, hardware));
 
             File.WriteAllText(hwfile, JsonConvert.SerializeObject(UserHardwares));
         }
 
-
-        public static UserHardwareFile UserHardwares;
-
         public class UserHardwareFile {
-            public UserHardwareFile() { Hardwares = new List<UserHardware>(); }
+            public UserHardwareFile() {
+                Hardwares = new List<UserHardware>();
+            }
 
             public List<UserHardware> Hardwares { get; set; }
         }

@@ -1,17 +1,16 @@
-﻿using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 
 namespace Cirilla.Modules {
     public class Clean : ModuleBase {
-        [Command("clean"), Summary("Clean the last 25 messages in the chat!")]
+        [Command("clean")]
+        [Summary("Clean the last 25 messages in the chat!")]
         public async Task CleanChat() {
             try {
-                if (!(Context.User is IGuildUser user)) {
-                    return;
-                }
+                if (!(Context.User is IGuildUser user)) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;
@@ -31,12 +30,11 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("clean"), Summary("Clean the last [x] messages in the chat!")]
+        [Command("clean")]
+        [Summary("Clean the last [x] messages in the chat!")]
         public async Task CleanChat([Summary("The number of messages to remove")] int count) {
             try {
-                if (!(Context.User is IGuildUser user)) {
-                    return;
-                }
+                if (!(Context.User is IGuildUser user)) return;
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {
                     await ReplyAsync("Sorry, but you're not allowed to use that super premium command!");
                     return;

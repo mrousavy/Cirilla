@@ -1,15 +1,17 @@
-﻿using Cirilla.Services.Wikipedia;
-using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Cirilla.Services.Wikipedia;
+using Discord;
+using Discord.Commands;
 using Urban.NET;
 
 namespace Cirilla.Modules {
     public class Search : ModuleBase {
-        [Command("google"), Summary("Google something!")]
+        [Command("google")]
+        [Summary("Google something!")]
         public async Task GoogleSearch([Summary("The Google search query")] [Remainder] string query) {
             try {
                 await ReplyAsync(LmgtfyQuery(query));
@@ -18,16 +20,17 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("define"), Summary("Define something! (using Urban dictionary)")]
+        [Command("define")]
+        [Summary("Define something! (using Urban dictionary)")]
         public async Task Define([Summary("The word(s) to define")] [Remainder] string words) {
             try {
-                UrbanService service = new UrbanService();
-                Data data = await service.Data(words);
+                var service = new UrbanService();
+                var data = await service.Data(words);
 
                 if (data.List.Length > 0) {
-                    List list = data.List.First();
+                    var list = data.List.First();
 
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Definition for \"{list.Word}\"",
                             Url = list.Permalink
@@ -50,7 +53,8 @@ namespace Cirilla.Modules {
             }
         }
 
-        [Command("wiki"), Summary("Search something on Wikipedia!")]
+        [Command("wiki")]
+        [Summary("Search something on Wikipedia!")]
         public async Task WikipediaSearch([Summary("The Google search query")] [Remainder] string query) {
             try {
                 if (string.IsNullOrWhiteSpace(query)) {
@@ -59,7 +63,7 @@ namespace Cirilla.Modules {
                     return;
                 }
 
-                WikipediaResponse response = await new WikipediaService().GetWikipediaResultsAsync(query);
+                var response = await new WikipediaService().GetWikipediaResultsAsync(query);
 
                 // Empty response.
                 if (response?.Query == null || !response.Query.Pages.Any()) {
@@ -68,7 +72,7 @@ namespace Cirilla.Modules {
                 }
 
                 // Concat responses
-                StringBuilder messageBuilder = new StringBuilder();
+                var messageBuilder = new StringBuilder();
                 response.Query.Pages.Values.ToList().ForEach(p => messageBuilder.AppendLine(p.Extract));
                 string message = messageBuilder.ToString();
 
@@ -87,7 +91,7 @@ namespace Cirilla.Modules {
                     int cursor = 0;
 
                     for (int i = 0; i < batchCount; i++) {
-                        EmbedBuilder builder = new EmbedBuilder {
+                        var builder = new EmbedBuilder {
                             Author = new EmbedAuthorBuilder {
                                 Name = $"Wikipedia results for \"{query}\" (part {i + 1})",
                                 IconUrl =
@@ -96,13 +100,13 @@ namespace Cirilla.Modules {
                             Color = new Color(255, 255, 255),
                             Title = "\u200B",
                             Description = message.Substring(cursor,
-                                (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize)
+                                i == batchCount - 1 ? message.Length - cursor : DiscordConfig.MaxMessageSize)
                         };
                         await ReplyAsync("", embed: builder.Build());
                         cursor += DiscordConfig.MaxMessageSize;
                     }
                 } else {
-                    EmbedBuilder builder = new EmbedBuilder {
+                    var builder = new EmbedBuilder {
                         Author = new EmbedAuthorBuilder {
                             Name = $"Wikipedia results for \"{query}\"",
                             IconUrl = "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png"
@@ -123,7 +127,7 @@ namespace Cirilla.Modules {
         }
 
         private static string LmgtfyQuery(string query) {
-            query = System.Net.WebUtility.UrlEncode(query);
+            query = WebUtility.UrlEncode(query);
             return $"http://lmgtfy.com/?q={query}";
         }
     }

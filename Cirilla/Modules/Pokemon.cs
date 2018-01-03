@@ -18,35 +18,28 @@ namespace Cirilla.Modules {
 
                 await ReplyAsync("", embed: result);
                 await message.DeleteAsync();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 await ReplyAsync(ex.Message);
             }
         }
-
 
 
         private static async Task<Embed> QueryPokedex(int id) {
             var pokemon = await Pokedex.GetPokemonById(id);
             var form = await Pokedex.GetPokemonForm(id);
             string name = pokemon.Name.Capitalize();
-            double height = (double)pokemon.Height / 10;
-            double weight = (double)pokemon.Weight / 10;
+            double height = (double) pokemon.Height / 10;
+            double weight = (double) pokemon.Weight / 10;
 
             IList<string> abilities = new List<string>();
-            foreach(var ability in pokemon.Abilities.OrderBy(a => a.Slot)) {
+            foreach (var ability in pokemon.Abilities.OrderBy(a => a.Slot)) {
                 string appendix = ability.Hidden ? " (Hidden)" : "";
                 abilities.Add($"#{ability.Slot}: {ability.Actual.Name.Capitalize()}{appendix}");
             }
-            
-            IList<string> items = new List<string>();
-            foreach(var item in pokemon.Items) {
-                items.Add(item.Name);
-            }
 
-            IList<string> types = new List<string>();
-            foreach(var type in pokemon.Types.OrderBy(t => t.Slot)) {
-                types.Add($"#{type.Slot}: {type.ToEmoji()} {type.Name}");
-            }
+            IList<string> items = pokemon.Items.Select(item => item.Name).ToList();
+
+            IList<string> types = pokemon.Types.OrderBy(t => t.Slot).Select(type => $"#{type.Slot}: {type.ToEmoji()} {type.Name}").ToList();
 
             string joinAbilities = string.Join("\n", abilities);
             joinAbilities = string.IsNullOrWhiteSpace(joinAbilities) ? "/" : joinAbilities;

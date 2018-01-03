@@ -8,7 +8,7 @@ namespace Cirilla.Services.Pastebin {
         public static async Task<string> Post(string text) {
             text = CheckLength(text);
 
-            using (HttpClient client = new HttpClient()) {
+            using (var client = new HttpClient()) {
                 client.BaseAddress = new Uri("https://pastebin.com/api/api_post.php");
                 Dictionary<string, string> parameters = new Dictionary<string, string>
                 {
@@ -40,10 +40,7 @@ namespace Cirilla.Services.Pastebin {
         public static string CheckLength(string input) {
             const int maxLength = 65519;
 
-            if (input.Length >= maxLength) { //max length for the FormUrlEncodedContent's parameters
-                return input.Substring(input.Length - maxLength, maxLength); // trim to the last 65520 chars
-            }
-            return input;
+            return input.Length >= maxLength ? input.Substring(input.Length - maxLength, maxLength) : input;
         }
     }
 }

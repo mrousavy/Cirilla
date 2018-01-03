@@ -9,8 +9,7 @@ namespace Cirilla.Modules {
         [Command("clean"), Summary("Clean the last 25 messages in the chat!")]
         public async Task CleanChat() {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
+                if (!(Context.User is IGuildUser user)) {
                     return;
                 }
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {
@@ -35,8 +34,7 @@ namespace Cirilla.Modules {
         [Command("clean"), Summary("Clean the last [x] messages in the chat!")]
         public async Task CleanChat([Summary("The number of messages to remove")] int count) {
             try {
-                IGuildUser user = Context.User as IGuildUser;
-                if (user == null) {
+                if (!(Context.User is IGuildUser user)) {
                     return;
                 }
                 if (!Helper.IsOwner(user) && !user.GuildPermissions.ManageMessages) {

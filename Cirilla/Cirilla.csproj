@@ -30,11 +30,11 @@
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.2" />
     <PackageReference Include="MathParser.org-mXparser" Version="4.1.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.3.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Reddit.Net" Version="1.0.33" />
     <PackageReference Include="Urban.NET" Version="1.0.0" />
-    <PackageReference Include="WebSocket4Net" Version="0.15.0" />
+    <PackageReference Include="WebSocket4Net" Version="0.15.1" />
   </ItemGroup>
 
 </Project>

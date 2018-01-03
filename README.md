@@ -52,27 +52,28 @@ These are the commands you can use:
 $nick nickname
 $setup
 $leave
-$prefix prefix
-$toggleprimary
 $togglexp
+$prefix prefix
+$prefix
+$toggleprimary
 ```
 **BotInfo**
 ```
 $host
+$owner
 $invite
 $uptime
 $run
 $source
-$owner
 ```
 **Chat**
 ```
-$embed text
 $hi
 $hello
-$poke user
-$poke user message
-$say message
+$poke user 
+$poke user, message 
+$say text 
+$embed text
 ```
 **Clean**
 ```
@@ -129,14 +130,20 @@ $news limit
 ```
 **Owner**
 ```
-$announce text
-$cmdlog
 $log
 $clearlog
-$game game
+$cmdlog
+$clearcmdlog
+$game game 
+$game
+$announce text 
+$togglescripts
 $reboot
 $shutdown
-$togglescripts
+```
+**Pokémon**
+```
+$pokedex id
 ```
 **Profile**
 ```
@@ -160,27 +167,27 @@ $remindme time, text
 ```
 **Search**
 ```
-$define words
-$google query
+$google query 
+$define words 
 $wiki query
 ```
 **UserInfo**
 ```
+$info user 
+$info
 $avatar
-$avatar user
+$avatar user 
 $details
-$stats user
-$stats
 ```
-**Votekick**
+**Votekick** (Only if Votekick is enabled)
 ```
 $votekick user
 ```
-**Xp**
+**Xp** (Only if XP is enabled -> `$togglexp`)
 ```
-$xp user, xp
-$setxp user, xp
+$xp user, xp 
+$setxp user, xp 
 $xp
-$xp user
+$xp user 
 $stats
 ```

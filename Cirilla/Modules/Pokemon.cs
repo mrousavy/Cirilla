@@ -57,7 +57,7 @@ namespace Cirilla.Modules {
                 },
                 Footer = new EmbedFooterBuilder {
                     Text = "Powered by pokeapi.co",
-                    IconUrl = "pokeapi.co"
+                    IconUrl = "http://pokeapi.co"
                 },
                 Color = new Color(255, 64, 64),
                 ThumbnailUrl = form.Sprites.Front

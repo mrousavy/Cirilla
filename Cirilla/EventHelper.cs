@@ -7,18 +7,22 @@ using Cirilla.Services.Xp;
 using Discord;
 using Discord.WebSocket;
 
-namespace Cirilla {
-    public static class EventHelper {
-        public static async Task UserJoined(SocketGuildUser user) {
-            await ConsoleHelper.Log($"{Helper.GetName(user)} joined the \"{user.Guild.Name}\" server!",
+namespace Cirilla
+{
+    public static class EventHelper
+    {
+        public static async Task UserJoined(SocketGuildUser user)
+        {
+            ConsoleHelper.Log($"{Helper.GetName(user)} joined the \"{user.Guild.Name}\" server!",
                 LogSeverity.Info);
             var channel = user.Guild.DefaultChannel;
             if (channel != null)
                 await channel.SendMessageAsync($"Hi {user.Mention}!", true);
         }
 
-        public static async Task UserLeft(SocketGuildUser user) {
-            await ConsoleHelper.Log($"{user} left the \"{user.Guild.Name}\" server!", LogSeverity.Info);
+        public static async Task UserLeft(SocketGuildUser user)
+        {
+            ConsoleHelper.Log($"{user} left the \"{user.Guild.Name}\" server!", LogSeverity.Info);
             var channel = user.Guild.DefaultChannel;
             if (channel != null)
                 await channel.SendMessageAsync($"{Helper.GetName(user)} left the server!", true);
@@ -30,11 +34,14 @@ namespace Cirilla {
         }
 
 
-        public static async Task JoinedGuild(SocketGuild guild) {
-            try {
-                await ConsoleHelper.Log($"Joined Guild \"{guild.Name}\"!", LogSeverity.Info);
+        public static async Task JoinedGuild(SocketGuild guild)
+        {
+            try
+            {
+                ConsoleHelper.Log($"Joined Guild \"{guild.Name}\"!", LogSeverity.Info);
 
-                if (guild.CurrentUser.GuildPermissions.SendMessages) {
+                if (guild.CurrentUser.GuildPermissions.SendMessages)
+                {
                     await guild.DefaultChannel.SendMessageAsync("Hi guys! I'm the new bot!! :wave: :smile:" +
                                                                 $"{Environment.NewLine}Type `{Information.Prefix}help` for a list of all available commands!");
 
@@ -43,69 +50,85 @@ namespace Cirilla {
                 }
 
                 await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
+            } catch (Exception ex)
+            {
+                ConsoleHelper.Log($"An unknown error occured (JoinedGuild event) {ex.Message}",
                     LogSeverity.Error);
             }
         }
 
-        public static Task LeftGuild(SocketGuild guild) {
-            try {
+        public static Task LeftGuild(SocketGuild guild)
+        {
+            try
+            {
                 string guildDir = Path.Combine(Information.Directory, guild.Id.ToString());
                 //cleanup
                 if (Directory.Exists(guildDir)) Directory.Delete(guildDir, true);
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 ConsoleHelper.Log($"Could not cleanup for \"{guild.Name}\" guild! ({ex.Message})",
                     LogSeverity.Error);
             }
+
             ConsoleHelper.Log($"Left Guild \"{guild.Name}\"!", LogSeverity.Info);
 
             return Task.CompletedTask;
         }
 
 
-        public static async Task GuildAvailable(SocketGuild guild) {
-            try {
+        public static Task GuildAvailable(SocketGuild guild)
+        {
+            try
+            {
                 ReminderService.Init(guild);
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", LogSeverity.Error);
+            } catch (Exception ex)
+            {
+                ConsoleHelper.Log($"Could not init Guild's reminders! ({ex.Message})", LogSeverity.Error);
             }
+
+            return Task.CompletedTask;
         }
 
-        public static async Task Ready() {
+        public static async Task Ready()
+        {
             await Cirilla.Client.SetGameAsync($"{Information.Prefix}help | {Cirilla.Client.Guilds.Count} Guilds");
 
 
-            await ConsoleHelper.Log("Connected Guilds:", LogSeverity.Info);
+            ConsoleHelper.Log("Connected Guilds:", LogSeverity.Info);
             foreach (IGuild guild in Cirilla.Client.Guilds)
-                await ConsoleHelper.Log($"\t{guild.Name}", LogSeverity.Info);
+                ConsoleHelper.Log($"\t{guild.Name}", LogSeverity.Info);
         }
 
 
-        public static async Task QuestionThinking(SocketMessage messageArg) {
-            var message = messageArg as SocketUserMessage;
-            if (message == null)
+        public static async Task QuestionThinking(SocketMessage messageArg)
+        {
+            if (!(messageArg is SocketUserMessage message))
                 return;
 
-            try {
+            try
+            {
                 if (message.Content.EndsWith("?")) await message.AddReactionAsync(new Emoji(Information.ThinkEmoji));
-            } catch {
+            } catch
+            {
                 // can't add reactions
             }
         }
 
-        public static async Task RandomEmoji(SocketMessage messageArg) {
-            var message = messageArg as SocketUserMessage;
-            if (message == null)
+        public static async Task RandomEmoji(SocketMessage messageArg)
+        {
+            if (!(messageArg is SocketUserMessage message))
                 return;
 
-            if (message.Channel is IGuildChannel guildchannel) {
+            if (message.Channel is IGuildChannel guildchannel)
+            {
                 var emote = RandomEmote.GetRandomEmote(guildchannel.Guild);
                 if (emote != null)
-                    try {
+                    try
+                    {
                         await message.AddReactionAsync(emote);
-                        await ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
-                    } catch {
+                        ConsoleHelper.Log("Added random Emote to a message!", LogSeverity.Info);
+                    } catch
+                    {
                         // can't add reactions
                     }
             }

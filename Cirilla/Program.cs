@@ -7,15 +7,19 @@ using Cirilla.Services.News;
 using Cirilla.Services.Xp;
 using Discord;
 
-namespace Cirilla {
-    public class Program {
+namespace Cirilla
+{
+    public class Program
+    {
         public static Random Random;
 
         internal static DateTime StartTime;
         internal static Cirilla Cirilla;
 
-        public static void Main(string[] args) {
-            try {
+        public static void Main(string[] args)
+        {
+            try
+            {
                 Random = new Random();
                 if (!Directory.Exists(Information.Directory)) Directory.CreateDirectory(Information.Directory);
 
@@ -26,9 +30,11 @@ namespace Cirilla {
                 bool skipIntro = false;
 #pragma warning restore 219
 
-                foreach (string arg in args) {
+                foreach (string arg in args)
+                {
                     string cleanArg = arg.ToLower().Replace("-", "");
-                    switch (cleanArg) {
+                    switch (cleanArg)
+                    {
                         case "skip":
                             // ReSharper disable once RedundantAssignment
                             skipIntro = true;
@@ -62,7 +68,8 @@ namespace Cirilla {
                 ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
 
                 Thread.Sleep(-1);
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 string nl = Environment.NewLine;
                 File.WriteAllText(Path.Combine(Information.Directory, "error.txt"),
                     $"[{DateTime.Now:dd.MM.yyyy hh:mm:ss}] {ex.Message}:{nl}{ex.Message}{nl}{ex.Source}{nl}{ex.StackTrace}");

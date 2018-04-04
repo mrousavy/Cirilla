@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Cirilla.Services.Pastebin {
-    public static class Pastebin {
-        public static async Task<string> Post(string text) {
+namespace Cirilla.Services.Pastebin
+{
+    public static class Pastebin
+    {
+        public static async Task<string> Post(string text)
+        {
             text = CheckLength(text);
 
-            using (var client = new HttpClient()) {
+            using (var client = new HttpClient())
+            {
                 client.BaseAddress = new Uri("https://pastebin.com/api/api_post.php");
-                Dictionary<string, string> parameters = new Dictionary<string, string> {
+                Dictionary<string, string> parameters = new Dictionary<string, string>
+                {
                     {"api_dev_key", Information.PastebinToken},
                     {"api_option", "paste"},
                     {"api_paste_code", text},
@@ -31,7 +36,8 @@ namespace Cirilla.Services.Pastebin {
         }
 
         //Check if string is longer than 2000 chars, if yes - limit it
-        public static string CheckLength(string input) {
+        public static string CheckLength(string input)
+        {
             const int maxLength = 65519;
 
             return input.Length >= maxLength ? input.Substring(input.Length - maxLength, maxLength) : input;

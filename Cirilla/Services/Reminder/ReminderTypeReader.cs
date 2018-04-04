@@ -3,8 +3,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace Cirilla.Services.Reminder {
-    public class ReminderTypeReader : TypeReader {
+namespace Cirilla.Services.Reminder
+{
+    public class ReminderTypeReader : TypeReader
+    {
         private const string _tdn = "([0-9]|0[0-9]|1[0-9]|2[0-3])"; // Two Digit Number
 
         private static readonly Regex _day = new Regex($"{_tdn}d", RegexOptions.IgnoreCase);
@@ -12,8 +14,10 @@ namespace Cirilla.Services.Reminder {
         private static readonly Regex _minute = new Regex($"{_tdn}m", RegexOptions.IgnoreCase);
         private static readonly Regex _second = new Regex($"{_tdn}s", RegexOptions.IgnoreCase);
 
-        public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider services) {
-            try {
+        public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider services)
+        {
+            try
+            {
                 string[] split = input.Split(':');
 
                 var dayMatch = _day.Match(input);
@@ -40,7 +44,8 @@ namespace Cirilla.Services.Reminder {
                     throw new Exception();
 
                 return Task.FromResult(TypeReaderResult.FromSuccess(diff));
-            } catch {
+            } catch
+            {
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Invalid format"));
             }
         }

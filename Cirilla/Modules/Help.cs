@@ -5,31 +5,39 @@ using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class Help : ModuleBase<CommandContext> {
+namespace Cirilla.Modules
+{
+    public class Help : ModuleBase<CommandContext>
+    {
         private readonly CommandService _service;
 
-        public Help(CommandService service) {
+        public Help(CommandService service)
+        {
             _service = service;
         }
 
         [Command("help")]
         [Summary("Show all available Commands")]
-        public async Task HelpAsync() {
+        public async Task HelpAsync()
+        {
             char prefix = Information.Prefix;
-            var builder = new EmbedBuilder {
+            var builder = new EmbedBuilder
+            {
                 Color = new Color(114, 137, 218),
                 Description = "These are the commands **you can use** here:",
-                Footer = new EmbedFooterBuilder {
+                Footer = new EmbedFooterBuilder
+                {
                     Text = "Use \"$help command\" to see more info about a specific Command!"
                 },
                 Title = "Help (Click here for a list of **all** available commands)",
                 Url = "http://github.com/mrousavy/Cirilla#commands"
             };
 
-            foreach (var module in _service.Modules) {
+            foreach (var module in _service.Modules)
+            {
                 string description = null;
-                foreach (var cmd in module.Commands) {
+                foreach (var cmd in module.Commands)
+                {
                     if (!CanUse(Context.User, cmd))
                         continue; //Don't include commands if user can't use them
 
@@ -40,7 +48,8 @@ namespace Cirilla.Modules {
                 }
 
                 if (!string.IsNullOrWhiteSpace(description))
-                    builder.AddField(x => {
+                    builder.AddField(x =>
+                    {
                         x.Name = module.Name;
                         x.Value = description;
                         x.IsInline = true;
@@ -48,14 +57,16 @@ namespace Cirilla.Modules {
             }
 
             if (Information.PmHelp)
-                try {
+                try
+                {
                     var dm = await Context.User.GetOrCreateDMChannelAsync();
                     await dm.SendMessageAsync("", false, builder.Build());
 
                     if (Context.Channel is IGuildChannel _
                     ) //Only send "Check your DMs" if Message is in a Guild Channel
                         await ReplyAsync("Check your DMs!");
-                } catch {
+                } catch
+                {
                     //could not send private
                     await ReplyAsync($"You're not allowing direct messages {Context.User.Mention}..",
                         embed: builder.Build());
@@ -65,25 +76,31 @@ namespace Cirilla.Modules {
 
         [Command("help")]
         [Summary("Show information and usage about a command")]
-        public async Task HelpAsync([Summary("The command you want to see the documentation about")] string command) {
+        public async Task HelpAsync([Summary("The command you want to see the documentation about")]
+            string command)
+        {
             var result = _service.Search(Context, command);
             string nl = Environment.NewLine;
 
-            if (!result.IsSuccess) {
+            if (!result.IsSuccess)
+            {
                 await ReplyAsync($"Sorry, I couldn't find the **{command}** command.");
                 return;
             }
 
-            var builder = new EmbedBuilder {
+            var builder = new EmbedBuilder
+            {
                 Color = new Color(114, 137, 218),
                 Description = $"Here's some Information about the **{command}** command:"
             };
 
-            foreach (var match in result.Commands) {
+            foreach (var match in result.Commands)
+            {
                 var cmd = match.Command;
                 bool multiple = cmd.Parameters.Count < 1;
 
-                builder.AddField(x => {
+                builder.AddField(x =>
+                {
                     x.Name = $"{Information.Prefix}{cmd.Aliases.First()} {string.Join(" ", cmd.Parameters)}";
                     if (multiple) x.Value = $"Summary: {cmd.Summary}";
                     else
@@ -97,14 +114,16 @@ namespace Cirilla.Modules {
         }
 
 
-        public static bool CanUse(IUser user, CommandInfo command) {
+        public static bool CanUse(IUser user, CommandInfo command)
+        {
             //if (user.Id == Information.OwnerId) {
             //    return true;
             //}
 
             var guilduser = user as IGuildUser;
 
-            switch (command.Module.Name) {
+            switch (command.Module.Name)
+            {
                 case "Admin":
                 case "Clean":
                     if (guilduser == null) return false;
@@ -116,7 +135,9 @@ namespace Cirilla.Modules {
                     if (Information.AllowVotekick && guilduser != null) return true;
                     else return false;
                 case "Xp":
-                    if (guilduser != null) if (GuildConfigManager.Get(guilduser.GuildId).EnableXpSystem) return true;
+                    if (guilduser != null)
+                        if (GuildConfigManager.Get(guilduser.GuildId).EnableXpSystem)
+                            return true;
                     return false;
                 case "Profile":
                 case "Hardware":
@@ -124,6 +145,7 @@ namespace Cirilla.Modules {
                 case "Code":
                     return guilduser != null;
             }
+
             return true;
         }
     }

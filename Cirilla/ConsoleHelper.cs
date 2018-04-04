@@ -4,26 +4,30 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Discord;
 
-namespace Cirilla {
-    public class ConsoleHelper {
-        public enum CtrlType {
+namespace Cirilla
+{
+    public class ConsoleHelper
+    {
+        public enum CtrlType
+        {
             CtrlCEvent = 0
         }
 
         private static EventHandler _handler;
         public static bool ShuttingDown { get; set; }
 
-        public static Task Log(LogMessage message, bool writeOut = true) {
+        public static void Log(LogMessage message, bool writeOut = true)
+        {
             if (ShuttingDown)
-                return Task.CompletedTask;
+                return;
 
             if (Information.Config != null && Information.LogSeverity < message.Severity)
-                return Task.CompletedTask;
+                return;
 
-            switch (message.Severity) {
+            switch (message.Severity)
+            {
                 case LogSeverity.Critical:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
@@ -41,6 +45,7 @@ namespace Cirilla {
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
             }
+
             string text =
                 $"[{DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}] [{message.Severity}] [{message.Source}] {message.Message}";
             Console.WriteLine(text);
@@ -49,28 +54,33 @@ namespace Cirilla {
                 WriteOut(text);
 
             Console.ResetColor();
-            return Task.CompletedTask;
         }
 
-        public static Task Log(string message, LogSeverity logSeverity) {
+        public static void Log(string message, LogSeverity logSeverity)
+        {
             Log(new LogMessage(logSeverity, "Print", message));
-            return Task.CompletedTask;
         }
 
-        public static void WriteOut(string text) {
-            new Thread(() => {
-                lock (Helper.Lock) {
-                    try {
+        public static void WriteOut(string text)
+        {
+            new Thread(() =>
+            {
+                lock (Helper.Lock)
+                {
+                    try
+                    {
                         string logfile = Path.Combine(Information.Directory, "log.txt");
                         if (!File.Exists(logfile))
-                            using (File.Create(logfile)) { }
+                            using (File.Create(logfile))
+                            { }
 
                         // > than 10 MB (default) -> clear log
                         if (Information.Config != null && new FileInfo(logfile).Length > Information.MaxLogSize)
                             File.WriteAllBytes(logfile, new byte[0]);
 
                         File.AppendAllLines(logfile, new List<string> {text});
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Log File! ({ex.Message})");
                         Console.ResetColor();
@@ -79,7 +89,8 @@ namespace Cirilla {
             }).Start();
         }
 
-        public static void Set() {
+        public static void Set()
+        {
             //Disable Cursor Visibility
             Console.CursorVisible = false;
 
@@ -94,11 +105,13 @@ namespace Cirilla {
             DisableMouse();
         }
 
-        private static void CancelKey(object sender, ConsoleCancelEventArgs e) {
+        private static void CancelKey(object sender, ConsoleCancelEventArgs e)
+        {
             DisposeBot(CtrlType.CtrlCEvent);
         }
 
-        public static bool DisposeBot(CtrlType sig) {
+        public static bool DisposeBot(CtrlType sig)
+        {
             if (Program.Cirilla != null)
                 Program.Cirilla.Stop().GetAwaiter().GetResult();
 
@@ -110,7 +123,8 @@ namespace Cirilla {
         }
 
 
-        private static void DisableMouse() {
+        private static void DisableMouse()
+        {
             const uint enableQuickEdit = 0x0040;
             const uint enableMouseInput = 0x0010;
 
@@ -122,12 +136,14 @@ namespace Cirilla {
             consoleMode &= ~enableQuickEdit;
             consoleMode &= ~enableMouseInput;
 
-            if (!SetConsoleMode(consoleHandle, consoleMode)) {
+            if (!SetConsoleMode(consoleHandle, consoleMode))
+            {
                 // error
             }
         }
 
-        public static void Intro() {
+        public static void Intro()
+        {
             Console.Clear();
 
             const string introText = "~Cirilla~";
@@ -139,7 +155,8 @@ namespace Cirilla {
             var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = introColor;
 
-            foreach (char ch in introText) {
+            foreach (char ch in introText)
+            {
                 Console.Write(ch);
                 Thread.Sleep(90);
             }
@@ -151,7 +168,8 @@ namespace Cirilla {
             Console.Clear();
         }
 
-        public static void Outro() {
+        public static void Outro()
+        {
             ShuttingDown = true;
 
             Console.Clear();
@@ -165,7 +183,8 @@ namespace Cirilla {
             var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = outroColor;
 
-            foreach (char ch in introText) {
+            foreach (char ch in introText)
+            {
                 Console.Write(ch);
                 Thread.Sleep(50);
             }

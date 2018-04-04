@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Cirilla.Services.Pokemon {
-    public class Pokemon {
+namespace Cirilla.Services.Pokemon
+{
+    public class Pokemon
+    {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
 
@@ -52,7 +54,8 @@ namespace Cirilla.Services.Pokemon {
         public IEnumerable<Type> Types { get; set; }
     }
 
-    public class Ability {
+    public class Ability
+    {
         [JsonProperty(PropertyName = "is_hidden")]
         public bool Hidden { get; set; } = true;
 
@@ -66,7 +69,8 @@ namespace Cirilla.Services.Pokemon {
     /// <summary>
     ///     Indicating any Object in the Pokedex API that has a name and a URL
     /// </summary>
-    public class Property {
+    public class Property
+    {
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
@@ -74,7 +78,8 @@ namespace Cirilla.Services.Pokemon {
         public string Url { get; set; }
     }
 
-    public class GameIndex {
+    public class GameIndex
+    {
         [JsonProperty(PropertyName = "game_index")]
         public int Index { get; set; }
 
@@ -85,7 +90,8 @@ namespace Cirilla.Services.Pokemon {
         public Property Version { get; set; }
     }
 
-    public class GroupDetails {
+    public class GroupDetails
+    {
         [JsonProperty(PropertyName = "level_learned_at")]
         public int LearnedAt { get; set; }
 
@@ -96,7 +102,8 @@ namespace Cirilla.Services.Pokemon {
         public Property LearnMethod { get; set; }
     }
 
-    public class Move {
+    public class Move
+    {
         [JsonProperty(PropertyName = "move")]
         public Property Actual { get; set; }
 
@@ -104,7 +111,8 @@ namespace Cirilla.Services.Pokemon {
         public IEnumerable<GroupDetails> GroupDetails { get; set; }
     }
 
-    public class Statistic {
+    public class Statistic
+    {
         [JsonProperty(PropertyName = "base_stat")]
         public int BaseValue { get; set; }
 
@@ -118,7 +126,8 @@ namespace Cirilla.Services.Pokemon {
         public Property Actual { get; set; }
     }
 
-    public class Type {
+    public class Type
+    {
         [JsonProperty(PropertyName = "slot")]
         public int Slot { get; set; }
 
@@ -128,8 +137,10 @@ namespace Cirilla.Services.Pokemon {
         [JsonProperty(PropertyName = "type")]
         public Property Actual { get; set; }
 
-        public string ToEmoji() {
-            switch (Name) {
+        public string ToEmoji()
+        {
+            switch (Name)
+            {
                 case "normal":
                     return "✊";
                 case "fire":
@@ -173,7 +184,8 @@ namespace Cirilla.Services.Pokemon {
     }
 
 
-    public class Form {
+    public class Form
+    {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
 
@@ -214,7 +226,8 @@ namespace Cirilla.Services.Pokemon {
         public int Order { get; set; }
     }
 
-    public class Sprites {
+    public class Sprites
+    {
         [JsonProperty(PropertyName = "front_default")]
         public string Front { get; set; }
 

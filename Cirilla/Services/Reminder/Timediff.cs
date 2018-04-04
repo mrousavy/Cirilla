@@ -1,8 +1,11 @@
 ﻿using System;
 
-namespace Cirilla.Services.Reminder {
-    public class Timediff {
-        public Timediff(int days, int hours, int minutes, int seconds) {
+namespace Cirilla.Services.Reminder
+{
+    public class Timediff
+    {
+        public Timediff(int days, int hours, int minutes, int seconds)
+        {
             _days = days;
             _hours = hours;
             _minutes = minutes;
@@ -20,8 +23,10 @@ namespace Cirilla.Services.Reminder {
         public int Minutes => _days;
         public int Seconds => _days;
 
-        public int TotalSeconds {
-            get {
+        public int TotalSeconds
+        {
+            get
+            {
                 int secDay = _days * 24 * 60 * 60;
                 int secHour = _hours * 60 * 60;
                 int secMinute = _minutes * 60;

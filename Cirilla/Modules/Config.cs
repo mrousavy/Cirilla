@@ -3,20 +3,25 @@ using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class Config : ModuleBase {
+namespace Cirilla.Modules
+{
+    public class Config : ModuleBase
+    {
         [Command("config")]
         [Summary("Show bot config")]
-        public async Task ShowConfig() {
+        public async Task ShowConfig()
+        {
             var config = GuildConfigManager.Get(Context.Guild.Id);
 
             string prefixes = string.Empty;
             if (config.EnablePrimaryPrefix) prefixes += $"{Information.Prefix}, ";
             prefixes += $"{config.Prefix}, {Context.Client.CurrentUser.Mention}";
 
-            var builder = new EmbedBuilder {
+            var builder = new EmbedBuilder
+            {
                 Color = new Color(50, 125, 0),
-                Author = new EmbedAuthorBuilder {
+                Author = new EmbedAuthorBuilder
+                {
                     IconUrl = Information.IconUrl,
                     Name = "Cirilla Config"
                 }
@@ -44,12 +49,15 @@ namespace Cirilla.Modules {
 
         [Command("reload")]
         [Summary("Reload bot configuration")]
-        public async Task ReloadConfig() {
+        public async Task ReloadConfig()
+        {
             if (Context.User is IGuildUser user)
-                if (Helper.IsOwner(user)) {
+                if (Helper.IsOwner(user))
+                {
                     Information.LoadInfo();
                     await ReplyAsync($"Config reloaded! Type `{Information.Prefix}config` to see the config");
-                } else {
+                } else
+                {
                     await ReplyAsync("You're not allowed to reload my config!");
                 }
         }

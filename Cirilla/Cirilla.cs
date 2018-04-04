@@ -8,10 +8,14 @@ using Discord.Commands;
 using Discord.Net.Providers.WS4Net;
 using Discord.WebSocket;
 
-namespace Cirilla {
-    public class Cirilla {
-        public Cirilla(LogSeverity logSeverity) {
-            var config = new DiscordSocketConfig {
+namespace Cirilla
+{
+    public class Cirilla
+    {
+        public Cirilla(LogSeverity logSeverity)
+        {
+            var config = new DiscordSocketConfig
+            {
                 LogLevel = logSeverity
             };
             if (Information.NeedsWs4Net) config.WebSocketProvider = WS4NetProvider.Instance;
@@ -28,7 +32,8 @@ namespace Cirilla {
             Client.GuildAvailable += EventHelper.GuildAvailable;
             Client.Ready += EventHelper.Ready;
 
-            var serviceConfig = new CommandServiceConfig {
+            var serviceConfig = new CommandServiceConfig
+            {
                 CaseSensitiveCommands = false,
                 LogLevel = logSeverity
             };
@@ -37,9 +42,11 @@ namespace Cirilla {
             Service.AddTypeReader(typeof(Timediff), new ReminderTypeReader());
             Service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
-            try {
+            try
+            {
                 Login().GetAwaiter().GetResult();
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 ConsoleHelper.Log($"Could not login as Discord Bot! {ex.Message}", LogSeverity.Critical);
             }
         }
@@ -50,30 +57,33 @@ namespace Cirilla {
 
         #endregion
 
-        private async Task MessageReceived(SocketMessage messageArg) {
+        private async Task MessageReceived(SocketMessage messageArg)
+        {
             // Don't process the command if it was a System Message
-            var message = messageArg as SocketUserMessage;
-            if (message == null)
+            if (!(messageArg is SocketUserMessage message))
                 return;
 
-            if (message.Author.ToString() != Client.CurrentUser.ToString()) {
+            if (message.Author.ToString() != Client.CurrentUser.ToString())
+            {
                 string secondaryPrefix;
                 bool enablePrimary = true;
                 string guildname = "private";
 
-                if (messageArg.Channel is IGuildChannel guildchannel) {
+                if (messageArg.Channel is IGuildChannel guildchannel)
+                {
                     guildname = guildchannel.Guild.Name;
 
                     var config = GuildConfigManager.Get(guildchannel.Guild.Id);
                     secondaryPrefix = config.Prefix;
                     enablePrimary = config.EnablePrimaryPrefix;
-                } else {
+                } else
+                {
                     secondaryPrefix = Information.SecondaryPrefix;
                 }
 
                 //Log to console but don't write log to file
-                await ConsoleHelper.Log(
-                    new LogMessage(LogSeverity.Info, $"{message.Author}@{guildname}", message.Content), false);
+                ConsoleHelper.Log(new LogMessage(LogSeverity.Info, $"{message.Author}@{guildname}", message.Content),
+                    false);
 
                 // Command (after prefix) Begin
                 int argPos = 0;
@@ -89,8 +99,9 @@ namespace Cirilla {
 
                 var context = new CommandContext(Client, message);
                 var result = await Service.ExecuteAsync(context, argPos);
-                if (!result.IsSuccess) {
-                    await ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}",
+                if (!result.IsSuccess)
+                {
+                    ConsoleHelper.Log($"Command did not execute correctly! {result.ErrorReason}",
                         LogSeverity.Error);
                     //await context.Channel.SendMessageAsync(result.ErrorReason);
 
@@ -102,7 +113,8 @@ namespace Cirilla {
         }
 
         //stop bot
-        public async Task Stop() {
+        public async Task Stop()
+        {
             if (StopRequested)
                 return;
             StopRequested = true;
@@ -116,12 +128,14 @@ namespace Cirilla {
             Console.WriteLine("stopped");
         }
 
-        public async Task Login() {
+        public async Task Login()
+        {
             await Client.LoginAsync(TokenType.Bot, Information.Token);
             await Client.StartAsync();
         }
 
-        private static Task Log(LogMessage message) {
+        private static Task Log(LogMessage message)
+        {
             ConsoleHelper.Log(message);
             return Task.CompletedTask;
         }

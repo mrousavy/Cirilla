@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using Discord;
 
-namespace Cirilla.Modules {
-    internal class RandomEmote {
-        internal static IEmote GetRandomEmote(IGuild guild) {
+namespace Cirilla.Modules
+{
+    internal class RandomEmote
+    {
+        internal static IEmote GetRandomEmote(IGuild guild)
+        {
             List<GuildEmote> emotes = new List<GuildEmote>(guild.Emotes);
 
             //No emojis on that server

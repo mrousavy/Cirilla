@@ -3,10 +3,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Cirilla.Services.Pokemon {
-    public static class Pokedex {
-        public static async Task<Pokemon> GetPokemonById(int id) {
-            using (var client = new HttpClient()) {
+namespace Cirilla.Services.Pokemon
+{
+    public static class Pokedex
+    {
+        public static async Task<Pokemon> GetPokemonById(int id)
+        {
+            using (var client = new HttpClient())
+            {
                 var response = await client.PostAsync($"http://pokeapi.co/api/v2/pokemon/{id}", null);
                 string content = await response.Content.ReadAsStringAsync();
                 if (string.IsNullOrWhiteSpace(content))
@@ -17,8 +21,10 @@ namespace Cirilla.Services.Pokemon {
             }
         }
 
-        public static async Task<Form> GetPokemonForm(int id) {
-            using (var client = new HttpClient()) {
+        public static async Task<Form> GetPokemonForm(int id)
+        {
+            using (var client = new HttpClient())
+            {
                 var response = await client.PostAsync($"http://pokeapi.co/api/v2/pokemon-form/{id}", null);
                 string content = await response.Content.ReadAsStringAsync();
                 if (string.IsNullOrWhiteSpace(content))

@@ -4,8 +4,10 @@ using System.IO;
 using Discord;
 using Newtonsoft.Json;
 
-namespace Cirilla {
-    internal static class Information {
+namespace Cirilla
+{
+    internal static class Information
+    {
         internal static string GitHubLogo = "https://jitpack.io/w/img/github-logo.png";
 
         internal static string InviteLink =
@@ -50,30 +52,38 @@ namespace Cirilla {
         internal static string ThinkEmoji => "🤔";
 
 
-        public static void LoadInfo() {
+        public static void LoadInfo()
+        {
             //lock object so config does not get written to file (endless loop of errors)
-            lock (Helper.Lock) {
+            lock (Helper.Lock)
+            {
                 string config = Path.Combine(Directory, "config.json");
 
                 ConsoleHelper.Log("Loading config..", LogSeverity.Info);
                 ConsoleHelper.Log($"pwd: {Directory}", LogSeverity.Info);
 
-                if (!File.Exists(config)) {
+                if (!File.Exists(config))
+                {
                     File.WriteAllText(config, JsonConvert.SerializeObject(new Configuration()));
                     ConsoleHelper.Log($"No configuration set, please edit {config}!", LogSeverity.Critical);
                     Console.ReadKey();
                     Process.GetCurrentProcess().Kill();
-                } else {
-                    try {
+                } else
+                {
+                    try
+                    {
                         Config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(config));
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         ConsoleHelper.Log(ex.Message, LogSeverity.Critical);
                         ConsoleHelper.Log($"Could not load config.json!, please edit {config}!", LogSeverity.Critical);
                         Console.ReadKey();
                         Process.GetCurrentProcess().Kill();
                     }
                 }
-                if (Config.Token == "DISCORD_API_TOKEN_GOES_HERE") {
+
+                if (Config.Token == "DISCORD_API_TOKEN_GOES_HERE")
+                {
                     ConsoleHelper.Log($"Discord API Token is invalid, please edit {config}!", LogSeverity.Critical);
                     Console.ReadKey();
                     Process.GetCurrentProcess().Kill();
@@ -82,14 +92,16 @@ namespace Cirilla {
         }
 
 
-        public static void WriteOut() {
+        public static void WriteOut()
+        {
             string config = Path.Combine(Directory, "config.json");
             File.WriteAllText(config, JsonConvert.SerializeObject(Config));
         }
     }
 
 
-    public class Configuration {
+    public class Configuration
+    {
         public bool AllowVotekick = false;
 
         //Default Botchat Text Channel
@@ -147,8 +159,7 @@ namespace Cirilla {
         public bool PmHelp = true;
 
         public string PokedexUrl =
-                "https://vignette.wikia.nocookie.net/pokemon/images/6/6f/Pok%C3%A9dex_Pt.png/revision/latest/scale-to-width-down/2000?cb=20110528144645"
-            ;
+            "https://vignette.wikia.nocookie.net/pokemon/images/6/6f/Pok%C3%A9dex_Pt.png/revision/latest/scale-to-width-down/2000?cb=20110528144645";
 
         //Bot prefix ($help)
         public char Prefix = '$';

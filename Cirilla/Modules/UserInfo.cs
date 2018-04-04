@@ -5,12 +5,17 @@ using Cirilla.Services.Xp;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class UserInfo : ModuleBase {
+namespace Cirilla.Modules
+{
+    public class UserInfo : ModuleBase
+    {
         [Command("info")]
         [Summary("Shows Information for a specific user")]
-        public async Task Info([Summary("The user you want info about")] IGuildUser user) {
-            try {
+        public async Task Info([Summary("The user you want info about")]
+            IGuildUser user)
+        {
+            try
+            {
                 string uname = user.Username ?? "?";
                 string nick = user.Nickname ?? "/";
                 string createdAt = user.CreatedAt.ToString("d") ?? "/";
@@ -24,8 +29,10 @@ namespace Cirilla.Modules {
                     ? XpManager.Get(Context.Guild, user).Xp.ToString()
                     : "[disabled]";
 
-                var builder = new EmbedBuilder {
-                    Author = new EmbedAuthorBuilder {
+                var builder = new EmbedBuilder
+                {
+                    Author = new EmbedAuthorBuilder
+                    {
                         Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
                         //IconUrl = user.GetAvatarUrl()
                     },
@@ -41,7 +48,8 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("XP", xp);
 
                 await ReplyAsync("", embed: builder.Build());
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
         }
@@ -49,9 +57,12 @@ namespace Cirilla.Modules {
 
         [Command("info")]
         [Summary("Shows information for user")]
-        public async Task Info() {
-            try {
-                if (Context.User is IGuildUser user) {
+        public async Task Info()
+        {
+            try
+            {
+                if (Context.User is IGuildUser user)
+                {
                     string uname = user.Username ?? "?";
                     string nick = user.Nickname ?? "/";
                     string createdAt = user.CreatedAt.ToString("d") ?? "/";
@@ -65,8 +76,10 @@ namespace Cirilla.Modules {
                         ? XpManager.Get(Context.Guild, user).Xp.ToString()
                         : "[disabled]";
 
-                    var builder = new EmbedBuilder {
-                        Author = new EmbedAuthorBuilder {
+                    var builder = new EmbedBuilder
+                    {
+                        Author = new EmbedAuthorBuilder
+                        {
                             Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}"
                             //IconUrl = user.GetAvatarUrl()
                         },
@@ -82,7 +95,8 @@ namespace Cirilla.Modules {
 
                     await ReplyAsync("", embed: builder.Build());
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
         }
@@ -90,20 +104,27 @@ namespace Cirilla.Modules {
 
         [Command("avatar")]
         [Summary("Get own Avatar")]
-        public async Task Avatar() {
-            try {
+        public async Task Avatar()
+        {
+            try
+            {
                 await ReplyAsync(Context.User.GetAvatarUrl());
-            } catch {
+            } catch
+            {
                 await ReplyAsync("Couldn't find your Avatar, sorry!");
             }
         }
 
         [Command("avatar")]
         [Summary("Get Avatar of User")]
-        public async Task Avatar([Summary("The user you want to get the avatar from")] IUser user) {
-            try {
+        public async Task Avatar([Summary("The user you want to get the avatar from")]
+            IUser user)
+        {
+            try
+            {
                 await ReplyAsync(user.GetAvatarUrl());
-            } catch {
+            } catch
+            {
                 await ReplyAsync("Couldn't find that user's Avatar, sorry!");
             }
         }
@@ -111,8 +132,10 @@ namespace Cirilla.Modules {
 
         [Command("details")]
         [Summary("Shows detailed developer information for user")]
-        public async Task Details() {
-            try {
+        public async Task Details()
+        {
+            try
+            {
                 var user = Context.User;
                 string uname = user.Username ?? "?";
                 string createdAt = user.CreatedAt.ToString("d") ?? "/";
@@ -125,8 +148,10 @@ namespace Cirilla.Modules {
                 string mention = user.Mention;
                 string id = user.Id.ToString();
 
-                var builder = new EmbedBuilder {
-                    Author = new EmbedAuthorBuilder {
+                var builder = new EmbedBuilder
+                {
+                    Author = new EmbedAuthorBuilder
+                    {
                         Name = user.IsBot ? $"{uname} (Bot)" : $"{uname}",
                         IconUrl = user.GetAvatarUrl()
                     },
@@ -141,7 +166,8 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Avatar URL", avatarUrl);
 
                 await ReplyAsync("", embed: builder.Build());
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 await ReplyAsync($"Error! ({ex.Message})");
             }
         }

@@ -11,8 +11,10 @@ using WS4NetSocket = WebSocket4Net.WebSocket;
 
 // ReSharper disable All
 
-namespace Discord.Net.Providers.WS4Net {
-    internal class WS4NetClient : IWebSocketClient, IDisposable {
+namespace Discord.Net.Providers.WS4Net
+{
+    internal class WS4NetClient : IWebSocketClient, IDisposable
+    {
         private readonly Dictionary<string, string> _headers;
 
         private readonly SemaphoreSlim _lock;
@@ -22,7 +24,8 @@ namespace Discord.Net.Providers.WS4Net {
         private WS4NetSocket _client;
         private bool _isDisposed;
 
-        public WS4NetClient() {
+        public WS4NetClient()
+        {
             _headers = new Dictionary<string, string>();
             _lock = new SemaphoreSlim(1, 1);
             _cancelTokenSource = new CancellationTokenSource();
@@ -31,7 +34,8 @@ namespace Discord.Net.Providers.WS4Net {
             _waitUntilConnect = new ManualResetEventSlim();
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
         }
 
@@ -39,62 +43,77 @@ namespace Discord.Net.Providers.WS4Net {
         public event Func<string, Task> TextMessage;
         public event Func<Exception, Task> Closed;
 
-        public async Task ConnectAsync(string host) {
+        public async Task ConnectAsync(string host)
+        {
             await _lock.WaitAsync().ConfigureAwait(false);
-            try {
+            try
+            {
                 await ConnectInternalAsync(host).ConfigureAwait(false);
-            } finally {
+            } finally
+            {
                 _lock.Release();
             }
         }
 
-        public async Task DisconnectAsync() {
+        public async Task DisconnectAsync()
+        {
             await _lock.WaitAsync().ConfigureAwait(false);
-            try {
+            try
+            {
                 await DisconnectInternalAsync().ConfigureAwait(false);
-            } finally {
+            } finally
+            {
                 _lock.Release();
             }
         }
 
-        public void SetHeader(string key, string value) {
+        public void SetHeader(string key, string value)
+        {
             _headers[key] = value;
         }
 
-        public void SetCancelToken(CancellationToken cancelToken) {
+        public void SetCancelToken(CancellationToken cancelToken)
+        {
             _parentToken = cancelToken;
             _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token)
                 .Token;
         }
 
-        public async Task SendAsync(byte[] data, int index, int count, bool isText) {
+        public async Task SendAsync(byte[] data, int index, int count, bool isText)
+        {
             await _lock.WaitAsync(_cancelToken).ConfigureAwait(false);
-            try {
+            try
+            {
                 if (isText)
                     _client.Send(Encoding.UTF8.GetString(data, index, count));
                 else
                     _client.Send(data, index, count);
-            } finally {
+            } finally
+            {
                 _lock.Release();
             }
         }
 
-        private void Dispose(bool disposing) {
-            if (!_isDisposed) {
+        private void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
                 if (disposing)
                     DisconnectInternalAsync(true).GetAwaiter().GetResult();
                 _isDisposed = true;
             }
         }
 
-        private async Task ConnectInternalAsync(string host) {
+        private async Task ConnectInternalAsync(string host)
+        {
             await DisconnectInternalAsync().ConfigureAwait(false);
 
             _cancelTokenSource = new CancellationTokenSource();
             _cancelToken = CancellationTokenSource.CreateLinkedTokenSource(_parentToken, _cancelTokenSource.Token)
                 .Token;
 
-            _client = new WS4NetSocket(host, customHeaderItems: _headers.ToList()) {
+            _client = new WS4NetSocket(host, customHeaderItems: _headers.ToList())
+            {
                 EnableAutoSendPing = false,
                 NoDelay = true,
                 Proxy = null
@@ -109,15 +128,19 @@ namespace Discord.Net.Providers.WS4Net {
             _waitUntilConnect.Wait(_cancelToken);
         }
 
-        private Task DisconnectInternalAsync(bool isDisposing = false) {
+        private Task DisconnectInternalAsync(bool isDisposing = false)
+        {
             _cancelTokenSource.Cancel();
             if (_client == null)
                 return Task.Delay(0);
 
-            if (_client.State == WebSocketState.Open) {
-                try {
+            if (_client.State == WebSocketState.Open)
+            {
+                try
+                {
                     _client.Close(1000, "");
-                } catch { }
+                } catch
+                { }
             }
 
             _client.MessageReceived -= OnTextMessage;
@@ -125,28 +148,35 @@ namespace Discord.Net.Providers.WS4Net {
             _client.Opened -= OnConnected;
             _client.Closed -= OnClosed;
 
-            try {
+            try
+            {
                 _client.Dispose();
-            } catch { }
+            } catch
+            { }
+
             _client = null;
 
             _waitUntilConnect.Reset();
             return Task.Delay(0);
         }
 
-        private void OnTextMessage(object sender, MessageReceivedEventArgs e) {
+        private void OnTextMessage(object sender, MessageReceivedEventArgs e)
+        {
             TextMessage(e.Message).GetAwaiter().GetResult();
         }
 
-        private void OnBinaryMessage(object sender, DataReceivedEventArgs e) {
+        private void OnBinaryMessage(object sender, DataReceivedEventArgs e)
+        {
             BinaryMessage(e.Data, 0, e.Data.Count()).GetAwaiter().GetResult();
         }
 
-        private void OnConnected(object sender, object e) {
+        private void OnConnected(object sender, object e)
+        {
             _waitUntilConnect.Set();
         }
 
-        private void OnClosed(object sender, object e) {
+        private void OnClosed(object sender, object e)
+        {
             var ex = (e as ErrorEventArgs)?.Exception ?? new Exception("Unexpected close");
             Closed(ex).GetAwaiter().GetResult();
         }

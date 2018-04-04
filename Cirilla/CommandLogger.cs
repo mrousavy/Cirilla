@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 using Cirilla.Services.Pastebin;
 using Discord;
 
-namespace Cirilla {
-    public static class CommandLogger {
+namespace Cirilla
+{
+    public static class CommandLogger
+    {
         private static object Lock { get; } = new object();
 
 
-        public static void Log(string username, string guildname, string command) {
-            new Thread(() => {
-                lock (Lock) {
-                    try {
+        public static void Log(string username, string guildname, string command)
+        {
+            new Thread(() =>
+            {
+                lock (Lock)
+                {
+                    try
+                    {
                         string logfile = Path.Combine(Information.Directory, "commandlog.txt");
                         if (!File.Exists(logfile)) File.Create(logfile).Dispose();
 
@@ -24,7 +30,8 @@ namespace Cirilla {
 
                         File.AppendAllLines(logfile,
                             new List<string> {$"[{DateTime.Now:HH:mm:ss}] [{username}@{guildname}] \"{command}\""});
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not save Log to Command Log File! ({ex.Message})");
                         Console.ResetColor();
@@ -34,7 +41,8 @@ namespace Cirilla {
         }
 
 
-        public static async Task Upload(IDMChannel dm, IMessageChannel channel) {
+        public static async Task Upload(IDMChannel dm, IMessageChannel channel)
+        {
             IMessage message = await channel.SendMessageAsync("One sec..");
 
             string file = Path.Combine(Information.Directory, "commandlog.txt");
@@ -48,19 +56,24 @@ namespace Cirilla {
         }
 
 
-        public static long Clear() {
-            lock (Lock) {
-                try {
+        public static long Clear()
+        {
+            lock (Lock)
+            {
+                try
+                {
                     string logfile = Path.Combine(Information.Directory, "commandlog.txt");
                     if (!File.Exists(logfile)) File.Create(logfile).Dispose();
                     long size = new FileInfo(logfile).Length / 1024;
                     File.WriteAllBytes(logfile, new byte[0]);
                     return size;
-                } catch (Exception ex) {
+                } catch (Exception ex)
+                {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Could not clear Command Log File! ({ex.Message})");
                     Console.ResetColor();
                 }
+
                 return -1;
             }
         }

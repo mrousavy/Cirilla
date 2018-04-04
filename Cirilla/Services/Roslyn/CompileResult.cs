@@ -3,8 +3,10 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Scripting;
 
-namespace Cirilla.Services.Roslyn {
-    public struct CompileResult {
+namespace Cirilla.Services.Roslyn
+{
+    public struct CompileResult
+    {
         public ImmutableArray<Diagnostic> CompileDiagnostics { get; set; }
         public string CompileDiagnosticsString { get; set; }
         public ImmutableArray<Diagnostic> CompileErrors { get; set; }

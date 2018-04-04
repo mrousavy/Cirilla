@@ -2,12 +2,16 @@
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class GitHub : ModuleBase {
+namespace Cirilla.Modules
+{
+    public class GitHub : ModuleBase
+    {
         [Command("bugreport")]
         [Summary("Report a Bug in Cirilla on GitHub")]
-        public async Task Bugreport() {
-            var builder = new EmbedBuilder {
+        public async Task Bugreport()
+        {
+            var builder = new EmbedBuilder
+            {
                 Color = new Color(244, 196, 65),
                 ThumbnailUrl = Information.GitHubLogo
             };
@@ -19,14 +23,17 @@ namespace Cirilla.Modules {
 
         [Command("repo")]
         [Summary("Get Repository URL")]
-        public async Task Repo() {
+        public async Task Repo()
+        {
             await ReplyAsync(Information.RepoUrl);
         }
 
         [Command("addModule")]
         [Summary("Help making Cirilla better by adding Modules!")]
-        public async Task AddModules() {
-            var builder = new EmbedBuilder {
+        public async Task AddModules()
+        {
+            var builder = new EmbedBuilder
+            {
                 Color = new Color(66, 179, 244),
                 ThumbnailUrl = Information.GitHubLogo,
                 Title = "Help making Cirilla better!"

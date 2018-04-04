@@ -3,13 +3,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Cirilla.Services.Wikipedia {
-    public class WikipediaService {
+namespace Cirilla.Services.Wikipedia
+{
+    public class WikipediaService
+    {
         private const string WikipediaApiScheme =
-                "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&titles={0}&redirects="
-            ;
+            "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&titles={0}&redirects=";
 
-        public async Task<WikipediaResponse> GetWikipediaResultsAsync(string phrase) {
+        public async Task<WikipediaResponse> GetWikipediaResultsAsync(string phrase)
+        {
             string query = string.Join(" ", phrase);
             query = WebUtility.UrlEncode(query);
             var client = new HttpClient();

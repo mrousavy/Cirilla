@@ -16,9 +16,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
 
-namespace Cirilla.Services.Roslyn {
-    public static class ScriptRunnerService {
-        private static readonly string[] DefaultImports = {
+namespace Cirilla.Services.Roslyn
+{
+    public static class ScriptRunnerService
+    {
+        private static readonly string[] DefaultImports =
+        {
             "System",
             "System.IO",
             "System.Linq",
@@ -31,7 +34,8 @@ namespace Cirilla.Services.Roslyn {
             "System.Net.Http"
         };
 
-        private static readonly Assembly[] DefaultReferences = {
+        private static readonly Assembly[] DefaultReferences =
+        {
             typeof(Enumerable).GetTypeInfo().Assembly,
             typeof(List<string>).GetTypeInfo().Assembly,
             typeof(JsonConvert).GetTypeInfo().Assembly,
@@ -58,13 +62,15 @@ namespace Cirilla.Services.Roslyn {
         /// <param name="user">The user for referencing in the Embed</param>
         /// <param name="contextChannel">The channel for referencing in the Code</param>
         /// <returns>The Embed with detailed information of the results</returns>
-        public static async Task<Embed> ScriptEmbed(string code, IUser user, IMessageChannel contextChannel) {
+        public static async Task<Embed> ScriptEmbed(string code, IUser user, IMessageChannel contextChannel)
+        {
             string nl = Environment.NewLine;
             // compilation
             var compileResult = await Compile(code);
 
-            if (compileResult.CompileException != null) {
-                await ConsoleHelper.Log(
+            if (compileResult.CompileException != null)
+            {
+                ConsoleHelper.Log(
                     $"Error compiling C# script from {Helper.GetName(user)}! ({compileResult.CompileException.Message})",
                     LogSeverity.Info);
                 return CompileError(user, code, compileResult);
@@ -72,24 +78,28 @@ namespace Cirilla.Services.Roslyn {
 
             var execResult = Execute(compileResult, contextChannel);
 
-            if (execResult.ExecException != null) {
-                await ConsoleHelper.Log(
+            if (execResult.ExecException != null)
+            {
+                ConsoleHelper.Log(
                     $"Error running C# script from {Helper.GetName(user)}! ({execResult.ExecException.Message})",
                     LogSeverity.Info);
                 return RunError(user, code, execResult);
             }
-            await ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
+
+            ConsoleHelper.Log($"{Helper.GetName(user)} ran a Roslyn script:{nl}{nl}{code}{nl}",
                 LogSeverity.Info);
             return ScriptSuccess(user, code, execResult);
         }
 
 
-        public static async Task<CompileResult> Compile(string code) {
+        public static async Task<CompileResult> Compile(string code)
+        {
             var result = new CompileResult();
 
             var compileSw = Stopwatch.StartNew();
 
-            try {
+            try
+            {
                 var compileCts = new CancellationTokenSource(Information.CompileTimeout);
                 Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
                 var compilation = script.GetCompilation()
@@ -115,7 +125,8 @@ namespace Cirilla.Services.Roslyn {
                 result.CompileDiagnostics = compileDiagnostics;
                 result.CompileErrors = compileErrors;
                 result.CompileTime = compileTime;
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 result.CompileException = ex;
             }
 
@@ -123,12 +134,15 @@ namespace Cirilla.Services.Roslyn {
         }
 
 
-        public static ExecuteResult Execute(CompileResult compileResult, IMessageChannel contextChannel) {
+        public static ExecuteResult Execute(CompileResult compileResult, IMessageChannel contextChannel)
+        {
             var stringBuilder = new StringBuilder();
-            var result = new ExecuteResult {
+            var result = new ExecuteResult
+            {
                 CompileResult = compileResult
             };
-            var globals = new Globals {
+            var globals = new Globals
+            {
                 Console = new StringWriter(stringBuilder),
                 Random = Random,
                 ReplyAsync = async m => await contextChannel.SendMessageAsync(m)
@@ -138,8 +152,10 @@ namespace Cirilla.Services.Roslyn {
             ScriptState<object> scriptState = null;
             var execCts = new CancellationTokenSource(Information.ExecutionTimeout + 100);
 
-            try {
-                var runThread = new Thread(async () => {
+            try
+            {
+                var runThread = new Thread(async () =>
+                {
                     scriptState = await compileResult.Script.RunAsync(globals, ex => true, execCts.Token);
                 });
                 runThread.Start();
@@ -150,7 +166,8 @@ namespace Cirilla.Services.Roslyn {
                 execSw.Stop();
                 result.ExecuteTime = execSw.ElapsedMilliseconds;
 
-                if (scriptState != null) {
+                if (scriptState != null)
+                {
                     if (scriptState.Exception != null) result.ExecException = scriptState.Exception;
 
                     result.ReturnValue = scriptState.ReturnValue;
@@ -160,17 +177,21 @@ namespace Cirilla.Services.Roslyn {
                     result.ConsoleOutput = stringBuilder.Length > 1024
                         ? stringBuilder.ToString().Substring(0, 1019) + " [..]"
                         : stringBuilder.ToString();
-            } catch (TaskCanceledException) {
+            } catch (TaskCanceledException)
+            {
                 result.ExecException = new TimeoutException(
                     $"The execution of the script took longer than expected! (> {Information.ExecutionTimeout}ms)");
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 result.ExecException = ex;
             }
+
             return result;
         }
 
 
-        public static Embed CompileError(IUser user, string code, CompileResult result) {
+        public static Embed CompileError(IUser user, string code, CompileResult result)
+        {
             var builder = DefaultEmbed();
             string nl = Environment.NewLine;
 
@@ -192,7 +213,8 @@ namespace Cirilla.Services.Roslyn {
 
             builder.AddField(exceptionTitle, exceptionTrim);
 
-            if (!string.IsNullOrWhiteSpace(result.CompileDiagnosticsString)) {
+            if (!string.IsNullOrWhiteSpace(result.CompileDiagnosticsString))
+            {
                 string diagnosticsTrim = result.CompileDiagnosticsString.Length > 1019
                     ? result.CompileDiagnosticsString.Substring(0, 1019) + " [..]"
                     : result.CompileDiagnosticsString;
@@ -200,14 +222,16 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Diagnostics", diagnosticsTrim);
             }
 
-            builder.Footer = new EmbedFooterBuilder {
+            builder.Footer = new EmbedFooterBuilder
+            {
                 Text = "Compile: / | Execute: /"
             };
 
             return builder.Build();
         }
 
-        public static Embed RunError(IUser user, string code, ExecuteResult result) {
+        public static Embed RunError(IUser user, string code, ExecuteResult result)
+        {
             var builder = DefaultEmbed();
             string nl = Environment.NewLine;
 
@@ -229,7 +253,8 @@ namespace Cirilla.Services.Roslyn {
 
             builder.AddField(exceptionTitle, exceptionTrim);
 
-            if (!string.IsNullOrWhiteSpace(result.CompileResult.CompileDiagnosticsString)) {
+            if (!string.IsNullOrWhiteSpace(result.CompileResult.CompileDiagnosticsString))
+            {
                 string diagnosticsTrim = result.CompileResult.CompileDiagnosticsString.Length > 1024
                     ? result.CompileResult.CompileDiagnosticsString.Substring(0, 1019) + " [..]"
                     : result.CompileResult.CompileDiagnosticsString;
@@ -237,7 +262,8 @@ namespace Cirilla.Services.Roslyn {
                 builder.AddField("Diagnostics", diagnosticsTrim);
             }
 
-            builder.Footer = new EmbedFooterBuilder {
+            builder.Footer = new EmbedFooterBuilder
+            {
                 Text = $"Compile: {result.CompileResult.CompileTime}ms | Execute: /"
             };
 
@@ -245,7 +271,8 @@ namespace Cirilla.Services.Roslyn {
             return builder.Build();
         }
 
-        public static Embed ScriptSuccess(IUser user, string code, ExecuteResult result) {
+        public static Embed ScriptSuccess(IUser user, string code, ExecuteResult result)
+        {
             var builder = DefaultEmbed();
             string nl = Environment.NewLine;
 
@@ -257,11 +284,13 @@ namespace Cirilla.Services.Roslyn {
                 : code;
             builder.AddField("Code", $"```cs{nl}{codeTrim}{nl}```");
 
-            if (result.ReturnValue == null) {
+            if (result.ReturnValue == null)
+            {
                 if (string.IsNullOrWhiteSpace(result.ConsoleOutput))
                     builder.AddField("Result:  /", $"```accesslog{nl}(No value was returned){nl}```");
                 else builder.AddField("Console Output:", $"```accesslog{nl}{result.ConsoleOutput}{nl}```");
-            } else {
+            } else
+            {
                 string resultTrim = result.ReturnValue.ToString().Length > 1024
                     ? result.ReturnValue.ToString().Substring(0, 1019) + " [..]"
                     : result.ReturnValue.ToString();
@@ -275,7 +304,8 @@ namespace Cirilla.Services.Roslyn {
                         ? $"```{nl}{result.CompileResult.CompileDiagnosticsString.Substring(0, 1019)} [..]{nl}```"
                         : $"```{nl}{result.CompileResult.CompileDiagnosticsString}{nl}```");
 
-            builder.Footer = new EmbedFooterBuilder {
+            builder.Footer = new EmbedFooterBuilder
+            {
                 Text = $"Compile: {result.CompileResult.CompileTime}ms | Execute: {result.ExecuteTime}ms"
             };
 
@@ -283,9 +313,12 @@ namespace Cirilla.Services.Roslyn {
         }
 
 
-        public static EmbedBuilder DefaultEmbed() {
-            var builder = new EmbedBuilder {
-                Author = new EmbedAuthorBuilder {
+        public static EmbedBuilder DefaultEmbed()
+        {
+            var builder = new EmbedBuilder
+            {
+                Author = new EmbedAuthorBuilder
+                {
                     Name = "Roslyn Scripting",
                     IconUrl = "http://ourcodeworld.com/public-media/gallery/categorielogo-5713d627ccabf.png" //C# Icon
                 }
@@ -296,7 +329,9 @@ namespace Cirilla.Services.Roslyn {
     }
 
 
-    public class CompileTimeoutException : Exception {
-        public CompileTimeoutException(string message) : base(message) { }
+    public class CompileTimeoutException : Exception
+    {
+        public CompileTimeoutException(string message) : base(message)
+        { }
     }
 }

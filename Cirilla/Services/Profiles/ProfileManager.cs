@@ -4,22 +4,28 @@ using System.Linq;
 using Discord;
 using Newtonsoft.Json;
 
-namespace Cirilla.Services.Profiles {
-    public static class ProfileManager {
+namespace Cirilla.Services.Profiles
+{
+    public static class ProfileManager
+    {
         public static UserProfiles Profiles;
 
-        public static string ReadProfile(IGuild guild, ulong userId) {
+        public static string ReadProfile(IGuild guild, ulong userId)
+        {
             string profiles = Helper.GetPath(guild, "profiles.json");
-            if (File.Exists(profiles)) {
+            if (File.Exists(profiles))
+            {
                 Profiles = JsonConvert.DeserializeObject<UserProfiles>(File.ReadAllText(profiles));
 
                 var profile = Profiles.ProfilesList.FirstOrDefault(p => p.UserId == userId);
                 return profile?.ProfileText;
             }
+
             return null;
         }
 
-        public static void UpdateProfile(IGuild guild, ulong userId, string text) {
+        public static void UpdateProfile(IGuild guild, ulong userId, string text)
+        {
             string profiles = Helper.GetPath(guild, "profiles.json");
 
             if (Profiles == null)
@@ -28,7 +34,8 @@ namespace Cirilla.Services.Profiles {
             bool contains = false;
 
             foreach (var uprof in Profiles.ProfilesList)
-                if (uprof.UserId == userId) {
+                if (uprof.UserId == userId)
+                {
                     uprof.ProfileText = text;
                     contains = true;
                     break;
@@ -39,16 +46,20 @@ namespace Cirilla.Services.Profiles {
             File.WriteAllText(profiles, JsonConvert.SerializeObject(Profiles));
         }
 
-        public class UserProfiles {
-            public UserProfiles() {
+        public class UserProfiles
+        {
+            public UserProfiles()
+            {
                 ProfilesList = new List<UserProfile>();
             }
 
             public List<UserProfile> ProfilesList { get; set; }
         }
 
-        public class UserProfile {
-            public UserProfile(ulong id, string text) {
+        public class UserProfile
+        {
+            public UserProfile(ulong id, string text)
+            {
                 UserId = id;
                 ProfileText = text ?? string.Empty;
             }

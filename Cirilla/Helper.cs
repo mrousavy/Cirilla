@@ -5,11 +5,14 @@ using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla {
-    public static class Helper {
+namespace Cirilla
+{
+    public static class Helper
+    {
         public static object Lock { get; } = new object();
 
-        public static string GetName(IUser user) {
+        public static string GetName(IUser user)
+        {
             if (user == null) return "[Unknown]";
 
             var guildUser = user as IGuildUser;
@@ -17,25 +20,30 @@ namespace Cirilla {
             return string.IsNullOrWhiteSpace(guildUser.Nickname) ? user.Username : guildUser.Nickname;
         }
 
-        public static Embed WrongCommand(IMessage message, CommandService service, ICommandContext context) {
+        public static Embed WrongCommand(IMessage message, CommandService service, ICommandContext context)
+        {
             string command = message.Content
                 .Replace(Information.Prefix.ToString(), "")
                 .Replace(GuildConfigManager.Get(context.Guild.Id).Prefix, "")
                 .Replace(Cirilla.Client.CurrentUser.Mention, "");
             var searchResult = service.Search(context, command);
-            if (searchResult.Commands != null && searchResult.Commands.Count > 0) {
+            if (searchResult.Commands != null && searchResult.Commands.Count > 0)
+            {
                 string nl = Environment.NewLine;
                 bool multiple = searchResult.Commands.Count > 1;
 
-                var builder = new EmbedBuilder {
+                var builder = new EmbedBuilder
+                {
                     Color = new Color(114, 137, 218),
                     Description = multiple ? "Did you mean some of these?" : "Did you mean this?"
                 };
 
-                foreach (var match in searchResult.Commands) {
+                foreach (var match in searchResult.Commands)
+                {
                     var cmd = match.Command;
 
-                    builder.AddField(x => {
+                    builder.AddField(x =>
+                    {
                         x.Name = $"{Information.Prefix}{cmd.Aliases.First()} {string.Join(" ", cmd.Parameters)}";
                         if (cmd.Parameters.Count < 1) x.Value = $"Summary: {cmd.Summary}";
                         else
@@ -54,13 +62,15 @@ namespace Cirilla {
         /// <summary>
         ///     Get the path to the file specified so it's guild specific
         /// </summary>
-        public static string GetPath(IGuild guild, params string[] paths) {
+        public static string GetPath(IGuild guild, params string[] paths)
+        {
             string[] fullpaths = new string[paths.Length + 2];
             fullpaths[0] = Information.Directory;
             fullpaths[1] = guild.Id.ToString();
             string directory = Path.Combine(fullpaths[0], fullpaths[1]);
 
-            if (!Directory.Exists(directory)) {
+            if (!Directory.Exists(directory))
+            {
                 Directory.CreateDirectory(directory);
                 File.WriteAllText(Path.Combine(directory, "guildname.txt"),
                     $"\"{guild.Name}\" by <@{guild.OwnerId}> (created at {guild.CreatedAt}");
@@ -78,7 +88,8 @@ namespace Cirilla {
         /// <summary>
         ///     Get the path to the file specified so it's guild specific
         /// </summary>
-        public static string GetPath(ulong guildId, params string[] paths) {
+        public static string GetPath(ulong guildId, params string[] paths)
+        {
             string[] fullpaths = new string[paths.Length + 2];
             fullpaths[0] = Information.Directory;
             fullpaths[1] = guildId.ToString();
@@ -96,8 +107,6 @@ namespace Cirilla {
         }
 
 
-        public static bool IsOwner(IUser user) {
-            return $"<@{user.Id}>" == Information.Owner;
-        }
+        public static bool IsOwner(IUser user) => $"<@{user.Id}>" == Information.Owner;
     }
 }

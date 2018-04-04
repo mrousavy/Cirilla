@@ -5,32 +5,41 @@ using Cirilla.Services.GuildConfig;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class BotInfo : ModuleBase {
+namespace Cirilla.Modules
+{
+    public class BotInfo : ModuleBase
+    {
         [Command("host")]
         [Summary("Shows host information")]
-        public async Task Host() {
-            try {
+        public async Task Host()
+        {
+            try
+            {
                 string mname = Environment.MachineName;
 
                 string pre = string.Empty;
                 bool enablePrimary = true;
                 string sPrefix = Information.SecondaryPrefix;
-                if (Context.Guild == null) {
+                if (Context.Guild == null)
+                {
                     // It's DM
-                } else {
+                } else
+                {
                     var config = GuildConfigManager.Get(Context.Guild.Id);
                     enablePrimary = config.EnablePrimaryPrefix;
                     sPrefix = config.Prefix;
                 }
+
                 if (enablePrimary) pre += $"`{Information.Prefix}`, ";
                 pre += $"`{sPrefix}`, {Context.Client.CurrentUser.Mention}";
 
                 int cores = Environment.ProcessorCount;
                 var current = Process.GetCurrentProcess();
 
-                var builder = new EmbedBuilder {
-                    Author = new EmbedAuthorBuilder {
+                var builder = new EmbedBuilder
+                {
+                    Author = new EmbedAuthorBuilder
+                    {
                         Name = "Bot Information",
                         IconUrl = Information.BotIconUrl
                     },
@@ -48,29 +57,34 @@ namespace Cirilla.Modules {
                 builder.AddInlineField("Guilds", $"Online on {Cirilla.Client.Guilds.Count} guilds");
 
                 await ReplyAsync("", embed: builder.Build());
-                await ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);
-            } catch (Exception ex) {
+                ConsoleHelper.Log($"{Context.User} requested Bot/Host Information!", LogSeverity.Info);
+            } catch (Exception ex)
+            {
                 await ReplyAsync("Sorry, I can't send you that information right now!");
-                await ConsoleHelper.Log($"Error retrieving Host information {ex.Message}", LogSeverity.Error);
+                ConsoleHelper.Log($"Error retrieving Host information {ex.Message}", LogSeverity.Error);
             }
         }
 
         [Command("owner")]
         [Summary("Show Cirilla bot owner")]
-        public async Task Owner() {
+        public async Task Owner()
+        {
             await ReplyAsync($"My owner is \"mrousavy#6472\"; ({Information.Owner}) - http://github.com/mrousavy");
         }
 
         [Command("invite")]
         [Summary("Show Guild join link for bot")]
-        public async Task Invite() {
+        public async Task Invite()
+        {
             await ReplyAsync(Information.InviteLink);
         }
 
         [Command("uptime")]
         [Summary("Shows bot uptime")]
-        public async Task Uptime() {
-            try {
+        public async Task Uptime()
+        {
+            try
+            {
                 var tspan = DateTime.Now - Program.StartTime;
                 if (tspan.TotalDays >= 1)
                     await ReplyAsync(
@@ -80,14 +94,16 @@ namespace Cirilla.Modules {
                         $"I'm already running for {tspan:h'h 'm'm 's's'}.");
                 else if (tspan.TotalMinutes >= 1) await ReplyAsync($"I'm running for {tspan:m'm 's's'}.");
                 else await ReplyAsync($"I'm running for {tspan:s's'}.");
-                await ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
-            } catch (Exception ex) {
+                ConsoleHelper.Log($"{Context.User} requested Uptime!", LogSeverity.Info);
+            } catch (Exception ex)
+            {
                 await ReplyAsync("Sorry, I can't send you that information right now!");
-                await ConsoleHelper.Log($"Error retrieving uptime information {ex.Message}", LogSeverity.Error);
+                ConsoleHelper.Log($"Error retrieving uptime information {ex.Message}", LogSeverity.Error);
             }
         }
 
-        private static string GetUptime() {
+        private static string GetUptime()
+        {
             var tspan = DateTime.Now - Program.StartTime;
             string uptime;
             if (tspan.TotalDays >= 1) uptime = tspan.ToString("d'd 'h'h 'm'm 's's'");
@@ -100,9 +116,12 @@ namespace Cirilla.Modules {
 
         [Command("run")]
         [Summary("Shows how to run this bot on your own")]
-        public async Task Run() {
-            try {
-                var builder = new EmbedBuilder {
+        public async Task Run()
+        {
+            try
+            {
+                var builder = new EmbedBuilder
+                {
                     Title = "How to run Cirilla Bot:",
                     Color = new Color(50, 125, 0)
                 };
@@ -115,14 +134,16 @@ namespace Cirilla.Modules {
                     "Run `dotnet run` (Requires [.NET Core Tools](https://www.microsoft.com/net/download/core#/runtime))");
 
                 await ReplyAsync("", embed: builder.Build());
-            } catch {
+            } catch
+            {
                 // channel not available anymore? any unexpected error
             }
         }
 
         [Command("source")]
         [Summary("Shows source code of Cirilla")]
-        public async Task Source() {
+        public async Task Source()
+        {
             await ReplyAsync($"I'm written in C#.NET Core, my source code is on GitHub; {Information.RepoUrl}");
         }
     }

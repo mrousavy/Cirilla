@@ -6,9 +6,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Cirilla.Services.Roslyn {
+namespace Cirilla.Services.Roslyn
+{
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class BlacklistedTypesAnalyzer : DiagnosticAnalyzer {
+    public class BlacklistedTypesAnalyzer : DiagnosticAnalyzer
+    {
         public const string DiagnosticId = "MOD0001";
         private const string Category = "Discord";
         private static readonly LocalizableString Title = "Prohibited API";
@@ -20,11 +22,13 @@ namespace Cirilla.Services.Roslyn {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(Rule);
 
-        public override void Initialize(AnalysisContext context) {
+        public override void Initialize(AnalysisContext context)
+        {
             context.RegisterSemanticModelAction(AnalyzeSymbol);
         }
 
-        private static void AnalyzeSymbol(SemanticModelAnalysisContext context) {
+        private static void AnalyzeSymbol(SemanticModelAnalysisContext context)
+        {
             var model = context.SemanticModel;
 
             var tree = model.SyntaxTree;
@@ -32,7 +36,8 @@ namespace Cirilla.Services.Roslyn {
                 .DescendantNodes(n => true)
                 .Where(n => n is IdentifierNameSyntax || n is ExpressionSyntax);
 
-            foreach (var node in nodes) {
+            foreach (var node in nodes)
+            {
                 var symbol = node is IdentifierNameSyntax
                     ? model.GetSymbolInfo(node).Symbol
                     : model.GetTypeInfo(node).Type;

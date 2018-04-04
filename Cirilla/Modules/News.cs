@@ -5,19 +5,26 @@ using Cirilla.Services.News;
 using Discord;
 using Discord.Commands;
 
-namespace Cirilla.Modules {
-    public class News : ModuleBase {
+namespace Cirilla.Modules
+{
+    public class News : ModuleBase
+    {
         [Command("news")]
         [Summary("Get top 3 Hot stories on r/news")]
-        public async Task RedditNews() {
-            try {
+        public async Task RedditNews()
+        {
+            try
+            {
                 const string loadingStr = "Loading top stories.. ({0}/3) :newspaper2:";
                 var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0));
 
                 List<RedditNet.Things.Link> links = await NewsService.HotNews(3);
-                for (int i = 0; i < links.Count; i++) {
-                    var builder = new EmbedBuilder {
-                        Author = new EmbedAuthorBuilder {
+                for (int i = 0; i < links.Count; i++)
+                {
+                    var builder = new EmbedBuilder
+                    {
+                        Author = new EmbedAuthorBuilder
+                        {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },
                         ThumbnailUrl =
@@ -32,10 +39,11 @@ namespace Cirilla.Modules {
                 }
 
                 await loadingMsg.DeleteAsync();
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
+                ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
                     LogSeverity.Info);
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
+            } catch (Exception ex)
+            {
+                ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
                     LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }
@@ -43,9 +51,12 @@ namespace Cirilla.Modules {
 
         [Command("news")]
         [Summary("Get Hot stories on r/news")]
-        public async Task RedditNews([Summary("Limit for news articles")] uint limit) {
-            try {
-                if (limit > 15) {
+        public async Task RedditNews([Summary("Limit for news articles")] uint limit)
+        {
+            try
+            {
+                if (limit > 15)
+                {
                     await ReplyAsync("Sorry, you can't view more than 15 stories at once!");
                     return;
                 }
@@ -54,9 +65,12 @@ namespace Cirilla.Modules {
                 var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0, limit));
 
                 List<RedditNet.Things.Link> links = await NewsService.HotNews((int) limit);
-                for (int i = 0; i < links.Count; i++) {
-                    var builder = new EmbedBuilder {
-                        Author = new EmbedAuthorBuilder {
+                for (int i = 0; i < links.Count; i++)
+                {
+                    var builder = new EmbedBuilder
+                    {
+                        Author = new EmbedAuthorBuilder
+                        {
                             Name = $"Reddit's Hot Story #{i + 1} 📰"
                         },
                         ThumbnailUrl =
@@ -71,10 +85,11 @@ namespace Cirilla.Modules {
                 }
 
                 await loadingMsg.DeleteAsync();
-                await ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
+                ConsoleHelper.Log($"{Helper.GetName(Context.User)} requested top 5 hot stories on r/news",
                     LogSeverity.Info);
-            } catch (Exception ex) {
-                await ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
+            } catch (Exception ex)
+            {
+                ConsoleHelper.Log($"Could not get top 5 hot stories on r/news! ({ex.Message})",
                     LogSeverity.Error);
                 await ReplyAsync("Sorry, I couldn't find the newsfeed for today!");
             }

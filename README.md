@@ -6,6 +6,9 @@
     <a href="https://discordapp.com/oauth2/authorize?client_id=323123443136593920&scope=bot&permissions=67184707"><img src="https://img.shields.io/badge/Add%20to%20your-Discord-9399ff.svg" alt="Add to your discord"></a>
     <a href="https://discord.gg/ebXZnFX"><img src="https://discordapp.com/api/guilds/326668996550197249/widget.png" alt="Test it"></a>
   </p>
+  <p align="center">
+    <a align="center" href='https://ko-fi.com/F1F8CLXG' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+  </p>
 </p>
 
 # Commandline Parameters

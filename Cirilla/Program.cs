@@ -16,6 +16,15 @@ namespace Cirilla
         internal static DateTime StartTime;
         internal static Cirilla Cirilla;
 
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int) Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
+
         public static void Main(string[] args)
         {
             try
@@ -46,13 +55,16 @@ namespace Cirilla
                     }
                 }
 
-                // disable for non Windowsx86
-                ConsoleHelper.Set();
+                bool windows = !IsLinux;
 
-                Console.Title = "Cirilla Discord Bot";
+                if (windows)
+                {
+                    ConsoleHelper.Set();
+                    Console.Title = "Cirilla Discord Bot";
+                }
 
 #if !DEBUG
-            if (!skipIntro)
+            if (!skipIntro && windows)
                 ConsoleHelper.Intro();
 #endif
 

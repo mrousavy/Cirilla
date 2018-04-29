@@ -18,7 +18,8 @@ namespace Cirilla
             {
                 LogLevel = logSeverity
             };
-            if (Information.NeedsWs4Net) config.WebSocketProvider = WS4NetProvider.Instance;
+            if (Information.NeedsWs4Net)
+                config.WebSocketProvider = WS4NetProvider.Instance;
 
             Client = new DiscordSocketClient(config);
             Client.Log += Log;
@@ -42,13 +43,7 @@ namespace Cirilla
             Service.AddTypeReader(typeof(Timediff), new ReminderTypeReader());
             Service.AddModulesAsync(Assembly.GetEntryAssembly()).GetAwaiter().GetResult();
 
-            try
-            {
-                Login().GetAwaiter().GetResult();
-            } catch (Exception ex)
-            {
-                ConsoleHelper.Log($"Could not login as Discord Bot! {ex.Message}", LogSeverity.Critical);
-            }
+            Login().GetAwaiter().GetResult();
         }
 
         #region Privates
@@ -107,7 +102,8 @@ namespace Cirilla
 
                     //Find out what the user probably meant
                     var embed = Helper.WrongCommand(message, Service, context);
-                    if (embed != default(Embed)) await context.Channel.SendMessageAsync("", embed: embed);
+                    if (embed != default(Embed))
+                        await context.Channel.SendMessageAsync("", embed: embed);
                 }
             }
         }

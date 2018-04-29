@@ -27,64 +27,76 @@ namespace Cirilla
 
         public static void Main(string[] args)
         {
-            try
+            while (true)
             {
-                Random = new Random();
-                if (!Directory.Exists(Information.Directory)) Directory.CreateDirectory(Information.Directory);
+                try
+                {
+                    Random = new Random();
+                    if (!Directory.Exists(Information.Directory))
+                        Directory.CreateDirectory(Information.Directory);
 
-                Information.LoadInfo();
-                ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
+                    Information.LoadInfo();
+                    ConsoleHelper.Log(">> Starting Cirilla Discord Bot..", LogSeverity.Info);
 
 #pragma warning disable 219
-                bool skipIntro = false;
+                    bool skipIntro = false;
 #pragma warning restore 219
 
-                foreach (string arg in args)
-                {
-                    string cleanArg = arg.ToLower().Replace("-", "");
-                    switch (cleanArg)
+                    foreach (string arg in args)
                     {
-                        case "skip":
-                            // ReSharper disable once RedundantAssignment
-                            skipIntro = true;
-                            break;
-                        case "legacy":
-                            // Need legacy Sockets (WS4NET)
-                            Information.NeedsWs4Net = true;
-                            break;
+                        string cleanArg = arg.ToLower().Replace("-", "");
+                        switch (cleanArg)
+                        {
+                            case "skip":
+                                // ReSharper disable once RedundantAssignment
+                                skipIntro = true;
+                                break;
+                            case "legacy":
+                                // Need legacy Sockets (WS4NET)
+                                Information.NeedsWs4Net = true;
+                                break;
+                        }
                     }
-                }
 
-                bool windows = !IsLinux;
+                    bool windows = !IsLinux;
 
-                if (windows)
-                {
-                    ConsoleHelper.Set();
-                    Console.Title = "Cirilla Discord Bot";
-                }
+                    if (windows)
+                    {
+                        ConsoleHelper.Set();
+                        Console.Title = "Cirilla Discord Bot";
+                    }
 
 #if !DEBUG
             if (!skipIntro && windows)
                 ConsoleHelper.Intro();
 #endif
 
-                GuildConfigManager.Init();
+                    GuildConfigManager.Init();
 
-                Cirilla = new Cirilla(LogSeverity.Debug);
-                StartTime = DateTime.Now;
+                    Cirilla = new Cirilla(LogSeverity.Debug);
+                    StartTime = DateTime.Now;
 
-                ConsoleHelper.Log("Initializing services..", LogSeverity.Info);
-                var sw = Stopwatch.StartNew();
-                XpManager.Init();
-                NewsService.Init();
-                ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)", LogSeverity.Info);
+                    ConsoleHelper.Log("Initializing services..", LogSeverity.Info);
+                    var sw = Stopwatch.StartNew();
+                    XpManager.Init();
+                    NewsService.Init();
+                    ConsoleHelper.Log($"Finished initializing services! ({sw.ElapsedMilliseconds}ms)",
+                        LogSeverity.Info);
 
-                Thread.Sleep(-1);
-            } catch (Exception ex)
-            {
-                string nl = Environment.NewLine;
-                File.WriteAllText(Path.Combine(Information.Directory, "error.txt"),
-                    $"[{DateTime.Now:dd.MM.yyyy hh:mm:ss}] {ex.Message}:{nl}{ex.Message}{nl}{ex.Source}{nl}{ex.StackTrace}");
+                    Thread.Sleep(-1);
+                    return;
+                } catch (Exception ex)
+                {
+                    string nl = Environment.NewLine;
+                    File.WriteAllText(Path.Combine(Information.Directory, "error.txt"),
+                        $"[{DateTime.Now:dd.MM.yyyy hh:mm:ss}] {ex.Message}:{nl}{ex.Message}{nl}{ex.Source}{nl}{ex.StackTrace}");
+                }
+                Console.WriteLine("Retrying in 3..");
+                Thread.Sleep(1000);
+                Console.WriteLine("Retrying in 2..");
+                Thread.Sleep(1000);
+                Console.WriteLine("Retrying in 1..");
+                Thread.Sleep(1000);
             }
         }
     }

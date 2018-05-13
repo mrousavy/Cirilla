@@ -53,7 +53,7 @@ namespace Cirilla.Modules
                     $"{(double) current.WorkingSet64 / 1024 / 1024:#.#} / {(double) current.PeakWorkingSet64 / 1024 / 1024:#.#} MB");
                 builder.AddInlineField("Prefixes", pre);
                 builder.AddInlineField("Source Code", $"[GitHub]({Information.RepoUrl})");
-                builder.AddInlineField("My Senpai", Information.Owner);
+                builder.AddInlineField("My Owner", Information.Owner);
                 builder.AddInlineField("Guilds", $"Online on {Cirilla.Client.Guilds.Count} guilds");
 
                 await ReplyAsync("", embed: builder.Build());

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -32,7 +31,7 @@ namespace Cirilla.Services.Roslyn
             var model = context.SemanticModel;
 
             var tree = model.SyntaxTree;
-            IEnumerable<SyntaxNode> nodes = tree.GetRoot()
+            var nodes = tree.GetRoot()
                 .DescendantNodes(n => true)
                 .Where(n => n is IdentifierNameSyntax || n is ExpressionSyntax);
 

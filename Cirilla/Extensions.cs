@@ -13,7 +13,11 @@ namespace Cirilla
         public static string ToFileName(this string value)
         {
             var builder = new StringBuilder(value);
-            foreach (char c in Path.GetInvalidFileNameChars()) builder.Replace(c, '_');
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                builder.Replace(c, '_');
+            }
+
             return builder.Length > 255 ? builder.ToString(0, 254) : builder.ToString();
         }
 

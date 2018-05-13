@@ -29,7 +29,7 @@ namespace Cirilla
                             File.WriteAllBytes(logfile, new byte[0]);
 
                         File.AppendAllLines(logfile,
-                            new List<string> {$"[{DateTime.Now:HH:mm:ss}] [{username}@{guildname}] \"{command}\""});
+                            new List<string> { $"[{DateTime.Now:HH:mm:ss}] [{username}@{guildname}] \"{command}\"" });
                     } catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;

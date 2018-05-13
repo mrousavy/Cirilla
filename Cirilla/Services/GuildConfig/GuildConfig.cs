@@ -16,7 +16,7 @@ namespace Cirilla.Services.GuildConfig
         {
             if (GuildConfigs == null) GuildConfigs = new GuildConfigurations();
 
-            string[] dirs = Directory.GetDirectories(Information.Directory);
+            var dirs = Directory.GetDirectories(Information.Directory);
             ConsoleHelper.Log($"Loading {dirs.Length} Guild configuration files..", LogSeverity.Info);
             int loaded = 0;
 
@@ -120,7 +120,7 @@ namespace Cirilla.Services.GuildConfig
 
         public static void WriteOut()
         {
-            string[] dirs = Directory.GetDirectories(Information.Directory);
+            var dirs = Directory.GetDirectories(Information.Directory);
             foreach (string dir in dirs)
             {
                 string dirName = Path.GetFileName(dir);

@@ -78,7 +78,7 @@ namespace Cirilla
                         if (Information.Config != null && new FileInfo(logfile).Length > Information.MaxLogSize)
                             File.WriteAllBytes(logfile, new byte[0]);
 
-                        File.AppendAllLines(logfile, new List<string> {text});
+                        File.AppendAllLines(logfile, new List<string> { text });
                     } catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;

@@ -180,6 +180,7 @@ namespace Cirilla.Modules
             }
 
             for (int i = 0; i < guildLinks.Links.Count; i++)
+            {
                 if (guildLinks.Links[i].Item1 == name)
                 {
                     guildLinks.Links.RemoveAt(i);
@@ -187,6 +188,7 @@ namespace Cirilla.Modules
                     File.WriteAllText(file, serialized);
                     return true;
                 }
+            }
 
             return false;
         }

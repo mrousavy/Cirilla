@@ -180,14 +180,18 @@ namespace Cirilla.Modules
 
                 int sent = 0;
                 foreach (var guild in Cirilla.Client.Guilds)
+                {
                     try
                     {
                         await guild.DefaultChannel.SendMessageAsync(text);
                         sent++;
-                    } catch
+                    } catch (Exception ex)
                     {
-                        // could not send
+                        ConsoleHelper.Log(
+                            $"Could not announce on \"{guild.Name}\": {ex.Message}",
+                            LogSeverity.Error);
                     }
+                }
 
                 await ReplyAsync($"Sent the announcement to {sent}/{Cirilla.Client.Guilds.Count} guilds!");
                 ConsoleHelper.Log(

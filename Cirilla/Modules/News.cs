@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cirilla.Services.News;
 using Discord;
@@ -18,7 +17,7 @@ namespace Cirilla.Modules
                 const string loadingStr = "Loading top stories.. ({0}/3) :newspaper2:";
                 var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0));
 
-                List<RedditNet.Things.Link> links = await NewsService.HotNews(3);
+                var links = await NewsService.HotNews(3);
                 for (int i = 0; i < links.Count; i++)
                 {
                     var builder = new EmbedBuilder
@@ -64,7 +63,7 @@ namespace Cirilla.Modules
                 const string loadingStr = "Loading top stories.. ({0}/{1}) :newspaper2:";
                 var loadingMsg = await ReplyAsync(string.Format(loadingStr, 0, limit));
 
-                List<RedditNet.Things.Link> links = await NewsService.HotNews((int) limit);
+                var links = await NewsService.HotNews((int) limit);
                 for (int i = 0; i < links.Count; i++)
                 {
                     var builder = new EmbedBuilder

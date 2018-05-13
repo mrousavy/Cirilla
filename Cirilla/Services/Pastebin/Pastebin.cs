@@ -14,14 +14,14 @@ namespace Cirilla.Services.Pastebin
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://pastebin.com/api/api_post.php");
-                Dictionary<string, string> parameters = new Dictionary<string, string>
+                var parameters = new Dictionary<string, string>
                 {
-                    {"api_dev_key", Information.PastebinToken},
-                    {"api_option", "paste"},
-                    {"api_paste_code", text},
-                    {"api_paste_private", "1"},
-                    {"api_paste_name", "Cirilla Bot log"},
-                    {"api_paste_expire_date", "1H"}
+                    { "api_dev_key", Information.PastebinToken },
+                    { "api_option", "paste" },
+                    { "api_paste_code", text },
+                    { "api_paste_private", "1" },
+                    { "api_paste_name", "Cirilla Bot log" },
+                    { "api_paste_expire_date", "1H" }
                 };
 
                 var content = new FormUrlEncodedContent(parameters);

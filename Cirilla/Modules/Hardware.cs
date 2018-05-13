@@ -15,7 +15,7 @@ namespace Cirilla.Modules
         {
             try
             {
-                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
+                var hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
 
                 if (hwProfile == null)
                 {
@@ -55,7 +55,7 @@ namespace Cirilla.Modules
                 if (user == null)
                     return;
 
-                Tuple<string, string> hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
+                var hwProfile = HardwareManager.ReadHardware(Context.Guild, user.Id);
 
                 if (hwProfile == null)
                 {

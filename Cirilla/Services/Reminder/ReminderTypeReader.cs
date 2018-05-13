@@ -18,7 +18,7 @@ namespace Cirilla.Services.Reminder
         {
             try
             {
-                string[] split = input.Split(':');
+                var split = input.Split(':');
 
                 var dayMatch = _day.Match(input);
                 var hourMatch = _hour.Match(input);

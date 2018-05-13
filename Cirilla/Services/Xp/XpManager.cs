@@ -17,8 +17,8 @@ namespace Cirilla.Services.Xp
         public static void Init()
         {
             //get guilds
-            string[] directories = Directory.GetDirectories(Information.Directory);
-            string[] xpfiles = new string[directories.Length];
+            var directories = Directory.GetDirectories(Information.Directory);
+            var xpfiles = new string[directories.Length];
             XpInfo = new XpFile();
 
             if (directories.Length > 0)
@@ -79,12 +79,14 @@ namespace Cirilla.Services.Xp
         public static void Update(IGuild guild, IUser user, int plusXp)
         {
             foreach (var uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users)
+            {
                 if (uxp.UserId == user.Id)
                 {
                     uxp.Xp += plusXp;
                     WriteOut();
                     return;
                 }
+            }
 
             //user does not exist
             Add(guild, user, plusXp);
@@ -99,8 +101,10 @@ namespace Cirilla.Services.Xp
 
             if (contains)
                 foreach (var uxp in XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value.Users)
+                {
                     if (uxp.UserId == user.Id)
                         return uxp;
+                }
 
             //user does not exist
             return Add(guild, user, 0);
@@ -115,7 +119,7 @@ namespace Cirilla.Services.Xp
         {
             //LINQ is love <3
             var gxp = XpInfo.Guilds.First(kvp => kvp.Key == guild.Id).Value;
-            List<UserXp> userxp = gxp.Users.OrderByDescending(uxp => uxp).ToList();
+            var userxp = gxp.Users.OrderByDescending(uxp => uxp).ToList();
 
             return userxp;
         }
@@ -124,7 +128,7 @@ namespace Cirilla.Services.Xp
         {
             try
             {
-                foreach (KeyValuePair<ulong, GuildXp> pair in XpInfo.Guilds)
+                foreach (var pair in XpInfo.Guilds)
                 {
                     string directory = Path.Combine(Information.Directory, pair.Key.ToString());
                     if (!Directory.Exists(directory))
@@ -161,7 +165,11 @@ namespace Cirilla.Services.Xp
         public static int GetLevel(int xp)
         {
             int i = 0;
-            while (xp >= GetXp(i)) i++;
+            while (xp >= GetXp(i))
+            {
+                i++;
+            }
+
             return i - 1;
         }
 
@@ -189,7 +197,7 @@ namespace Cirilla.Services.Xp
                 ConsoleHelper.Log("Giving away XP to everyone...",
                     LogSeverity.Info);
 
-                List<string> receivers = new List<string>();
+                var receivers = new List<string>();
 
                 foreach (IGuild guild in Cirilla.Client.Guilds)
                 {

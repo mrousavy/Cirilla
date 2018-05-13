@@ -20,10 +20,10 @@ namespace Cirilla.Modules
                 string nick = user.Nickname ?? "/";
                 string createdAt = user.CreatedAt.ToString("d") ?? "/";
 
-                DateTimeOffset? joinedAtDate = user.JoinedAt;
+                var joinedAtDate = user.JoinedAt;
                 string joinedAt = joinedAtDate != null ? joinedAtDate.Value.ToString("d") : "/";
                 string status = user.Status.ToString() ?? "/";
-                Game? nullableGame = user.Game;
+                var nullableGame = user.Game;
                 string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
                 string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem
                     ? XpManager.Get(Context.Guild, user).Xp.ToString()
@@ -67,10 +67,10 @@ namespace Cirilla.Modules
                     string nick = user.Nickname ?? "/";
                     string createdAt = user.CreatedAt.ToString("d") ?? "/";
 
-                    DateTimeOffset? joinedAtDate = user.JoinedAt;
+                    var joinedAtDate = user.JoinedAt;
                     string joinedAt = joinedAtDate != null ? joinedAtDate.Value.ToString("d") : "/";
                     string status = user.Status.ToString() ?? "/";
-                    Game? nullableGame = user.Game;
+                    var nullableGame = user.Game;
                     string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
                     string xp = GuildConfigManager.Get(Context.Guild.Id).EnableXpSystem
                         ? XpManager.Get(Context.Guild, user).Xp.ToString()
@@ -141,7 +141,7 @@ namespace Cirilla.Modules
                 string createdAt = user.CreatedAt.ToString("d") ?? "/";
 
                 string status = user.Status.ToString() ?? "/";
-                Game? nullableGame = user.Game;
+                var nullableGame = user.Game;
                 string game = nullableGame != null ? nullableGame.Value.ToString() : "/";
 
                 string avatarUrl = user.GetAvatarUrl();

@@ -96,7 +96,9 @@ namespace Cirilla
 
             ConsoleHelper.Log("Connected Guilds:", LogSeverity.Info);
             foreach (IGuild guild in Cirilla.Client.Guilds)
+            {
                 ConsoleHelper.Log($"\t{guild.Name}", LogSeverity.Info);
+            }
         }
 
 

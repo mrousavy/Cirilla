@@ -21,7 +21,7 @@ namespace Cirilla
             get
             {
                 int p = (int) Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
+                return p == 4 || p == 6 || p == 128;
             }
         }
 
@@ -91,6 +91,7 @@ namespace Cirilla
                     File.WriteAllText(Path.Combine(Information.Directory, "error.txt"),
                         $"[{DateTime.Now:dd.MM.yyyy hh:mm:ss}] {ex.Message}:{nl}{ex.Message}{nl}{ex.Source}{nl}{ex.StackTrace}");
                 }
+
                 Console.WriteLine("Retrying in 3..");
                 Thread.Sleep(1000);
                 Console.WriteLine("Retrying in 2..");

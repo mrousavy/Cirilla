@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cirilla.Services.GuildConfig;
 using Cirilla.Services.Xp;
@@ -212,7 +211,7 @@ namespace Cirilla.Modules
                     return;
                 }
 
-                List<UserXp> xps = XpManager.Top10(Context.Guild);
+                var xps = XpManager.Top10(Context.Guild);
 
                 if (xps.Count < 1)
                 {
@@ -280,7 +279,7 @@ namespace Cirilla.Modules
         public static string GetNameForXp()
         {
             //7 times XP (so "XP" is more common) and 4 times other units
-            string[] names = {"XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins"};
+            string[] names = { "XP", "XP", "XP", "XP", "XP", "XP", "XP", "Robux", "Euros", "Schilling", "Bitcoins" };
             return names[Program.Random.Next(0, names.Length + 1)];
         }
     }

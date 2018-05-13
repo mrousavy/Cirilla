@@ -35,6 +35,7 @@ namespace Cirilla.Services.Hardware
             bool contains = false;
 
             foreach (var usrhw in UserHardwares.Hardwares)
+            {
                 if (usrhw.UserId == userId)
                 {
                     if (!string.IsNullOrWhiteSpace(title))
@@ -44,6 +45,7 @@ namespace Cirilla.Services.Hardware
                     contains = true;
                     break;
                 }
+            }
 
             if (!contains) UserHardwares.Hardwares.Add(new UserHardware(userId, title, hardware));
 

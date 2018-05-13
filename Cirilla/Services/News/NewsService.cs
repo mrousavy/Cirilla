@@ -86,11 +86,12 @@ namespace Cirilla.Services.News
 
                 try
                 {
-                    Tuple<Embed, string> result = await GetDailyNews();
+                    var result = await GetDailyNews();
                     if (result.Equals(default(Tuple<Embed, string>)))
                         throw new NullReferenceException($"{nameof(result)} is null");
 
                     foreach (IGuild guild in Cirilla.Client.Guilds)
+                    {
                         try
                         {
                             var channel = await guild.GetDefaultChannelAsync();
@@ -104,6 +105,7 @@ namespace Cirilla.Services.News
                             ConsoleHelper.Log($"Could not send news in #{guild.Name} ({ex.Message})!",
                                 LogSeverity.Info);
                         }
+                    }
 
                     //Save that the last sent article was now
                     Information.Config.LastArticle = result.Item2;
@@ -121,7 +123,7 @@ namespace Cirilla.Services.News
             var redditService = new RedditApi();
             var subreddit = await redditService.GetSubredditAsync("news");
             var listings =
-                await subreddit.GetHotLinksAsync(new ListingRequest {Limit = limit, After = after});
+                await subreddit.GetHotLinksAsync(new ListingRequest { Limit = limit, After = after });
 
             return listings.Select((t, i) => (Link) listings.Children[i]).ToList();
         }

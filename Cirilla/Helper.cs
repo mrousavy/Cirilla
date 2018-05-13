@@ -64,7 +64,7 @@ namespace Cirilla
         /// </summary>
         public static string GetPath(IGuild guild, params string[] paths)
         {
-            string[] fullpaths = new string[paths.Length + 2];
+            var fullpaths = new string[paths.Length + 2];
             fullpaths[0] = Information.Directory;
             fullpaths[1] = guild.Id.ToString();
             string directory = Path.Combine(fullpaths[0], fullpaths[1]);
@@ -90,7 +90,7 @@ namespace Cirilla
         /// </summary>
         public static string GetPath(ulong guildId, params string[] paths)
         {
-            string[] fullpaths = new string[paths.Length + 2];
+            var fullpaths = new string[paths.Length + 2];
             fullpaths[0] = Information.Directory;
             fullpaths[1] = guildId.ToString();
             string directory = Path.Combine(fullpaths[0], fullpaths[1]);

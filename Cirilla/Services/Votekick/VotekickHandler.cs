@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,9 +103,9 @@ namespace Cirilla.Services.Votekick
         public async Task<bool> HasMajority()
         {
             //Get total users and all voters
-            IReadOnlyCollection<IGuildUser> totalUsers = await _guild.GetUsersAsync();
-            IReadOnlyCollection<IUser> yesUser = await _message.GetReactionUsersAsync(Information.VotekickYes);
-            IReadOnlyCollection<IUser> noUser = await _message.GetReactionUsersAsync(Information.VotekickNo);
+            var totalUsers = await _guild.GetUsersAsync();
+            var yesUser = await _message.GetReactionUsersAsync(Information.VotekickYes);
+            var noUser = await _message.GetReactionUsersAsync(Information.VotekickNo);
             int yes = yesUser.Count;
             int no = noUser.Count;
             int online = totalUsers.Count(u => u.VoiceChannel != null);

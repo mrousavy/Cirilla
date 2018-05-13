@@ -77,6 +77,7 @@ namespace Cirilla.Services.Reminder
             if (Reminders == null) ReminderListJson = new ReminderListJson();
             if (Reminders != null)
                 foreach (var reminder in Reminders)
+                {
                     new Thread(() =>
                     {
                         IMessageChannel channel;
@@ -92,6 +93,7 @@ namespace Cirilla.Services.Reminder
 
                         ReminderWaiter(reminder, channel, guild).Wait();
                     }).Start();
+                }
         }
 
         private static async Task ReminderWaiter(UserReminder reminder, IMessageChannel channel, IGuild guild)
@@ -102,11 +104,13 @@ namespace Cirilla.Services.Reminder
             if (offset.TotalMilliseconds < 0)
             {
                 for (int i = 0; i < Reminders.Count; i++)
+                {
                     if (Reminders[i].Equals(reminder))
                     {
                         Reminders.RemoveAt(i);
                         i--;
                     }
+                }
 
                 return;
             }
@@ -129,11 +133,13 @@ namespace Cirilla.Services.Reminder
                 }
 
             for (int i = 0; i < Reminders.Count; i++)
+            {
                 if (Reminders[i].Equals(reminder))
                 {
                     Reminders.RemoveAt(i);
                     i--;
                 }
+            }
 
             WriteOut(guild);
         }

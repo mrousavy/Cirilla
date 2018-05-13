@@ -34,12 +34,14 @@ namespace Cirilla.Services.Profiles
             bool contains = false;
 
             foreach (var uprof in Profiles.ProfilesList)
+            {
                 if (uprof.UserId == userId)
                 {
                     uprof.ProfileText = text;
                     contains = true;
                     break;
                 }
+            }
 
             if (!contains) Profiles.ProfilesList.Add(new UserProfile(userId, text));
 

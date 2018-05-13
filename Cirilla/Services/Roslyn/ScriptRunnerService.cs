@@ -101,12 +101,12 @@ namespace Cirilla.Services.Roslyn
             try
             {
                 var compileCts = new CancellationTokenSource(Information.CompileTimeout);
-                Script<object> script = CSharpScript.Create(code, Options, typeof(Globals));
+                var script = CSharpScript.Create(code, Options, typeof(Globals));
                 var compilation = script.GetCompilation()
                     .WithAnalyzers(Analyzers, cancellationToken: compileCts.Token);
-                ImmutableArray<Diagnostic> compileDiagnostics =
+                var compileDiagnostics =
                     await compilation.GetAllDiagnosticsAsync(compileCts.Token);
-                ImmutableArray<Diagnostic> compileErrors = compileDiagnostics
+                var compileErrors = compileDiagnostics
                     .Where(a => a.Severity == DiagnosticSeverity.Error)
                     .ToImmutableArray();
 

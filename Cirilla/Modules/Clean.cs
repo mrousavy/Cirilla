@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -28,7 +27,7 @@ namespace Cirilla.Modules
                     return;
                 }
 
-                IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(25).Flatten();
+                var messages = await Context.Channel.GetMessagesAsync(25).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
                 ConsoleHelper.Log($"{Context.User} cleaned the Chat (25 Messages)", LogSeverity.Info);
             } catch (Exception ex)
@@ -61,7 +60,7 @@ namespace Cirilla.Modules
 
                 //++ because own delete own message aswell
                 count++;
-                IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(count).Flatten();
+                var messages = await Context.Channel.GetMessagesAsync(count).Flatten();
                 await Context.Channel.DeleteMessagesAsync(messages);
                 ConsoleHelper.Log($"{Context.User} cleaned the Chat ({count} Messages)", LogSeverity.Info);
             } catch (Exception ex)

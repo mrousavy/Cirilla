@@ -29,7 +29,7 @@ namespace Cirilla.Modules
             builder.AddInlineField("Default Text Channel", Information.TextChannel);
             builder.AddInlineField("Prefixes", prefixes);
             builder.AddInlineField("Repo URL", $"[GitHub]({Information.RepoUrl})");
-            builder.AddInlineField("Senpai", Information.Owner);
+            builder.AddInlineField("Owner", Information.Owner);
             builder.AddInlineField("Enable XP System", config.EnableXpSystem);
             builder.AddInlineField("XP Drop Interval", $"Every {Information.XpGiveInterval / 1000} Seconds");
             builder.AddInlineField("Regain gift XP", $"{100 / Information.OwnXp}% XP");
